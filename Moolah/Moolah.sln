@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moolah", "Moolah\Moolah.csproj", "{936F3798-9957-483E-8649-78C16B368FB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moolah.Specs", "Moolah.Specs\Moolah.Specs.csproj", "{2299679E-5E5F-42D6-BCAD-9D7CDDEFBA6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{936F3798-9957-483E-8649-78C16B368FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{936F3798-9957-483E-8649-78C16B368FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{936F3798-9957-483E-8649-78C16B368FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{936F3798-9957-483E-8649-78C16B368FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2299679E-5E5F-42D6-BCAD-9D7CDDEFBA6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2299679E-5E5F-42D6-BCAD-9D7CDDEFBA6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2299679E-5E5F-42D6-BCAD-9D7CDDEFBA6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2299679E-5E5F-42D6-BCAD-9D7CDDEFBA6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
