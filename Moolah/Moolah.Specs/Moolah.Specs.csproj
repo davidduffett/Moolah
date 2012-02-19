@@ -54,8 +54,9 @@
   <ItemGroup>
     <Compile Include="DataCash\DataCashPaymentGatewaySpecs.cs" />
     <Compile Include="DataCash\DataCashRequestBuilderSpec.cs" />
+    <Compile Include="DataCash\DataCashResponseParserSpec.cs" />
+    <Compile Include="DataCash\DataCashResponses.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XPathExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Moolah\Moolah.csproj">
