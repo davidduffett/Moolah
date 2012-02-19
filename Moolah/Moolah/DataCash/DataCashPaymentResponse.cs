@@ -13,7 +13,9 @@ namespace Moolah.DataCash
 
         public PaymentStatus Status { get; internal set; }
 
-        public string Reason { get; internal set; }
+        public bool IsSystemFailure { get; internal set; }
+
+        public string FailureMessage { get; internal set; }
 
         public XDocument DataCashResponse { get; private set; }
     }

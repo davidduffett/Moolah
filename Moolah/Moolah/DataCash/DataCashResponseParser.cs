@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
@@ -14,15 +13,30 @@ namespace Moolah.DataCash
         {
             var document = XDocument.Parse(dataCashResponse);
 
-            var dataCashStatus = (DataCashStatus)Enum.Parse(typeof(DataCashStatus), document.XPathValue("Response/status"));
-            var dataCashReason = (DataCashReason)Enum.Parse(typeof(DataCashReason), document.XPathValue("Response/reason"));
+
+            var dataCashStatus = int.Parse(document.XPathValue("Response/status"));
+            var response = new DataCashPaymentResponse(document)
+                               {
+                                   TransactionReference = document.XPathValue("Response/datacash_reference"),
+                                   Status = dataCashStatus == (int) DataCashStatus.Success
+                                                ? PaymentStatus.Successful
+                                                : PaymentStatus.Failed
+                               };
+
+            if (response.Status == PaymentStatus.Failed)
+            {
+                response.IsSystemFailure = !DataCashFailureMessages.CleanFailures.ContainsKey(dataCashStatus);
+                if (!response.IsSystemFailure)
+                    response.FailureMessage = DataCashFailureMessages.CleanFailures[dataCashStatus];
+                else
+                {
+                    string failureMessage;
+                    response.FailureMessage = DataCashFailureMessages.SystemFailures.TryGetValue(dataCashStatus, out failureMessage) 
+                        ? failureMessage 
+                        : string.Format("Unknown DataCash status code: {0}", dataCashStatus);
+                }
+            }
             
-            var response = new DataCashPaymentResponse(document);
-            response.TransactionReference = document.XPathValue("Response/datacash_reference");
-            response.Status = dataCashStatus == DataCashStatus.Success
-                                  ? PaymentStatus.Successful
-                                  : PaymentStatus.Failed;
-            response.Reason = null;
             return response;
         }
     }
