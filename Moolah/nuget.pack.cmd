@@ -1,0 +1,1 @@
+nuget pack Moolah\Moolah.csproj -Prop Configuration=Release
