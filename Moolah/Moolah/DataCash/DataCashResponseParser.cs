@@ -13,15 +13,16 @@ namespace Moolah.DataCash
         {
             var document = XDocument.Parse(dataCashResponse);
 
-
+            var response = new DataCashPaymentResponse(document);
+            
             var dataCashStatus = int.Parse(document.XPathValue("Response/status"));
-            var response = new DataCashPaymentResponse(document)
-                               {
-                                   TransactionReference = document.XPathValue("Response/datacash_reference"),
-                                   Status = dataCashStatus == (int) DataCashStatus.Success
-                                                ? PaymentStatus.Successful
-                                                : PaymentStatus.Failed
-                               };
+            response.Status = dataCashStatus == (int) DataCashStatus.Success
+                                  ? PaymentStatus.Successful
+                                  : PaymentStatus.Failed;
+
+            string transactionReference;
+            if (document.TryGetXPathValue("Response/datacash_reference", out transactionReference))
+                response.TransactionReference = transactionReference;
 
             if (response.Status == PaymentStatus.Failed)
             {

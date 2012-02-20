@@ -31,10 +31,10 @@ namespace Moolah.Specs.DataCash
             SUT = new DataCashResponseParser();
 
         Because of = () =>
-            Response = SUT.Parse(string.Format(DataCashResponses.AuthoriseResponseFormat,
-                                            DataCashReference, StatusCode));
+            Response = SUT.Parse(ResponseXml);
 
         protected static DataCashResponseParser SUT;
+        protected static string ResponseXml;
         protected static IPaymentResponse Response;
         protected static string DataCashResponse;
         protected static string TransactionReference;
@@ -56,6 +56,7 @@ namespace Moolah.Specs.DataCash
             ExpectedStatus = PaymentStatus.Successful;
             ExpectedFailureMessage = null;
             IsSystemFailure = false;
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
 
@@ -70,6 +71,7 @@ namespace Moolah.Specs.DataCash
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = DataCashFailureMessages.CleanFailures[(int)DataCashStatus.NotAuthorised];
             IsSystemFailure = false;
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
 
@@ -85,6 +87,7 @@ namespace Moolah.Specs.DataCash
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = DataCashFailureMessages.SystemFailures[systemFailureCode];
             IsSystemFailure = true;
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
 
@@ -99,6 +102,23 @@ namespace Moolah.Specs.DataCash
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = string.Format("Unknown DataCash status code: 999999");
             IsSystemFailure = true;
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+        };
+    }
+
+    [Subject(typeof(DataCashResponseParser))]
+    public class When_datacash_reference_is_not_present_in_response : DataCashResponseParserContext
+    {
+        Behaves_like<DataCashResponseBehavior> correctly_parsed_response;
+
+        Establish context = () =>
+        {
+            DataCashReference = null;
+            StatusCode = 987654;
+            ExpectedStatus = PaymentStatus.Failed;
+            ExpectedFailureMessage = string.Format("Unknown DataCash status code: 987654");
+            IsSystemFailure = true;
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode);
         };
     }
 }
