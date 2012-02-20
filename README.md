@@ -4,6 +4,11 @@ An easy to use library for e-commerce payment processing which will eventually h
 
 To begin with, it will support DataCash (MOTO and 3D-Secure).
 
+You can also install using [NuGet](http://nuget.org/Packages/Search?packageType=Packages&searchCategory=All+Categories&searchTerm=machine.specifications):
+<pre>
+  PM> Install-Package Moolah
+</pre>
+
 ## DataCash (MoTo) Example
 
     using System;
