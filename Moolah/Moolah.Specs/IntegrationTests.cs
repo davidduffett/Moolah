@@ -43,7 +43,7 @@ namespace Moolah.Specs
 
         Because of = () =>
         {
-            var gateway = new DataCashPaymentGateway(DataCashMoToCredentials.Configuration());
+            var gateway = new DataCashMoToGateway(DataCashMoToCredentials.Configuration());
             response = gateway.Payment(DataCashMoToCredentials.MerchantReference(), 
                                        12.99m,
                                        new CardDetails

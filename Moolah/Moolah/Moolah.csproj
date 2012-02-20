@@ -45,7 +45,7 @@
     <Compile Include="CardDetails.cs" />
     <Compile Include="DataCash\DataCashConfiguration.cs" />
     <Compile Include="DataCash\DataCashFailureMessages.cs" />
-    <Compile Include="DataCash\DataCashPaymentGateway.cs" />
+    <Compile Include="DataCash\DataCashMoToGateway.cs" />
     <Compile Include="DataCash\DataCashPaymentResponse.cs" />
     <Compile Include="DataCash\DataCashRequestBuilder.cs" />
     <Compile Include="DataCash\DataCashResponseParser.cs" />

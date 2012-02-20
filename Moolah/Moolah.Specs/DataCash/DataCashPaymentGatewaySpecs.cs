@@ -5,7 +5,7 @@ using Moolah.DataCash;
 
 namespace Moolah.Specs.DataCash
 {
-    [Subject(typeof(DataCashPaymentGateway))]
+    [Subject(typeof(DataCashMoToGateway))]
     public class When_submitting_datacash_payment : WithFakes
     {
         It should_build_request_parse_and_return_response = () =>
@@ -27,13 +27,13 @@ namespace Moolah.Specs.DataCash
             responseParser.WhenToldTo(x => x.Parse(httpResponse))
                 .Return(expectedResponse);
 
-            SUT = new DataCashPaymentGateway(config, httpClient, requestBuilder, responseParser);
+            SUT = new DataCashMoToGateway(config, httpClient, requestBuilder, responseParser);
         };
 
         Because of = () =>
             result = SUT.Payment(MerchantReference, Amount, Card);
 
-        static DataCashPaymentGateway SUT;
+        static DataCashMoToGateway SUT;
         static IPaymentResponse result;
         static IHttpClient httpClient;
         static readonly DataCashConfiguration config = new DataCashConfiguration(PaymentEnvironment.Test, "merchant", "password");

@@ -3,14 +3,14 @@ using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
-    public class DataCashPaymentGateway : IPaymentGateway
+    public class DataCashMoToGateway : IPaymentGateway
     {
         private readonly DataCashConfiguration _configuration;
         private readonly IHttpClient _httpClient;
         private readonly IDataCashRequestBuilder _requestBuilder;
         private readonly IDataCashResponseParser _responseParser;
         
-        public DataCashPaymentGateway(DataCashConfiguration configuration)
+        public DataCashMoToGateway(DataCashConfiguration configuration)
             : this(configuration, new HttpClient(), new DataCashRequestBuilder(configuration), new DataCashResponseParser())
         {
         }
@@ -18,7 +18,7 @@ namespace Moolah.DataCash
         /// <summary>
         /// TODO: Make internal and visible to Moolah.Specs
         /// </summary>
-        public DataCashPaymentGateway(
+        public DataCashMoToGateway(
             DataCashConfiguration configuration, 
             IHttpClient httpClient, 
             IDataCashRequestBuilder requestBuilder,
