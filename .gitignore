@@ -48,3 +48,7 @@ _ReSharper*/
 #NuGet
 *.nupkg
 packages/
+
+# Hg
+.hg/
+.hgignore
