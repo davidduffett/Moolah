@@ -41,7 +41,7 @@ namespace Moolah.Specs.DataCash
         protected static PaymentStatus ExpectedStatus;
         protected static string ExpectedFailureMessage;
         protected static bool IsSystemFailure;
-        protected static string DataCashReference = "3000000088888888";
+        protected static string DataCashReference;
         protected static int StatusCode;
     }
 
@@ -52,10 +52,11 @@ namespace Moolah.Specs.DataCash
 
         Establish context = () =>
         {
-            StatusCode = (int)DataCashStatus.Success;
+            StatusCode = DataCashStatus.Success;
             ExpectedStatus = PaymentStatus.Successful;
             ExpectedFailureMessage = null;
             IsSystemFailure = false;
+            DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
@@ -67,10 +68,11 @@ namespace Moolah.Specs.DataCash
 
         Establish context = () =>
         {
-            StatusCode = (int)DataCashStatus.NotAuthorised;
+            StatusCode = DataCashStatus.NotAuthorised;
             ExpectedStatus = PaymentStatus.Failed;
-            ExpectedFailureMessage = DataCashFailureMessages.CleanFailures[(int)DataCashStatus.NotAuthorised];
+            ExpectedFailureMessage = DataCashFailureMessages.CleanFailures[DataCashStatus.NotAuthorised];
             IsSystemFailure = false;
+            DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
@@ -87,6 +89,7 @@ namespace Moolah.Specs.DataCash
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = DataCashFailureMessages.SystemFailures[systemFailureCode];
             IsSystemFailure = true;
+            DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
@@ -102,6 +105,7 @@ namespace Moolah.Specs.DataCash
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = string.Format("Unknown DataCash status code: 999999");
             IsSystemFailure = true;
+            DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
         };
     }
@@ -113,11 +117,11 @@ namespace Moolah.Specs.DataCash
 
         Establish context = () =>
         {
-            DataCashReference = null;
             StatusCode = 987654;
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = string.Format("Unknown DataCash status code: 987654");
             IsSystemFailure = true;
+            DataCashReference = null;
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode);
         };
     }

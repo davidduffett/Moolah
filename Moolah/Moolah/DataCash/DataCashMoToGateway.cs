@@ -7,11 +7,11 @@ namespace Moolah.DataCash
     {
         private readonly DataCashConfiguration _configuration;
         private readonly IHttpClient _httpClient;
-        private readonly IDataCashRequestBuilder _requestBuilder;
+        private readonly IDataCashPaymentRequestBuilder _paymentRequestBuilder;
         private readonly IDataCashResponseParser _responseParser;
         
         public DataCashMoToGateway(DataCashConfiguration configuration)
-            : this(configuration, new HttpClient(), new DataCashRequestBuilder(configuration), new DataCashResponseParser())
+            : this(configuration, new HttpClient(), new DataCashMoToRequestBuilder(configuration), new DataCashResponseParser())
         {
         }
 
@@ -21,7 +21,7 @@ namespace Moolah.DataCash
         public DataCashMoToGateway(
             DataCashConfiguration configuration, 
             IHttpClient httpClient, 
-            IDataCashRequestBuilder requestBuilder,
+            IDataCashPaymentRequestBuilder requestBuilder,
             IDataCashResponseParser responseParser)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
@@ -30,13 +30,13 @@ namespace Moolah.DataCash
             if (responseParser == null) throw new ArgumentNullException("responseParser");
             _configuration = configuration;
             _httpClient = httpClient;
-            _requestBuilder = requestBuilder;
+            _paymentRequestBuilder = requestBuilder;
             _responseParser = responseParser;
         }
 
         public IPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card)
         {
-            var requestDocument = _requestBuilder.Build(merchantReference, amount, card);
+            var requestDocument = _paymentRequestBuilder.Build(merchantReference, amount, card);
             var response = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
             return _responseParser.Parse(response);
         }

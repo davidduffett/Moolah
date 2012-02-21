@@ -26,4 +26,22 @@
         /// </summary>
         string FailureMessage { get; }
     }
+
+    public interface I3DSecureResponse : IPaymentResponse
+    {
+        /// <summary>
+        /// Indicates that the 3D-Secure process should follow, as this payment requires a PARes provided by the bank.
+        /// </summary>
+        bool Requires3DSecurePayerVerification { get; }
+
+        /// <summary>
+        /// Access Control Server (ACS) URL to POST 3D-Secure requests to.
+        /// </summary>
+        string ACSUrl { get; }
+
+        /// <summary>
+        /// Payer Authentication Request (PAReq) which should be posted to the ACS.
+        /// </summary>
+        string PAReq { get; }
+    }
 }

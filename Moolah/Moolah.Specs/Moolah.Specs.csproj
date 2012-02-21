@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,11 +55,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataCash\DataCashPaymentGatewaySpecs.cs" />
-    <Compile Include="DataCash\DataCashRequestBuilderSpec.cs" />
+    <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilderSpec.cs" />
+    <Compile Include="DataCash\DataCash3DSecureGatewaySpec.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataCash\DataCash3DSecureResponseParserSpec.cs" />
+    <Compile Include="DataCash\DataCash3DSPaymentRequestBuilderSpec.cs" />
+    <Compile Include="DataCash\DataCashMoToGatewaySpec.cs" />
+    <Compile Include="DataCash\DataCashPaymentRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCashResponseParserSpec.cs" />
     <Compile Include="DataCash\DataCashResponses.cs" />
-    <Compile Include="IntegrationTests.cs" />
+    <Compile Include="DataCash\Integration3DSecure.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataCash\IntegrationContext.cs" />
+    <Compile Include="DataCash\IntegrationMoTo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -35,27 +35,34 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardDetails.cs" />
+    <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilder.cs" />
+    <Compile Include="DataCash\DataCash3DSecureGateway.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataCash\DataCash3DSecureResponseParser.cs" />
+    <Compile Include="DataCash\DataCash3DSecureRequestBuilder.cs" />
     <Compile Include="DataCash\DataCashConfiguration.cs" />
     <Compile Include="DataCash\DataCashFailureMessages.cs" />
     <Compile Include="DataCash\DataCashMoToGateway.cs" />
     <Compile Include="DataCash\DataCashPaymentResponse.cs" />
-    <Compile Include="DataCash\DataCashRequestBuilder.cs" />
+    <Compile Include="DataCash\DataCashMoToRequestBuilder.cs" />
+    <Compile Include="DataCash\DataCashRequestBuilderBase.cs" />
     <Compile Include="DataCash\DataCashResponseParser.cs" />
     <Compile Include="DataCash\DataCashStatus.cs" />
     <Compile Include="HttpClient.cs" />
-    <Compile Include="IPaymentGateway.cs" />
-    <Compile Include="IPaymentResponse.cs" />
-    <Compile Include="IThreeDSecurePaymentGateway.cs" />
     <Compile Include="PaymentEnvironment.cs" />
+    <Compile Include="PaymentGateways.cs" />
+    <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThreeDSecureResponse.cs" />
+    <Compile Include="SystemTime.cs" />
     <Compile Include="XPathExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,62 +1,30 @@
-﻿using System;
-using Machine.Specifications;
+﻿using Machine.Specifications;
 using Moolah.DataCash;
 
-namespace Moolah.Specs
+namespace Moolah.Specs.DataCash
 {
-    public static class DataCashMoTo
+    public abstract class DataCashMoToContext : DataCashIntegrationContext
     {
-        // Provide your own DataCash Test Server credentials!
-        public const string MerchantId = "merchantId";
-        public const string Password = "password";
-
-        public const string AuthorisedCardNumber = "1000010000000007";
-        public const string DeclinedCardNumber = "1000350000000106";
-
-        public static DataCashConfiguration Configuration()
+        Establish context = () =>
         {
-            return new DataCashConfiguration(PaymentEnvironment.Test, MerchantId, Password);
-        }
-
-        /// <summary>
-        /// DataCash requires unique merchant references (even on their TEST servers!),
-        /// so use clock ticks for now.
-        /// </summary>
-        public static string MerchantReference()
-        {
-            return DateTime.UtcNow.Ticks.ToString();
-        }
-    }
-
-    public abstract class DataCashMotoIntegrationContext
-    {
-        // NOTE: Provide your own DataCash Test Server credentials!
-        const string MerchantId = "merchantId";
-        const string Password = "password";
+            Configuration = new DataCashConfiguration(PaymentEnvironment.Test, MerchantId, Password);
+            ExpiryDate = MoToExpiryDate;
+        };
 
         Because of = () =>
         {
-            var gateway = new DataCashMoToGateway(Configuration);
-            Response = gateway.Payment(DataCashMoTo.MerchantReference(),
-                                       12.99m,
-                                       new CardDetails
-                                       {
-                                           Number = CardNumber,
-                                           Cv2 = "123",
-                                           ExpiryDate = "02/18"
-                                       });
+            Gateway = new DataCashMoToGateway(Configuration);
+            Response = Gateway.Payment(MerchantReference(), 12.99m, new CardDetails { Number = CardNumber, Cv2 = "123", ExpiryDate = ExpiryDate });
         };
 
+        protected static DataCashConfiguration Configuration;
+        protected static IPaymentGateway Gateway;
         protected static IPaymentResponse Response;
-        protected static string CardNumber;
-        protected static DataCashConfiguration Configuration = new DataCashConfiguration(PaymentEnvironment.Test, MerchantId, Password);
-        protected const string AuthorisedCardNumber = "1000010000000007";
-        protected const string DeclinedCardNumber = "1000350000000106";
     }
 
     [Subject(typeof(DataCashMoToGateway), "Integration")]
     [Ignore("Integration requires DataCash MerchantId and Password to be provided")]
-    public class DataCash_MoTo_payment_authorised : DataCashMotoIntegrationContext
+    public class DataCash_MoTo_payment_authorised : DataCashMoToContext
     {
         It should_be_successful = () =>
             Response.Status.ShouldEqual(PaymentStatus.Successful);
@@ -76,7 +44,7 @@ namespace Moolah.Specs
 
     [Subject(typeof(DataCashMoToGateway), "Integration")]
     [Ignore("Integration requires DataCash MerchantId and Password to be provided")]
-    public class DataCash_MoTo_payment_not_authorised : DataCashMotoIntegrationContext
+    public class DataCash_MoTo_payment_not_authorised : DataCashMoToContext
     {
         It should_have_failed = () =>
             Response.Status.ShouldEqual(PaymentStatus.Failed);
@@ -96,7 +64,7 @@ namespace Moolah.Specs
 
     [Subject(typeof(DataCashMoToGateway), "Integration")]
     [Ignore("Integration requires DataCash MerchantId and Password to be provided")]
-    public class DataCash_MoTo_payment_system_failure : DataCashMotoIntegrationContext
+    public class DataCash_MoTo_payment_system_failure : DataCashMoToContext
     {
         It should_have_failed = () =>
             Response.Status.ShouldEqual(PaymentStatus.Failed);

@@ -2,6 +2,9 @@
 
 namespace Moolah.DataCash
 {
+    /// <summary>
+    /// See https://testserver.datacash.com/software/returncodes.shtml for full list of DataCash status codes.
+    /// </summary>
     public static class DataCashFailureMessages
     {
         /// <summary>
@@ -9,7 +12,7 @@ namespace Moolah.DataCash
         /// </summary>
         public static readonly Dictionary<int, string> CleanFailures = new Dictionary<int, string>
         {
-            { (int)DataCashStatus.NotAuthorised, "Transaction was declined by your bank. Please check your details or contact your bank and try again." },
+            { DataCashStatus.NotAuthorised, "Transaction was declined by your bank. Please check your details or contact your bank and try again." },
             { 24, "The supplied expiry date is in the past." },
             { 25, "The card number does not pass the standard Luhn checksum test." },
             { 26, "The card number does not have the expected number of digits." },
@@ -18,7 +21,11 @@ namespace Moolah.DataCash
             { 29, "The supplied start date is in the future." },
             { 30, "The start date cannot be after the expiry date." },
             { 53, "The transaction was not processed due to a high number of requests.  Please try again." },
-            { 56, "The transaction was declined due to the card being used too recently.  Please try again later." }
+            { 56, "The transaction was declined due to the card being used too recently.  Please try again later." },
+            // 3D-Secure related
+            { 179, "Transaction was declined by your bank. Please check your details or contact your bank and try again." },
+            { 184, "The time limit for entering your password expired.  You have not been charged.  Please try again." },
+            { 185, "The time limit for entering your password expired.  You have not been charged.  Please try again." }
         };
 
         /// <summary>
@@ -72,7 +79,41 @@ namespace Moolah.DataCash
             { 1105, "The transaction referenced was both referred by the acquiring bank, and challanged by the Retail Decisions (ReD) Service. This transaction cannot be authorised through the use of an authorize_referral_request or fulfill transaction, nor have the challenge accepted with an accept_fraud transaction. If a new authorisation code is obtained for the acquiring bank, the merchant can continue with the transaction by resubmitting the entrie transaction and providing the new authorisation code." },
             { 1106, "Historic reference already in use" },
             { 12001, "There are more than one active passwords already registered against your vTID at the time the txn was received." },
-            { 12002, "The IP address of the system submitting the vtidconfiguration request is not registered against your vTID." }
+            { 12002, "The IP address of the system submitting the vtidconfiguration request is not registered against your vTID." },
+            // 3D-Secure Related
+            { 151, "A transaction type other than 'auth' or 'pre' was received in the 3-D-Secure Enrolment Check Request" },
+            { 152, "An authcode was supplied in the 3-D Secure Authorization Request, this is not allowed" },
+            { 153, "The mandatory 'verify' element was not supplied in the 3-D Secure Enrolment Check Request" },
+            { 154, "The mandatory 'verify' element was supplied, but its value was something other than 'yes' or 'no'" },
+            { 155, "One of the required fields: 'merchant_url', 'purchase_datetime', 'purchase_desc' or 'device_category' was not supplied" },
+            { 156, "The required field 'device_category' was supplied, but contains a value other than 0 or 1" },
+            { 157, "The merchant is not setup to do 3-D Secure transactions" },
+            { 158, "The card scheme is not supported in the 3-D Secure environment" },
+            { 159, "The enrolment verification with scheme directory server failed" },
+            { 160, "Received an invalid response from the scheme directory server" },
+            { 161, "The 3-D Secure Authorization Request was not authorized and returned a referral response" },
+            { 163, "Not enabled for this card scheme with that acquiring bank" },
+            { 164, "The acquirer is not supported by 3-D Secure" },
+            { 165, "Not enabled to do 3-D Secure transactions with this acquirer" },
+            { 166, "The format of the 'purchase_datetime' field supplied in the 3-D Secure Enrolment Check Request is invalid" },
+            { 167, "An invalid reference was supplied in the 3-D Secure Authorization Request" },
+            { 168, "The transaction could not be submitted for authorization as no valid 3-D Secure Enrolment Check Request was found" },
+            { 169, "A magic card as not been supplied in transaction where 3-D Secure subscription mode is test" },
+            { 170, "The DataCash MPI software has no directory server URL details for this scheme" },
+            { 171, "A PARes message has been supplied in 3-D Secure Authorization Request. This is not allowed" },
+            { 172, "The required PARes message was not supplied in 3-D Secure Authorization Request" },
+            { 174, "The PARes response message from the Issuer could not be verified" },
+            { 175, "A PARes message has been received in 3-D Secure Authorization Request, but no Matching PAReq message was found" },
+            { 176, "The PARes message received in the 3-D Secure Authorization Request is invalid" },
+            { 177, "The PAReq message received from the 3-D Secure Enrolment Check Request is invalid" },
+            { 178, "The PAReq and PARes messages do not match on one of these key fields: 'message_id', 'acqBIN', 'merID', 'xid', 'date', 'purchAmount', 'currency' or 'exponent'" },
+            { 180, "The DataCash MPI does not support recurring transactions" },
+            { 181, "A 3-D Secure Authorization Request found there was no matching referral to be authorized" },
+            { 182, "A 3-D Secure Authorization Request found that the timelimit for an authorization on a transaction that had previously received a response had been exceeded" },
+            { 183, "A 3-D Secure Enrolment Check Request had the verify element set to 'no' meaning no 3-D Secure verification is to be done." },
+            { 186, "3DS Invalid VEReq" },
+            { 187, "Unable to Verify" },
+            { 188, "Unable to Authenticate" }
         };
     }
 }

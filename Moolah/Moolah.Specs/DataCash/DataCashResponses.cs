@@ -34,5 +34,20 @@
     <status>{0}</status>
     <time>1071567305</time>
 </Response>";
+
+        public const string ThreeDSecureAuthenticationRequiredResponse =
+            @"
+<Response>
+    <status>150</status>
+    <reason>3DS Payer Verification Required</reason>
+    <merchantreference>4567890</merchantreference>
+    <datacash_reference>{0}</datacash_reference>
+    <CardTxn>
+        <ThreeDSecure>
+            <pareq_message>{1}</pareq_message>
+            <acs_url>{2}</acs_url>
+        </ThreeDSecure>
+    </CardTxn>
+</Response>";
     }
 }

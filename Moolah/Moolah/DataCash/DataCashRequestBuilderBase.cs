@@ -3,28 +3,36 @@ using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
-    public interface IDataCashRequestBuilder
+    public interface IDataCashPaymentRequestBuilder
     {
         XDocument Build(string merchantReference, decimal amount, CardDetails card);
     }
 
-    public class DataCashRequestBuilder : IDataCashRequestBuilder
+    public interface IDataCashAuthorizeRequestBuilder
+    {
+        XDocument Build(string transactionReference, string PARes);
+    }
+
+    public abstract class DataCashRequestBuilderBase
     {
         private readonly DataCashConfiguration _configuration;
 
-        public DataCashRequestBuilder(DataCashConfiguration configuration)
+        public DataCashRequestBuilderBase(DataCashConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             _configuration = configuration;
         }
 
-        public XDocument Build(string merchantReference, decimal amount, CardDetails card)
+        public XDocument GetDocument(params object[] transactionElements)
         {
-            var document = new XDocument(new XDeclaration("1.0", "utf-8", null));
-            document.Add(new XElement("Request", 
+            return new XDocument(new XDeclaration("1.0", "utf-8", null), requestElement(transactionElements));
+        }
+
+        private XElement requestElement(params object[] transactionElements)
+        {
+            return new XElement("Request",
                 authenticationElement(),
-                transactionElement(merchantReference, amount, card)));
-            return document;
+                transactionElement(transactionElements));
         }
 
         private XElement authenticationElement()
@@ -34,42 +42,39 @@ namespace Moolah.DataCash
                                 new XElement("password", _configuration.Password));
         }
 
-        private XElement transactionElement(string merchantReference, decimal amount, CardDetails card)
+        private XElement transactionElement(params object[] elements)
         {
-            return new XElement("Transaction",
-                                txnDetailsElement(merchantReference, amount),
-                                cardTxnElement(card));
+            return new XElement("Transaction", elements);
         }
 
-        private XElement txnDetailsElement(string merchantReference, decimal amount)
+        protected virtual XElement TxnDetailsElement(string merchantReference, decimal amount)
         {
             return new XElement("TxnDetails",
                 new XElement("merchantreference", merchantReference),
                 new XElement("amount", new XAttribute("currency", "GBP"), amount.ToString("0.00")));
         }
 
-        private XElement cardTxnElement(CardDetails card)
+        protected virtual XElement CardTxnElement(CardDetails card)
         {
             return new XElement("CardTxn",
                                 new XElement("method", "auth"),
-                                cardElement(card));
+                                CardElement(card));
         }
 
-        private XElement cardElement(CardDetails card)
+        protected virtual XElement CardElement(CardDetails card)
         {
             return new XElement("Card",
                                 new XElement("pan", card.Number),
                                 new XElement("expirydate", card.ExpiryDate),
                                 new XElement("startdate", card.StartDate),
                                 new XElement("issuenumber", card.IssueNumber),
-                                cv2AvsElement(card));
+                                Cv2AvsElement(card));
         }
 
-        private XElement cv2AvsElement(CardDetails card)
+        protected virtual XElement Cv2AvsElement(CardDetails card)
         {
             return new XElement("Cv2Avs",
                                 new XElement("cv2", card.Cv2));
         }
-
     }
 }
