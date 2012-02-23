@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+	Package: Zips up a deployment package.
+	
+	Usage:	<property name="package.source.dir" value="C:\MyApplication\artifacts\publish" />
+			<property name="package.dest.dir" value="C:\MyApplication\artifacts\package" />
+			<include buildfile="package.build" />
+			<call target="Package" />
+-->
+<project name="Package">
+	<property name="package.source.dir" value="${project::get-base-directory()}\artifacts\publish" overwrite="false" />
+	<property name="package.dest.dir" value="${project::get-base-directory()}\artifacts\package" overwrite="false" />
+	<property name="package.version" value="0.0.0.0" overwrite="false" />
+	<property name="package.filename" value="${project::get-name()}_${package.version}.zip" overwrite="false" />
+	<property name="package.description" value="${project::get-name()}" overwrite="false" />
+	
+	<patternset id="package.files">
+		<include name="**/*"/>
+		<exclude name="**/*.pdb"/>
+		<exclude name="**/App.*.config"/>
+		<exclude name="**/Web.*.config"/>
+		<exclude name="settings/**"/>
+	</patternset>
+  
+	<target name="Package">
+		<property name="zipfile" value="${package.dest.dir}\${package.filename}" overwrite="true" />
+		<echo message="Building package: ${zipfile}" />
+		
+		<zipfileset basedir="${package.source.dir}" id="package.zipfiles">
+			<patternset refid="package.files" />
+		</zipfileset>
+
+		<zip zipfile="${zipfile}" comment="${package.description}" includeemptydirs="true" duplicate="Preserve" encoding="utf-8" verbose="true">
+			<fileset refid="package.zipfiles"/>
+		</zip>
+	</target>
+</project>

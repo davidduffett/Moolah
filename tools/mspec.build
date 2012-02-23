@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+	Machine.Specifications: executes machine specifications.
+	
+	Usage:	<property name="mspec.dir" value="C:\tools\mspec" />
+			<fileset id="mspec.files" basedir="C:\MyApplication\bin">
+				<include name="*.Specs.dll" />
+			</fileset>
+			<include buildfile="mspec.build" />
+			<call target="MSpec" />
+-->
+<project name="MSpec">
+	<!-- ARGUMENTS -->
+	<!-- Create a fileset with id="mspec.files" to run against -->
+	<property name="mspec.dir" value="..\tools\mspec" overwrite="false" />
+	<property name="mspec.excludetags" value="" overwrite="false" /> <!-- Exclude certain spec categories -->
+	<property name="mspec.target.x86" value="false" overwrite="false" /> <!-- Use the x86 runner on x64 systems (eg. for Sqlite tests) -->
+	<property name="mspec.reports.dir" value="specs" overwrite="false" /> <!-- Location to save MSpec reports -->
+	
+	<property name="mspec.runner" value="${mspec.dir}\mspec-clr4.exe" />
+	<property name="mspec.runner" value="${mspec.dir}\mspec-x86-clr4.exe" overwrite="true" if="${mspec.target.x86}" />
+
+	<property name="teamcity.build" value="false" overwrite="false" /> <!-- Is this a TeamCity build? -->
+	
+	<loadtasks assembly="${build.tools.dir}\nantcontrib\NAnt.Contrib.Tasks.dll" />
+	
+	<target name="MSpec">
+		<foreach item="File" property="filename">
+			<in>
+				<items refid="mspec.files" />
+			</in>
+			<do>
+				<if test="${file::exists(filename)}">
+					<mkdir dir="${mspec.reports.dir}" />
+					<echo message="Executing MSpec runner with TeamCity output option" if="${teamcity.build}"/>
+					<echo message="Excluding specifications tagged as [${mspec.excludetags}]" unless="${mspec.excludetags==''}"/>
+					<exec program="${mspec.runner}" basedir="${mspec.dir}">
+						<arg value="--exclude &quot;${mspec.excludetags}&quot;" unless="${mspec.excludetags==''}"/>
+						<arg value="--silent" if="${teamcity.build}" />
+						<arg value="--teamcity" if="${teamcity.build}" />
+						<arg value="--html" />
+						<arg dir="${mspec.reports.dir}" />
+						<arg line="${filename}"/>
+					</exec>
+				</if>
+			</do>
+		</foreach>
+		<echo message="No MSpec assemblies found to execute." if="${fileset::get-file-count('mspec.files')==0}" />
+	</target>
+</project>

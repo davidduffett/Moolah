@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+	AssemblyInfo: Generates an AssemblyInfo.cs file.
+	
+	Usage:	<property name="application.name" value="My Application" />
+			<property name="application.description" value="A description of my application" />
+			<property name="application.company" value="My Company" />
+			<property name="application.copyright" value="Copyright Me ${datetime::get-year(datetime::now())}" />
+			<property name="application.version" value="1.0.1.0" />
+			<include buildfile="assemblyinfo.build" />
+			<call target="AssemblyInfo" />
+-->
+<project name="AssemblyInfo">
+	<!-- ARGUMENTS -->
+	<property name="application.name" value="" overwrite="false" />
+	<property name="application.description" value="" overwrite="false" />
+	<property name="application.company" value="" overwrite="false" />
+	<property name="application.product" value="" overwrite="false" />
+	<property name="application.copyright" value="" overwrite="false" />
+	<property name="application.version" value="0.0.0.0" overwrite="false" />
+
+	<property name="assemblyinfo.file" value="${project::get-base-directory()}\${application.name}\Properties\AssemblyInfo.cs" overwrite="false" />
+	
+	<target name="AssemblyInfo">
+		<delete file="${assemblyinfo.file}" />
+		<asminfo output="${assemblyinfo.file}" language="CSharp">
+			<imports>
+				<import namespace="System.Reflection" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyTitleAttribute" value="${application.name}" if="${application.name!=''}" />
+				<attribute type="AssemblyDescriptionAttribute" value="${application.description}" if="${application.description!=''}" />
+				<attribute type="AssemblyCompanyAttribute" value="${application.company}" if="${application.company!=''}" />
+				<attribute type="AssemblyProductAttribute" value="${application.product}" if="${application.product!=''}" />
+				<attribute type="AssemblyCopyrightAttribute" value="${application.copyright}" if="${application.copyright!=''}" />
+				<attribute type="AssemblyVersionAttribute" value="${application.version}" if="${application.version!=''}" />
+				<attribute type="AssemblyFileVersionAttribute" value="${application.version}" if="${application.version!=''}" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${application.version}" if="${application.version!=''}" />
+			</attributes>
+		</asminfo>
+	</target>
+</project>

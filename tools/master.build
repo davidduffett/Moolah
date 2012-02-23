@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="Master">
+	<!-- Targets -->
+	<target name="Build" depends="AssemblyInfo, MSBuild" />
+	<target name="BuildAndTest" depends="Build, MSpec" />
+	<target name="BuildAndPackage" depends="BuildAndTest, Package" />
+	<target name="TeamCity">
+		<property name="teamcity.build" value="true" />
+		<call target="BuildAndTest" />
+		<call target="Package" />
+	</target>
+
+	<property name="artifacts.dir" value="${project::get-base-directory()}\artifacts" overwrite="false" />
+	<property name="build.tools.dir" value="${project::get-base-directory()}\..\tools" />
+	<property name="build.number" value="0.0.0.0" overwrite="false"/>
+	<property name="teamcity.build" value="false" overwrite="false"/>
+
+	<!-- Always cleanup first -->
+	<delete>
+	  <fileset basedir="${artifacts.dir}">
+		<include name="**/*" />
+	  </fileset>
+	</delete>
+	
+	<!-- AssemblyInfo -->
+	<property name="application.copyright" value="Copyright David Duffett ${datetime::get-year(datetime::now())}" overwrite="false" />
+	<property name="application.version" value="${build.number}" />
+	<include buildfile="assemblyinfo.build" />
+
+	<!-- MSBuild -->
+	<property name="msbuild.solution.file" value="${project::get-base-directory()}\${application.name}.sln" overwrite="false" />
+	<property name="msbuild.output.dir" value="${artifacts.dir}\build_output\" overwrite="false" />
+	<property name="msbuild.publish.dir" value="${artifacts.dir}\publish\" overwrite="false" />
+	<include buildfile="msbuild.build" />
+
+	<!-- MSpec -->
+	<property name="mspec.dir" value="${build.tools.dir}\mspec" />
+	<fileset id="mspec.files" basedir="${msbuild.output.dir}">
+		<include name="*.Specs.dll" />
+	</fileset>
+	<property name="mspec.reports.dir" value="${artifacts.dir}\specs\" />
+	<include buildfile="mspec.build" />
+	
+	<!-- Package -->
+	<property name="package.version" value="${build.number}" />
+	<include buildfile="package.build" />
+</project>

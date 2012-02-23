@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+	MSBuild: Builds and publishes your application.
+	
+	Usage:	<property name="msbuild.solution.file" value="C:\MyApplication\MyApplication.sln" />
+			<property name="msbuild.output.dir" value="C:\MyApplication\output\" />
+			<property name="msbuild.publish.dir" value="C:\MyApplication\publish\" />
+			<include buildfile="msbuild.build" />
+			<call target="MSBuild" />
+-->
+<project name="MSBuild">
+	<!-- ARGUMENTS -->
+	<property name="msbuild.solution.file" value="" overwrite="false" />
+	<property name="msbuild.configuration" value="Release" overwrite="false" />
+	<property name="msbuild.output.dir" value="" overwrite="false" />
+	<property name="msbuild.publish.dir" value="" overwrite="false" />
+	
+	<property name="msbuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\MSBuild.exe"/>
+
+	<!-- Files to publish -->
+	<patternset id="msbuild.publish.files">
+		<include name="**/*"/>
+		<exclude name="**/*.pdb"/>
+		<exclude name="**/App.*.config"/>
+		<exclude name="**/Web.*.config"/>
+		<exclude name="settings/**"/>
+	</patternset>
+  
+	<target name="MSBuild">
+		<exec program="${msbuild.exe}" workingdir="." failonerror="true">
+			<arg value="${msbuild.solution.file}" />
+			<arg value="/nologo" />
+			<arg value="/t:Clean;Build" />
+			<arg value="/p:Configuration=${msbuild.configuration}"/>
+			<arg value="/p:OutDir=${msbuild.output.dir}"/>
+			<arg value="/p:WebProjectOutputDir=${msbuild.publish.dir}"/>
+		</exec>
+		<if test="${not directory::exists(msbuild.publish.dir)}">
+			<echo message="Copying build output of non-web project to publish folder" />
+			<mkdir dir="${msbuild.publish.dir}" />
+			<copy todir="${msbuild.publish.dir}" overwrite="false">
+				<fileset basedir="${msbuild.output.dir}">
+					<patternset refid="msbuild.publish.files" />
+				</fileset>
+			</copy>
+		</if>
+	</target>
+</project>
