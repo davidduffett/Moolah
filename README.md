@@ -101,24 +101,35 @@ You will also need the original `response.TransactionReference` value provided w
 		
 ### PayPal Express Checkout
 
-	// Configuration
+#### Configuration
+
 	var configuration = new PayPalConfiguration(PaymentEnvironment.Live, "userId", "password", "signature");
 	var gateway = new PayPalExpressCheckout(configuration);
+
+#### PayPal Express Checkout button (on basket page)
+
+You must specify where the customer should be returned to if they cancel the process (`cancelUrl`) or if
+they complete the checkout (`confirmationUrl`).
+You should then redirect the customer to PayPal using the `response.RedirectUrl` provided.
 	
-	// PayPal Express Checkout button (on basket page)
-	var cancelUrl = "http://yoursite.com/basket"; // Where the customer returns to if they cancel
-	var confirmationUrl = "http://yoursite.com/paypalconfirm"; // Where the customer returns to confirm their order
-	var token = gateway.SetExpressCheckout(12.99m, cancelUrl, confirmationUrl);
-	if (token.Status == PaymentStatus.Failed)
-		throw new Exception(token.FailureMessage);
-	RedirectTo(token.RedirectUrl); // Redirect the customer to PayPal
+	var cancelUrl = "http://yoursite.com/basket";
+	var confirmationUrl = "http://yoursite.com/paypalconfirm";
+	var response = gateway.SetExpressCheckout(12.99m, cancelUrl, confirmationUrl);
+	if (response.Status == PaymentStatus.Failed)
+		throw new Exception(response.FailureMessage);
+	RedirectTo(response.RedirectUrl); 
 	
-	// When the customer returns to the confirmation page, PayPal will provide the PayerID and token.
-	// eg. http://yoursite.com/paypalconfirm?PayerID=*PayPalPayerId*&token=*PayPalToken*
-	// Get customer details, including delivery address:
-	var checkoutDetails = gateway.GetExpressCheckoutDetails(Request["PayPalToken"]);
+#### Confirmation page
+
+The customer is returned to the `confirmationUrl` you specified, to confirm payment.  
+PayPal will add 2 query string parameters for you, `PayerID` and `token`.  
+These values must be used when retrieving customer details, or performing the payment.
+
+`GetExpressCheckoutDetails` will give you the customer details, including delivery address.
+`DoExpressCheckoutPayment` will perform the PayPal payment.
 	
-	// Confirm the payment:
+	var checkoutDetails = gateway.GetExpressCheckoutDetails(Request["token"]);
+	
 	var response = gateway.DoExpressCheckoutPayment(12.99m, Request["token"], Request["PayerID"]);
 	if (response.Status == PaymentStatus.Failed)
 	{
