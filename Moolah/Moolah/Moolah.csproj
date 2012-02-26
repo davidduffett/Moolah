@@ -61,6 +61,11 @@
     <Compile Include="PaymentGateways.cs" />
     <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PayPal\PayPalConfiguration.cs" />
+    <Compile Include="PayPal\PayPalExpressCheckout.cs" />
+    <Compile Include="PayPal\PayPalExpressCheckoutDetails.cs" />
+    <Compile Include="PayPal\PayPalExpressCheckoutToken.cs" />
+    <Compile Include="PayPal\PayPalPaymentResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemTime.cs" />
     <Compile Include="XPathExtensions.cs" />
@@ -68,6 +73,7 @@
   <ItemGroup>
     <None Include="Moolah.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
