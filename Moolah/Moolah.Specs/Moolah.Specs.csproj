@@ -70,6 +70,8 @@
     </Compile>
     <Compile Include="DataCash\IntegrationContext.cs" />
     <Compile Include="DataCash\IntegrationMoTo.cs" />
+    <Compile Include="PayPal\PayPalExpressCheckoutSpec.cs" />
+    <Compile Include="PayPal\SetExpressCheckoutResponseParserSpec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

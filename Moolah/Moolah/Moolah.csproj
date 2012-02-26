@@ -66,6 +66,8 @@
     <Compile Include="PayPal\PayPalExpressCheckoutDetails.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutToken.cs" />
     <Compile Include="PayPal\PayPalPaymentResponse.cs" />
+    <Compile Include="PayPal\PayPalStatus.cs" />
+    <Compile Include="PayPal\SetExpressCheckoutResponseParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemTime.cs" />
     <Compile Include="XPathExtensions.cs" />
