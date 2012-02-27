@@ -8,10 +8,11 @@ namespace Moolah.PayPal
     {
         private readonly PayPalConfiguration _configuration;
         private readonly IHttpClient _httpClient;
-        private readonly ISetExpressCheckoutResponseParser _setExpressCheckoutResponseParser;
+        private readonly IPayPalRequestBuilder _requestBuilder;
+        private readonly IPayPalResponseParser _responseParser;
 
         public PayPalExpressCheckout(PayPalConfiguration configuration)
-            : this(configuration, new HttpClient(), new SetExpressCheckoutResponseParser(configuration))
+            : this(configuration, new HttpClient(), new PayPalRequestBuilder(configuration), new PayPalResponseParser(configuration))
         {
         }
 
@@ -19,49 +20,52 @@ namespace Moolah.PayPal
         /// For testing.
         /// </summary>
         public PayPalExpressCheckout(PayPalConfiguration configuration, IHttpClient httpClient,
-            ISetExpressCheckoutResponseParser setExpressCheckoutResponseParser)
+            IPayPalRequestBuilder requestBuilder, IPayPalResponseParser responseParser)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             if (httpClient == null) throw new ArgumentNullException("httpClient");
-            if (setExpressCheckoutResponseParser == null) throw new ArgumentNullException("setExpressCheckoutResponseParser");
+            if (requestBuilder == null) throw new ArgumentNullException("requestBuilder");
+            if (responseParser == null) throw new ArgumentNullException("responseParser");
             _configuration = configuration;
             _httpClient = httpClient;
-            _setExpressCheckoutResponseParser = setExpressCheckoutResponseParser;
+            _requestBuilder = requestBuilder;
+            _responseParser = responseParser;
         }
 
         public PayPalExpressCheckoutToken SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl)
         {
-            var queryString = getQueryWithCredentials();
-            queryString["METHOD"] = "SetExpressCheckout";
-            queryString["PAYMENTREQUEST_0_AMT"] = amount.ToString("0.00");
-            queryString["PAYMENTREQUEST_0_CURRENCYCODE"] = "GBP";
-            queryString["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
-            queryString["cancelUrl"] = cancelUrl;
-            queryString["returnUrl"] = confirmationUrl;
+            if (amount <= 0) throw new ArgumentOutOfRangeException("amount", "Amount must be greater than zero.");
+            if (string.IsNullOrWhiteSpace(cancelUrl)) throw new ArgumentNullException("cancelUrl");
+            if (string.IsNullOrWhiteSpace(confirmationUrl)) throw new ArgumentNullException("confirmationUrl");
 
-            var httpResponse = _httpClient.Get(_configuration.Host + "?" + queryString);
-
-            return _setExpressCheckoutResponseParser.Parse(httpResponse);
-        }
-
-        private NameValueCollection getQueryWithCredentials()
-        {
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["VERSION"] = "78";
-            queryString["USER"] = _configuration.UserId;
-            queryString["PWD"] = _configuration.Password;
-            queryString["SIGNATURE"] = _configuration.Signature;
-            return queryString;
+            var request = _requestBuilder.SetExpressCheckout(amount, cancelUrl, confirmationUrl);
+            var response = sendToPayPal(request);
+            return _responseParser.SetExpressCheckout(response);
         }
 
         public PayPalExpressCheckoutDetails GetExpressCheckoutDetails(string payPalToken)
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
+            
+            var request = _requestBuilder.GetExpressCheckoutDetails(payPalToken);
+            var response = sendToPayPal(request);
+            return _responseParser.GetExpressCheckoutDetails(response);
         }
 
-        public IPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId)
+        public PayPalPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId)
         {
-            throw new System.NotImplementedException();
+            if (amount <= 0) throw new ArgumentOutOfRangeException("amount", "Amount must be greater than zero.");
+            if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
+            if (string.IsNullOrWhiteSpace(payPalPayerId)) throw new ArgumentNullException("payPalPayerId");
+
+            var request = _requestBuilder.DoExpressCheckoutPayment(amount, payPalToken, payPalPayerId);
+            var response = sendToPayPal(request);
+            return _responseParser.DoExpressCheckoutPayment(response);
+        }
+
+        private NameValueCollection sendToPayPal(NameValueCollection queryString)
+        {
+            return HttpUtility.ParseQueryString(_httpClient.Get(_configuration.Host + "?" + queryString));
         }
     }
 }

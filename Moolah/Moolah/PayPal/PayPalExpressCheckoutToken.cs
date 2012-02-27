@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Specialized;
 
 namespace Moolah.PayPal
 {
     public class PayPalExpressCheckoutToken
     {
-        public PayPalExpressCheckoutToken(string payPalResponse)
+        public PayPalExpressCheckoutToken(NameValueCollection payPalResponse)
         {
-            if (string.IsNullOrEmpty(payPalResponse)) throw new ArgumentNullException("payPalResponse");
+            if (payPalResponse == null) throw new ArgumentNullException("payPalResponse");
             PayPalResponse = payPalResponse;
         }
 
-        public string PayPalResponse { get; private set; }
+        public NameValueCollection PayPalResponse { get; private set; }
 
         public string PayPalToken { get; internal set; }
 

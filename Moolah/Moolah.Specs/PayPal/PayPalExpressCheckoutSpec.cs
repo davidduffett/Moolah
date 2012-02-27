@@ -1,37 +1,106 @@
-﻿using Machine.Fakes;
+﻿using System.Collections.Specialized;
+using System.Web;
+using Machine.Fakes;
 using Machine.Specifications;
 using Moolah.PayPal;
 
 namespace Moolah.Specs.PayPal
 {
-    [Subject(typeof(PayPalExpressCheckout))]
-    public class When_set_express_checkout_is_successful : WithFakes
+    public abstract class PayPalExpressCheckoutContext : WithFakes
     {
-        It should_return_the_correct_response = () =>
-            Response.ShouldEqual(ExpectedResponse);
+        Establish context = () =>
+        {
+            Configuration = new PayPalConfiguration(PaymentEnvironment.Test);
+            HttpClient = An<IHttpClient>();
+            HttpClient.WhenToldTo(x => x.Post(Param<string>.IsNotNull, Request))
+                .Return(Response);
+            HttpClient.WhenToldTo(x => x.Get(Configuration.Host + "?" + Request))
+                .Return(Response);
+            RequestBuilder = An<IPayPalRequestBuilder>();
+            ResponseParser = An<IPayPalResponseParser>();
+            SUT = new PayPalExpressCheckout(Configuration, HttpClient, RequestBuilder, ResponseParser);
+        };
+
+        protected static PayPalExpressCheckout SUT;
+        protected static PayPalConfiguration Configuration;
+        protected static IHttpClient HttpClient;
+        protected static IPayPalRequestBuilder RequestBuilder;
+        protected static IPayPalResponseParser ResponseParser;
+
+        protected const string Request = "Test=Request";
+        protected const string Response = "Test=Response";
+    }
+
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_set_express_checkout_is_called : PayPalExpressCheckoutContext
+    {
+        It should_return_the_correct_result = () =>
+            Result.ShouldEqual(ExpectedResult);
 
         Establish context = () =>
         {
-            var httpClient = An<IHttpClient>();
-            httpClient.WhenToldTo(x => x.Get(RequestUrl))
-                .Return(PayPalResponse);
-            ExpectedResponse = new PayPalExpressCheckoutToken(PayPalResponse);
-            var parser = An<ISetExpressCheckoutResponseParser>();
-            parser.WhenToldTo(x => x.Parse(PayPalResponse))
-                .Return(ExpectedResponse);
-            SUT = new PayPalExpressCheckout(new PayPalConfiguration(PaymentEnvironment.Test), httpClient, parser);
+            ExpectedResult = new PayPalExpressCheckoutToken(new NameValueCollection());
+            RequestBuilder.WhenToldTo(x => x.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl))
+                .Return(HttpUtility.ParseQueryString(Request));
+            ResponseParser.WhenToldTo(x => x.SetExpressCheckout(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
+                .Return(ExpectedResult);
         };
 
         Because of = () =>
-            Response = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+            Result = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
 
-        static PayPalExpressCheckout SUT;
-        static PayPalExpressCheckoutToken Response;
-        static PayPalExpressCheckoutToken ExpectedResponse;
+        static PayPalExpressCheckoutToken Result;
+        static PayPalExpressCheckoutToken ExpectedResult;
         const decimal Amount = 10m;
         const string CancelUrl = "http://www.yourdomain.com/cancel.html";
         const string ConfirmationUrl = "http://www.yourdomain.com/success.html";
-        const string RequestUrl = "https://api-3t.sandbox.paypal.com/nvp?VERSION=78&USER=sdk-three_api1.sdk.com&PWD=QFZCWN5HZM8VBG7&SIGNATURE=A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU&METHOD=SetExpressCheckout&PAYMENTREQUEST_0_AMT=10.00&PAYMENTREQUEST_0_CURRENCYCODE=GBP&PAYMENTREQUEST_0_PAYMENTACTION=Sale&cancelUrl=http%3a%2f%2fwww.yourdomain.com%2fcancel.html&returnUrl=http%3a%2f%2fwww.yourdomain.com%2fsuccess.html";
-        const string PayPalResponse = "Sample PayPal Response";
+    }
+
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_get_express_checkout_details_is_called : PayPalExpressCheckoutContext
+    {
+        It should_return_the_correct_result = () =>
+            Result.ShouldEqual(ExpectedResult);
+
+        Establish context = () =>
+        {
+            ExpectedResult = new PayPalExpressCheckoutDetails(new NameValueCollection());
+            RequestBuilder.WhenToldTo(x => x.GetExpressCheckoutDetails(Token))
+                .Return(HttpUtility.ParseQueryString(Request));
+            ResponseParser.WhenToldTo(x => x.GetExpressCheckoutDetails(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
+                .Return(ExpectedResult);
+        };
+
+        Because of = () =>
+            Result = SUT.GetExpressCheckoutDetails(Token);
+
+        static PayPalExpressCheckoutDetails Result;
+        static PayPalExpressCheckoutDetails ExpectedResult;
+        const string Token = "tokenValue";
+    }
+
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_do_express_checkout_payment_is_called : PayPalExpressCheckoutContext
+    {
+        It should_return_the_correct_result = () =>
+            Result.ShouldEqual(ExpectedResult);
+
+        Establish context = () =>
+        {
+            ExpectedResult = new PayPalPaymentResponse(new NameValueCollection());
+            RequestBuilder.WhenToldTo(x => x.DoExpressCheckoutPayment(Amount, Token, PayerId))
+                .Return(HttpUtility.ParseQueryString(Request));
+            ResponseParser.WhenToldTo(x => x.DoExpressCheckoutPayment(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
+                .Return(ExpectedResult);
+        };
+
+        Because of = () =>
+            Result = SUT.DoExpressCheckoutPayment(Amount, Token, PayerId);
+
+        static PayPalPaymentResponse Result;
+        static PayPalPaymentResponse ExpectedResult;
+        const decimal Amount = 12.99m;
+        const string Token = "tokenValue";
+        const string PayerId = "payerId";
     }
 }

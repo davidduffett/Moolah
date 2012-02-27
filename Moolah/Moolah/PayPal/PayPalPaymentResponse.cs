@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Xml.Linq;
+using System.Collections.Specialized;
 
 namespace Moolah.PayPal
 {
     public class PayPalPaymentResponse : IPaymentResponse
     {
-        public PayPalPaymentResponse(XDocument payPalResponse)
+        public PayPalPaymentResponse(NameValueCollection payPalResponse)
         {
             if (payPalResponse == null) throw new ArgumentNullException("payPalResponse");
             PayPalResponse = payPalResponse;
         }
 
-        public XDocument PayPalResponse { get; private set; }
+        public NameValueCollection PayPalResponse { get; private set; }
 
         public string TransactionReference { get; internal set; }
 

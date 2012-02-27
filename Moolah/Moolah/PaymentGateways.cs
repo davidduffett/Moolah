@@ -62,9 +62,9 @@ namespace Moolah
         /// <summary>
         /// Performs the payment.
         /// </summary>
-        /// <param name="amount">Transaction amount.</param>
+        /// <param name="amount">Transaction amount.  You may have adjusted the amount depending on the delivery options the customer specified in PayPal.</param>
         /// <param name="payPalToken">The PayPal token returned in the initial <see cref="SetExpressCheckout"/> call.</param>
         /// <param name="payPalPayerId">The PayPal PayerID returned in the <see cref="GetExpressCheckoutDetails"/> call.</param>
-        IPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId);
+        PayPalPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId);
     }
 }

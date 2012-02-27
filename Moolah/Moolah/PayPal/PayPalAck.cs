@@ -1,6 +1,6 @@
 ﻿namespace Moolah.PayPal
 {
-    public enum PayPalStatus
+    public enum PayPalAck
     {
         Success,
         SuccessWithWarning,
