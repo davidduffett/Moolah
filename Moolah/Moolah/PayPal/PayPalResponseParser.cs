@@ -23,7 +23,9 @@ namespace Moolah.PayPal
 
         public PayPalExpressCheckoutToken SetExpressCheckout(NameValueCollection payPalResponse)
         {
-            var response = new PayPalExpressCheckoutToken(payPalResponse);
+            if (payPalResponse == null) throw new ArgumentNullException("payPalResponse");
+
+            var response = new PayPalExpressCheckoutToken { PayPalResponse = payPalResponse };
 
             parsePayPalAck(payPalResponse,
                 success: () =>

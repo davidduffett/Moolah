@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 
 namespace Moolah.PayPal
 {
     public class PayPalExpressCheckoutToken
     {
-        public PayPalExpressCheckoutToken(NameValueCollection payPalResponse)
-        {
-            if (payPalResponse == null) throw new ArgumentNullException("payPalResponse");
-            PayPalResponse = payPalResponse;
-        }
+        public NameValueCollection PayPalResponse { get; set; }
 
-        public NameValueCollection PayPalResponse { get; private set; }
+        public string PayPalToken { get; set; }
 
-        public string PayPalToken { get; internal set; }
+        public string RedirectUrl { get; set; }
 
-        public string RedirectUrl { get; internal set; }
+        public PaymentStatus Status { get; set; }
 
-        public PaymentStatus Status { get; internal set; }
+        public bool IsSystemFailure { get; set; }
 
-        public bool IsSystemFailure { get; internal set; }
-
-        public string FailureMessage { get; internal set; }
+        public string FailureMessage { get; set; }
     }
 }
