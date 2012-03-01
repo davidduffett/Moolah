@@ -39,7 +39,7 @@ namespace Moolah.Specs.PayPal
 
         Establish context = () =>
         {
-            ExpectedResult = new PayPalExpressCheckoutToken(new NameValueCollection());
+            ExpectedResult = new PayPalExpressCheckoutToken();
             RequestBuilder.WhenToldTo(x => x.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl))
                 .Return(HttpUtility.ParseQueryString(Request));
             ResponseParser.WhenToldTo(x => x.SetExpressCheckout(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))

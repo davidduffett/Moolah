@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -61,7 +64,9 @@
     <Compile Include="PaymentGateways.cs" />
     <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PayPal\OrderDetails.cs" />
     <Compile Include="PayPal\PayPalConfiguration.cs" />
+    <Compile Include="PayPal\PayPalDecimalExtension.cs" />
     <Compile Include="PayPal\PayPalExpressCheckout.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutDetails.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutToken.cs" />
@@ -76,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Moolah.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

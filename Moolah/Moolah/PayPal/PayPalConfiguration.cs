@@ -10,7 +10,7 @@ namespace Moolah.PayPal
         // Sandbox Credentials provided in Integration Guide
         // https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_ECGettingStarted
         const string TestUser = "sdk-three_api1.sdk.com";
-        const string TestPassword = "QFZCWN5HZM8VBG7";
+        const string TestPassword = "QFZCWN5HZM8VBG7Q";
         const string TestSignature = "A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU";
 
         const string LiveHost = "https://api-3t.paypal.com/nvp";
