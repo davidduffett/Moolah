@@ -50,6 +50,20 @@ namespace Moolah
         PayPalExpressCheckoutToken SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl);
 
         /// <summary>
+        /// Starts a PayPal express checkout session by providing a token and URL
+        /// for the user to be redirected to.
+        /// </summary>
+        /// <param name="orderDetails">Detailed information on the order this checkout is for.</param>
+        /// <param name="cancelUrl">URL to return to if the customer cancels the checkout process.</param>
+        /// <param name="confirmationUrl">URL to return to for the customer to confirm payment and place the order.</param>
+        /// <returns>
+        /// A PayPal token for the express checkout and URL to redirect the customer to.
+        /// When the customer navigates to the confirmationUrl, you should then call
+        /// <see cref="GetExpressCheckoutDetails"/> to retrieve details about the express checkout.
+        /// </returns>
+        PayPalExpressCheckoutToken SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl);
+
+        /// <summary>
         /// Retrieves information about the express checkout required to carry out authorisation of payment.
         /// </summary>
         /// <param name="payPalToken">The PayPal token returned in the initial <see cref="SetExpressCheckout"/> call.</param>

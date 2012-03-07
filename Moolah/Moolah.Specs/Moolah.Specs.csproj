@@ -45,6 +45,9 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -70,6 +73,7 @@
     </Compile>
     <Compile Include="DataCash\IntegrationContext.cs" />
     <Compile Include="DataCash\IntegrationMoTo.cs" />
+    <Compile Include="PayPal\IntegrationTest.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutSpec.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderSpec.cs" />
     <Compile Include="PayPal\PayPalResponseParserSpec.cs" />
@@ -83,6 +87,12 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

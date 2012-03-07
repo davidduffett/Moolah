@@ -4,13 +4,13 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>David Duffett</authors>
+    <owners>David Duffett</owners>
     <licenseUrl>https://github.com/davidduffett/Moolah/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/davidduffett/Moolah</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Easy payment processing for .NET (DataCash, PayPal)</description>
     <copyright>Copyright 2012</copyright>
-    <tags>card payment datacash</tags>
+    <tags>card payment datacash paypal</tags>
   </metadata>
 </package>
