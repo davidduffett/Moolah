@@ -1,8 +1,10 @@
 # Moolah
 
-An easy to use library for e-commerce payment processing which will eventually have support for multiple payment providers.
+An easy to use library for e-commerce payment processing in .NET.
 
-To begin with, it will support DataCash (MOTO and 3D-Secure).
+Support is currently provided for:
+* DataCash MOTO and 3D-Secure card transactions
+* PayPal Express Checkout
 
 You can also install using [NuGet](http://nuget.org/Packages/Search?packageType=Packages&searchCategory=All+Categories&searchTerm=machine.specifications):
 <pre>
@@ -118,6 +120,26 @@ You should then redirect the customer to PayPal using the `response.RedirectUrl`
 	if (response.Status == PaymentStatus.Failed)
 		throw new Exception(response.FailureMessage);
 	RedirectTo(response.RedirectUrl); 
+	
+#### PayPal Express Checkout (Advanced)
+
+You may want to specify more than just the transaction amount to PayPal in order to populate the PayPal checkout and invoices with more useful details, well we support that to.
+
+	var response = gateway.SetExpressCheckout(new OrderDetails
+		{
+			OrderDescription = "Thanks for your order!",
+			Items = new[]
+				{
+					new OrderDetailsItem { Description = "A widget", Quantity = 2, UnitPrice = 1.99m, ItemUrl = "http://mysite.com/product?widget" },
+					new OrderDetailsItem { Description = "Widget box", Quantity = 1, UnitPrice = 10m, ItemUrl = "http://mysite.com/product?widgetBox" }
+				},
+			Discounts = new []
+				{
+					new DiscountDetails { Description = "Loyalty discount", Amount = -0.99m }
+				},
+			ShippingTotal = 2m,
+			OrderTotal = 14.99m
+		}, cancelUrl, confirmationUrl);
 	
 #### Confirmation page
 

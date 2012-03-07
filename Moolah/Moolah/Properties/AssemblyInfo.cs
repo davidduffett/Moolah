@@ -13,7 +13,7 @@
 [assembly: AssemblyTitleAttribute("Moolah")]
 [assembly: AssemblyDescriptionAttribute("Easy payment processing for .NET (DataCash, PayPal)")]
 [assembly: AssemblyCopyrightAttribute("Copyright David Duffett 2012")]
-[assembly: AssemblyVersionAttribute("0.3.0")]
-[assembly: AssemblyFileVersionAttribute("0.3.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.3.0")]
+[assembly: AssemblyVersionAttribute("0.3.1")]
+[assembly: AssemblyFileVersionAttribute("0.3.1")]
+[assembly: AssemblyInformationalVersionAttribute("0.3.1")]
 
