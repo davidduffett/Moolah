@@ -47,10 +47,6 @@ namespace Moolah.Specs.PayPal
                 OrderDetails = new OrderDetails
                 {
                     OrderDescription = "Totals only",
-                    //HandlingTotal = 14m,
-                    //InsuranceTotal = 0.99m,
-                    //ShippingDiscount = -7.9m,
-                    //ShippingTotal = 0.54m,
                     OrderTotal = 14.98m 
                 };
     }
@@ -84,7 +80,6 @@ namespace Moolah.Specs.PayPal
                                                                ItemUrl = "http://localhost/product?2"
                                                            }
                                                    },
-                                       //ShippingDiscount = -7.9m,
                                        ShippingTotal = 2m,
                                        OrderTotal = 16.98m // OrderTotal = (sum of unitprice * quantity) + shippingtotal
                                    };
@@ -122,6 +117,48 @@ namespace Moolah.Specs.PayPal
                 TaxTotal = 3m,
                 OrderTotal = 17.98m // Order Total must equal sum of unit price * quantity + taxtotal
             };
+    }
+
+    public class When_starting_express_checkout_with_shipping_discount : ExpressCheckoutContext
+    {
+        Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
+
+        Establish context = () =>
+            {
+                OrderDetails = new OrderDetails
+                                   {
+                                       Items = new[]
+                                                   {
+                                                       new OrderDetailsItem { Quantity = 1, UnitPrice = 10m }
+                                                   },
+                                       ShippingTotal = 2m,      
+                                       ShippingDiscount = -1m,
+                                       OrderTotal = 11m
+                                   };            
+            };
+
+    }
+
+    public class When_starting_express_checkout_with_discounts : ExpressCheckoutContext
+    {
+        Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
+
+        Establish context = () =>
+        {
+            OrderDetails = new OrderDetails
+            {
+                Items = new[]
+                    {
+                        new OrderDetailsItem { Quantity = 1, UnitPrice = 10m }
+                    },
+                Discounts = new[]
+                    {
+                        new DiscountDetails{ Amount = 2m, Description = "Loyalty discount" }
+                    },
+                OrderTotal = 8m
+            };
+        };
+
     }
 
     [Subject(typeof(PayPalExpressCheckout))]

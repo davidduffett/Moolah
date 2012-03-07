@@ -53,10 +53,10 @@ namespace Moolah.PayPal
             addOptionalValueToRequest("ALLOWNOTE", orderDetails.AllowNote, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_DESC", orderDetails.OrderDescription, request);
 
+            var lineNumber = 0;
+            var itemTotal = 0m;
             if (orderDetails.Items != null)
             {
-                var lineNumber = 0;
-                var itemTotal = 0m;
                 foreach (var line in orderDetails.Items)
                 {
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_NAME" + lineNumber, line.Name, request);
@@ -70,10 +70,24 @@ namespace Moolah.PayPal
                     itemTotal += (line.UnitPrice ?? 0) * (line.Quantity ?? 1);
                     lineNumber++;
                 }
-
-                if (itemTotal > 0)
-                    addOptionalValueToRequest("PAYMENTREQUEST_0_ITEMAMT", itemTotal, request);
             }
+            if (orderDetails.Discounts != null)
+            {
+                foreach(var line in orderDetails.Discounts)
+                {
+                    addOptionalValueToRequest("L_PAYMENTREQUEST_0_NAME" + lineNumber, line.Description, request);
+                    addOptionalValueToRequest("L_PAYMENTREQUEST_0_AMT" + lineNumber, line.Amount.AsNegativeValue(), request);
+                    addOptionalValueToRequest("L_PAYMENTREQUEST_0_TAXAMT" + lineNumber, line.Tax.AsNegativeValue(), request);
+                    addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
+
+                    itemTotal += line.Amount.AsNegativeValue() * (line.Quantity ?? 1);
+                    lineNumber++;
+                }
+            }
+
+            if (itemTotal > 0)
+                addOptionalValueToRequest("PAYMENTREQUEST_0_ITEMAMT", itemTotal, request);
+            
             return request;
         }
 

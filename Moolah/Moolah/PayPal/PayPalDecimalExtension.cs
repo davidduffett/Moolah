@@ -14,5 +14,15 @@
         {
             return value.ToString("0.00");
         }
+
+        public static decimal? AsNegativeValue(this decimal? value)
+        {
+            return value.HasValue ? value.Value.AsNegativeValue() : (decimal?)null;
+        }
+
+        public static decimal AsNegativeValue(this decimal value)
+        {
+            return value < 0 ? value : 0 - value;
+        }
     }
 }

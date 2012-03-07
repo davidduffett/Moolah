@@ -13,6 +13,7 @@ namespace Moolah.PayPal
         public string OrderDescription { get; set; }
 
         public IEnumerable<OrderDetailsItem> Items { get; set; }
+        public IEnumerable<DiscountDetails> Discounts { get; set; } 
 
         /// <summary>
         /// Sum of tax for all items in this order.
@@ -41,6 +42,27 @@ namespace Moolah.PayPal
         /// buyer can enter special instructions to the merchant and click Save. The instructions are returned in the responses to GetExpressCheckoutDetails and DoExpressCheckoutPayment.
         /// </summary>
         public bool? AllowNote { get; set; }
+    }
+
+    public class DiscountDetails
+    {
+        /// <summary>
+        /// Description of the discount item.
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// Optional number of times to apply this discount, eg. a per-item discount.
+        /// </summary>
+        public int? Quantity { get; set; }
+        /// <summary>
+        /// Amount of the discount, can be specified as either negative or positive values but will always be deducted from the order value.
+        /// If a quantity is specified then the discount will be applied that many times.
+        /// </summary>
+        public decimal Amount { get; set; }
+        /// <summary>
+        /// Tax component of the discount, can be specified as either negative or positive values but will be displayed as negative on the paypal invoice.
+        /// </summary>
+        public decimal? Tax { get; set; }
     }
 
     public class OrderDetailsItem

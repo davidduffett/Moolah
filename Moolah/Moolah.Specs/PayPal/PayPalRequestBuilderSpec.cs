@@ -313,4 +313,62 @@ namespace Moolah.Specs.PayPal
         const string PayPalPayerId = "payerId";
         const decimal Amount = 12.99m;
     }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_an_express_checkout_request_with_discounts : PayPalRequestBuilderContext
+    {
+        It should_include_the_order_lines = () =>
+            {
+                Request["L_PAYMENTREQUEST_0_QTY0"].ShouldEqual(OrderDetails.Items.First().Quantity.ToString());
+                Request["L_PAYMENTREQUEST_0_AMT0"].ShouldEqual(OrderDetails.Items.First().UnitPrice.AsPayPalFormatString());
+            };
+
+        It should_include_discounts_as_other_lines_in_the_order = () =>
+            {
+                Request["L_PAYMENTREQUEST_0_QTY1"].ShouldEqual("3");
+                Request["L_PAYMENTREQUEST_0_AMT1"].ShouldEqual("-1.00");
+                Request["L_PAYMENTREQUEST_0_NAME1"].ShouldEqual("Multi-buy discount, -1 per item.");
+                Request["L_PAYMENTREQUEST_0_NAME2"].ShouldEqual("Loyalty discount");
+            };
+
+        It should_always_pass_discount_as_a_negative_value = () => 
+            Request["L_PAYMENTREQUEST_0_AMT2"].ShouldEqual("-0.50");
+
+        It should_always_pass_discount_tax_as_a_negative_value = () =>
+            Request["L_PAYMENTREQUEST_0_TAXAMT2"].ShouldEqual("-0.10");
+
+        It should_not_include_discount_quantity_if_not_specified = () =>
+            Request["L_PAYMENTREQUEST_0_QTY2"].ShouldBeNull();
+
+        It should_not_include_discount_tax_if_not_specified = () =>
+            Request["L_PAYMENTREQUEST_0_TAXAMT1"].ShouldBeNull();
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(OrderDetails, CancelUrl, ConfirmationUrl);
+
+        Establish context = () =>
+            OrderDetails = new OrderDetails
+                               {
+                                   Items = new[] { new OrderDetailsItem { Quantity = 3, UnitPrice = 5m } },
+                                   Discounts = new[]
+                                                   {
+                                                       new DiscountDetails
+                                                           {
+                                                               Description = "Multi-buy discount, -1 per item.",
+                                                               Quantity = 3,
+                                                               Amount = -1m
+                                                           },
+                                                       new DiscountDetails
+                                                           { 
+                                                               Description = "Loyalty discount", 
+                                                               // Discount can be passed as either positive or negative.
+                                                               Amount = 0.5m,
+                                                               Tax = 0.1m
+                                                           }
+                                                   },
+                                   OrderTotal = (3 * 5m) + (3 * -1m) - 0.5m
+                               };
+
+        static OrderDetails OrderDetails;
+    }
 }
