@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
+    <id>Moolah</id>
+	<version>0.0.0</version>
     <authors>David Duffett</authors>
     <owners>David Duffett</owners>
     <licenseUrl>https://github.com/davidduffett/Moolah/blob/master/LICENSE.txt</licenseUrl>
@@ -13,4 +12,7 @@
     <copyright>Copyright 2012</copyright>
     <tags>card payment datacash paypal</tags>
   </metadata>
+  <files>
+	<file src="artifacts\publish\Moolah.dll" target="lib\net40" />
+  </files>
 </package>

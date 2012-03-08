@@ -7,7 +7,7 @@ if '%1' == '/help' goto usage
 if '%1' == '--help' goto usage
 if '%1' == '-help' goto usage
 
-SET NANT="..\tools\nant\nant.exe"
+SET NANT="%~dp0..\tools\nant\nant.exe"
 SET BUILD_FILE="%~dp0main.build"
 
 %NANT% /f:%BUILD_FILE% %*

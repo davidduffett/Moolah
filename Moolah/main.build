@@ -4,4 +4,19 @@
 	<property name="application.name" value="Moolah" overwrite="false" />
 	<property name="application.description" value="Easy payment processing for .NET (DataCash, PayPal)" />
 	<include buildfile="..\tools\master.build" />
+	
+	<target name="nuget" depends="BuildAndTest">
+		<property name="nuget.package.dir" value="${artifacts.dir}\package"/>
+		<mkdir dir="${nuget.package.dir}"/>
+		<exec
+			program=".nuget\nuget.exe"
+			basedir="${project::get-base-directory()}">
+			<arg value="pack" />
+			<arg value="Moolah.nuspec" />
+			<arg value="-OutputDirectory" />
+			<arg value="${nuget.package.dir}" />
+			<arg value="-Version" />
+			<arg value="${application.version}" />
+		</exec>
+	</target>
 </project>

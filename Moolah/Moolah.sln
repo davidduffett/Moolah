@@ -13,6 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8E2CDA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AF490B51-C19E-442A-83FC-036B2522342A}"
 	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		main.build = main.build
+		Moolah.nuspec = Moolah.nuspec
 		nuget.pack.cmd = nuget.pack.cmd
 	EndProjectSection
 EndProject
