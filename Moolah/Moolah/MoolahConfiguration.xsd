@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="MoolahConfiguration"
+    targetNamespace="urn:MoolahConfiguration"
+    xmlns="urn:MoolahConfiguration"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	  xmlns:NS="urn:WebsiteConfiguration">
+  <xs:element name="Moolah">
+    <xs:complexType>
+      <xs:all>
+        <xs:element ref="DataCashMoTo" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="DataCash3DSecure" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="PayPal" minOccurs="0" maxOccurs="1" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DataCashMoTo">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="environment" default="Test">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="Live" />
+                <xs:enumeration value="Test" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="merchantId" type="xs:string" use="required" />
+          <xs:attribute name="password" type="xs:string" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DataCash3DSecure">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="environment" default="Test">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="Live" />
+                <xs:enumeration value="Test" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="merchantId" type="xs:string" use="required" />
+          <xs:attribute name="password" type="xs:string" use="required" />
+          <xs:attribute name="merchantUrl" type="xs:string" use="required" />
+          <xs:attribute name="purchaseDescription" type="xs:string" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PayPal">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="environment" default="Test">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="Live" />
+                <xs:enumeration value="Test" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="userId" type="xs:string" use="optional" />
+          <xs:attribute name="password" type="xs:string" use="optional" />
+          <xs:attribute name="signature" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

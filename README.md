@@ -11,6 +11,28 @@ You can also install using [NuGet](http://nuget.org/Packages/Search?packageType=
   PM> Install-Package Moolah
 </pre>
 
+## Configuration
+### Through Code
+The examples below show how configuration of merchant credentials can be injected at runtime through code.
+
+### App.Config or Web.Config
+You also have the option of placing these values in your `web.config` or `app.config` file:
+
+	<configSections>
+		<section name="Moolah" type="Moolah.MoolahConfiguration, Moolah"/>
+	</configSections>
+	
+	<Moolah xmlns="urn:MoolahConfiguration">
+		<DataCashMoTo environment="Test" merchantId="motoMerchantId" password="motoPassword" />
+		<DataCash3DSecure environment="Test" merchantId="3dsMerchantId" password="3dsPassword" merchantUrl="3dsMerchantUrl" purchaseDescription="3dsPurchaseDescription" />
+		<PayPal environment="Test" userId="paypalUserId" password="paypalPassword" signature="paypalSignature" />
+	</Moolah>
+
+If you do this, you simply need to new up the gateway without the configuration class, and you're ready to go:
+
+	var gateway = new DataCash3DSecureGateway();
+
+
 ## Examples
 ### DataCash (MoTo)
 

@@ -11,6 +11,9 @@
     <description>Easy payment processing for .NET (DataCash, PayPal)</description>
     <copyright>Copyright 2012</copyright>
     <tags>card payment datacash paypal</tags>
+	<dependencies>
+		<dependency id="NLog" version="2.0.0.2000" />
+	</dependencies>
   </metadata>
   <files>
 	<file src="artifacts\publish\Moolah.dll" target="lib\net40" />

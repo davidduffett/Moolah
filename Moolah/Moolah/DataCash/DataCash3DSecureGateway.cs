@@ -11,6 +11,11 @@ namespace Moolah.DataCash
         private readonly IDataCashAuthorizeRequestBuilder _authorizeRequestBuilder;
         private readonly IDataCash3DSecureResponseParser _responseParser;
         
+        public DataCash3DSecureGateway()
+            : this(MoolahConfiguration.Current.DataCash3DSecure)
+        {
+        }
+
         public DataCash3DSecureGateway(DataCash3DSecureConfiguration configuration)
             : this(configuration, new HttpClient(), new DataCash3DSecureRequestBuilder(configuration), new DataCash3DSecureAuthorizeRequestBuilder(configuration), new DataCash3DSecureResponseParser())
         {

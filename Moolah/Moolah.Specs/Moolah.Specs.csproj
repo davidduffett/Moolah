@@ -49,6 +49,7 @@
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -73,6 +74,7 @@
     </Compile>
     <Compile Include="DataCash\IntegrationContext.cs" />
     <Compile Include="DataCash\IntegrationMoTo.cs" />
+    <Compile Include="MoolahConfigurationSpec.cs" />
     <Compile Include="PayPal\IntegrationTest.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutSpec.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderSpec.cs" />
@@ -90,6 +92,7 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="App.config" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

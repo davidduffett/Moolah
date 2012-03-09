@@ -15,6 +15,11 @@ namespace Moolah.PayPal
         private readonly IPayPalRequestBuilder _requestBuilder;
         private readonly IPayPalResponseParser _responseParser;
 
+        public PayPalExpressCheckout() 
+            : this(MoolahConfiguration.Current.PayPal)
+        {
+        }
+
         public PayPalExpressCheckout(PayPalConfiguration configuration)
             : this(configuration, new HttpClient(), new PayPalRequestBuilder(configuration), new PayPalResponseParser(configuration))
         {

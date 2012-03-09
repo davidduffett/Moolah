@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Configuration;
 
 namespace Moolah.PayPal
 {
-    public class PayPalConfiguration
+    public class PayPalConfiguration : ConfigurationElement
     {
         const string TestHost = "https://api-3t.sandbox.paypal.com/nvp";
         const string TestCheckoutUrlFormat = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token={0}";
@@ -15,6 +16,11 @@ namespace Moolah.PayPal
 
         const string LiveHost = "https://api-3t.paypal.com/nvp";
         const string LiveCheckoutUrlFormat = "https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token={0}";
+
+        internal PayPalConfiguration()
+            : this(PaymentEnvironment.Test)
+        {
+        }
 
         /// <summary>
         /// Used for test environment, where PayPal sandbox credentials are static.
@@ -36,17 +42,52 @@ namespace Moolah.PayPal
             UserId = userId;
             Password = password;
             Signature = signature;
-
-            Host = environment == PaymentEnvironment.Live ? LiveHost : TestHost;
-            CheckoutUrlFormat = environment == PaymentEnvironment.Live ? LiveCheckoutUrlFormat : TestCheckoutUrlFormat;
         }
 
-        public PaymentEnvironment Environment { get; private set; }
-        public string UserId { get; private set; }
-        public string Password { get; private set; }
-        public string Signature { get; private set; }
+        static class Attributes
+        {
+            public const string Environment = "environment";
+            public const string UserId = "userId";
+            public const string Password = "password";
+            public const string Signature = "signature";
+        }
 
-        public string Host { get; private set; }
-        public string CheckoutUrlFormat { get; private set; }
+        [ConfigurationProperty(Attributes.Environment)]
+        public PaymentEnvironment Environment
+        {
+            get { return (PaymentEnvironment) this[Attributes.Environment]; }
+            set { this[Attributes.Environment] = value; }
+        }
+
+        [ConfigurationProperty(Attributes.UserId)]
+        public string UserId
+        {
+            get { return (string) this[Attributes.UserId]; }
+            set { this[Attributes.UserId] = value; }
+        }
+
+        [ConfigurationProperty(Attributes.Password)]
+        public string Password
+        {
+            get { return (string) this[Attributes.Password]; }
+            set { this[Attributes.Password] = value; }
+        }
+
+        [ConfigurationProperty(Attributes.Signature)]
+        public string Signature
+        {
+            get { return (string) this[Attributes.Signature]; }
+            set { this[Attributes.Signature] = value; }
+        }
+
+        public string Host
+        {
+            get { return Environment == PaymentEnvironment.Live ? LiveHost : TestHost; }
+        }
+
+        public string CheckoutUrlFormat
+        {
+            get { return Environment == PaymentEnvironment.Live ? LiveCheckoutUrlFormat : TestCheckoutUrlFormat; }
+        }
     }
 }

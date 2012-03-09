@@ -10,6 +10,11 @@ namespace Moolah.DataCash
         private readonly IDataCashPaymentRequestBuilder _paymentRequestBuilder;
         private readonly IDataCashResponseParser _responseParser;
         
+        public DataCashMoToGateway()
+            : this(MoolahConfiguration.Current.DataCashMoTo)
+        {
+        }
+
         public DataCashMoToGateway(DataCashConfiguration configuration)
             : this(configuration, new HttpClient(), new DataCashMoToRequestBuilder(configuration), new DataCashResponseParser())
         {
