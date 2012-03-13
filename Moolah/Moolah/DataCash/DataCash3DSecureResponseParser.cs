@@ -36,10 +36,13 @@ namespace Moolah.DataCash
                     if (DataCashStatus.CanImmediatelyAuthorise(dataCashStatus))
                         response.Status = PaymentStatus.Pending;
                     else
+
                     {
                         response.Status = PaymentStatus.Failed;
                         response.IsSystemFailure = DataCashStatus.IsSystemFailure(dataCashStatus);
-                        response.FailureMessage = DataCashStatus.FailureMessage(dataCashStatus);
+                        var failureReason = DataCashStatus.FailureReason(dataCashStatus);
+                        response.FailureMessage = failureReason.Message;
+                        response.FailureType = failureReason.Type;
                     }
                     break;
             }

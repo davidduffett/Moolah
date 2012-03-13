@@ -53,7 +53,9 @@
     <Compile Include="DataCash\DataCash3DSecureResponseParser.cs" />
     <Compile Include="DataCash\DataCash3DSecureRequestBuilder.cs" />
     <Compile Include="DataCash\DataCashConfiguration.cs" />
-    <Compile Include="DataCash\DataCashFailureMessages.cs" />
+    <Compile Include="DataCash\CardFailureType.cs" />
+    <Compile Include="DataCash\DataCashFailureReason.cs" />
+    <Compile Include="DataCash\DataCashFailureReasons.cs" />
     <Compile Include="DataCash\DataCashMoToGateway.cs" />
     <Compile Include="DataCash\DataCashPaymentResponse.cs" />
     <Compile Include="DataCash\DataCashMoToRequestBuilder.cs" />

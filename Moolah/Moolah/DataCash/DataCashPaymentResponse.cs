@@ -3,9 +3,9 @@ using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
-    public class DataCashPaymentResponse : IPaymentResponse
+    public class CardPaymentPaymentResponse : ICardPaymentResponse
     {
-        public DataCashPaymentResponse(XDocument dataCashResponse)
+        public CardPaymentPaymentResponse(XDocument dataCashResponse)
         {
             if (dataCashResponse == null) throw new ArgumentNullException("dataCashResponse");
             DataCashResponse = dataCashResponse;
@@ -20,9 +20,11 @@ namespace Moolah.DataCash
         public bool IsSystemFailure { get; internal set; }
 
         public string FailureMessage { get; internal set; }
+
+        public CardFailureType FailureType { get; internal set; }
     }
 
-    public class DataCash3DSecurePaymentResponse : DataCashPaymentResponse, I3DSecureResponse
+    public class DataCash3DSecurePaymentResponse : CardPaymentPaymentResponse, I3DSecureResponse
     {
         public DataCash3DSecurePaymentResponse(XDocument dataCashResponse) 
             : base(dataCashResponse)

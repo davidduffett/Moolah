@@ -17,7 +17,7 @@ namespace Moolah.Specs.DataCash
             PaymentRequestBuilder = An<IDataCashPaymentRequestBuilder>();
             HttpClient = An<IHttpClient>();
             ResponseParser = An<IDataCashResponseParser>();
-            ExpectedResponse = An<IPaymentResponse>();
+            ExpectedResponse = An<ICardPaymentResponse>();
 
             var requestDoc = new XDocument();
             const string httpResponse = "<PaymentResponse/>";
@@ -40,7 +40,7 @@ namespace Moolah.Specs.DataCash
         protected static IDataCashPaymentRequestBuilder PaymentRequestBuilder;
         protected static IHttpClient HttpClient;
         protected static IDataCashResponseParser ResponseParser;
-        protected static IPaymentResponse ExpectedResponse;
+        protected static ICardPaymentResponse ExpectedResponse;
         protected static IPaymentResponse Response;
         const string MerchantReference = "987654321";
         const decimal Amount = 12.99m;

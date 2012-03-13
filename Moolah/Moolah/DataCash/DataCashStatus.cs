@@ -24,21 +24,20 @@ namespace Moolah.DataCash
         {
             return dataCashStatus != Success && dataCashStatus != NotAuthorised &&
                    dataCashStatus != RequiresThreeDSecureAuthentication
-                   && !DataCashFailureMessages.CleanFailures.ContainsKey(dataCashStatus);
+                   && !DataCashFailureReasons.CleanFailures.ContainsKey(dataCashStatus);
         }
 
-        public static string FailureMessage(int dataCashStatus)
+        public static DataCashFailureReason FailureReason(int dataCashStatus)
         {
-            string failureMessage;
+            DataCashFailureReason failureReason;
             
             if (IsSystemFailure(dataCashStatus))
-                return DataCashFailureMessages.SystemFailures.TryGetValue(dataCashStatus, out failureMessage)
-                                              ? failureMessage
-                                              : string.Format("Unknown DataCash status code: {0}", dataCashStatus);
+                return DataCashFailureReasons.SystemFailures.TryGetValue(dataCashStatus, out failureReason)
+                                              ? failureReason
+                                              : new DataCashFailureReason(string.Format("Unknown DataCash status code: {0}", dataCashStatus), CardFailureType.General);
 
-            DataCashFailureMessages.CleanFailures.TryGetValue(dataCashStatus, out failureMessage);
-            return failureMessage;
+            DataCashFailureReasons.CleanFailures.TryGetValue(dataCashStatus, out failureReason);
+            return failureReason;
         }
-
     }
 }

@@ -53,3 +53,7 @@ packages/
 # Hg
 .hg/
 .hgignore
+
+# dotCover
+coverage.xml
+*.dotCover
