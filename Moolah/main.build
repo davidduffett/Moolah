@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="Moolah" default="BuildAndPackage">
-	<property name="application.version" value="0.3.2" />
+	<property name="application.version" value="0.3.3" />
 	<property name="application.name" value="Moolah" overwrite="false" />
 	<property name="application.description" value="Easy payment processing for .NET (DataCash, PayPal)" />
 	<include buildfile="..\tools\master.build" />
