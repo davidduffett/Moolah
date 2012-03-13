@@ -1,4 +1,6 @@
-﻿namespace Moolah
+﻿using Moolah.DataCash;
+
+namespace Moolah
 {
     public interface IPaymentResponse
     {
@@ -27,7 +29,15 @@
         string FailureMessage { get; }
     }
 
-    public interface I3DSecureResponse : IPaymentResponse
+    public interface ICardPaymentResponse : IPaymentResponse
+    {
+        /// <summary>
+        /// Gives more detailed information about what caused the failure
+        /// </summary>
+        CardFailureType FailureType { get; }
+    }
+
+    public interface I3DSecureResponse : ICardPaymentResponse
     {
         /// <summary>
         /// Indicates that the 3D-Secure process should follow, as this payment requires a PARes provided by the bank.

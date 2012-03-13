@@ -17,8 +17,9 @@ namespace Moolah.Specs.DataCash
         protected static I3DSecureResponse Response;
         protected static string DataCashResponse;
         protected static string TransactionReference;
-        protected static PaymentStatus ExpectedStatus;
+        protected static PaymentStatus ExpectedStatus;        
         protected static string ExpectedFailureMessage;
+        protected static CardFailureType ExpectedFailureType;
         protected static bool IsSystemFailure;
         protected static string DataCashReference;
         protected static int StatusCode;
@@ -34,6 +35,7 @@ namespace Moolah.Specs.DataCash
             StatusCode = DataCashStatus.Success;
             ExpectedStatus = PaymentStatus.Successful;
             ExpectedFailureMessage = null;
+            ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
@@ -49,7 +51,8 @@ namespace Moolah.Specs.DataCash
         {
             StatusCode = DataCashStatus.NotAuthorised;
             ExpectedStatus = PaymentStatus.Failed;
-            ExpectedFailureMessage = DataCashFailureMessages.CleanFailures[DataCashStatus.NotAuthorised];
+            ExpectedFailureMessage = DataCashFailureReasons.CleanFailures[DataCashStatus.NotAuthorised].Message;
+            ExpectedFailureType = DataCashFailureReasons.CleanFailures[DataCashStatus.NotAuthorised].Type;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
@@ -66,7 +69,8 @@ namespace Moolah.Specs.DataCash
             const int systemFailureCode = 10;
             StatusCode = systemFailureCode;
             ExpectedStatus = PaymentStatus.Failed;
-            ExpectedFailureMessage = DataCashFailureMessages.SystemFailures[systemFailureCode];
+            ExpectedFailureMessage = DataCashFailureReasons.SystemFailures[systemFailureCode].Message;
+            ExpectedFailureType = DataCashFailureReasons.SystemFailures[systemFailureCode].Type;
             IsSystemFailure = true;
             DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
@@ -83,6 +87,7 @@ namespace Moolah.Specs.DataCash
             StatusCode = 999999;
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = string.Format("Unknown DataCash status code: 999999");
+            ExpectedFailureType = CardFailureType.General;
             IsSystemFailure = true;
             DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
@@ -99,6 +104,7 @@ namespace Moolah.Specs.DataCash
             StatusCode = 987654;
             ExpectedStatus = PaymentStatus.Failed;
             ExpectedFailureMessage = string.Format("Unknown DataCash status code: 987654");
+            ExpectedFailureType = CardFailureType.General;
             IsSystemFailure = true;
             DataCashReference = null;
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode);
@@ -124,6 +130,7 @@ namespace Moolah.Specs.DataCash
             StatusCode = DataCashStatus.RequiresThreeDSecureAuthentication;
             ExpectedStatus = PaymentStatus.Pending;
             ExpectedFailureMessage = null;
+            ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.ThreeDSecureAuthenticationRequiredResponse, DataCashReference, 
@@ -148,6 +155,7 @@ namespace Moolah.Specs.DataCash
             StatusCode = 162; // 3DS Card not enrolled
             ExpectedStatus = PaymentStatus.Pending;
             ExpectedFailureMessage = null;
+            ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
             ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);

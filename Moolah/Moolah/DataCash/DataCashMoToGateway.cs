@@ -39,7 +39,7 @@ namespace Moolah.DataCash
             _responseParser = responseParser;
         }
 
-        public IPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card)
+        public ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card)
         {
             var requestDocument = _paymentRequestBuilder.Build(merchantReference, amount, card);
             var response = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
