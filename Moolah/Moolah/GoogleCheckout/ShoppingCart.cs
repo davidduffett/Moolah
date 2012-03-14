@@ -21,7 +21,8 @@ namespace Moolah.GoogleCheckout
         /// <summary>
         /// Item unit price.
         /// </summary>
-        public decimal UnitPrice { get; set; }
+        /// TODO: Why does Automapper need this to be nullable?
+        public decimal? UnitPrice { get; set; }
         /// <summary>
         /// Item unit quantity.
         /// </summary>

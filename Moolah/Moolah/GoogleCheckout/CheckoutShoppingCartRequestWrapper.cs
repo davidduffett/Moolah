@@ -25,7 +25,7 @@ namespace Moolah.GoogleCheckout
 
         public void AddItem(ShoppingCartItem item)
         {
-            _items.Add(AddItem(item.Name, item.Description, item.MerchantItemId, item.UnitPrice, item.Quantity));
+            _items.Add(AddItem(item.Name, item.Description, item.MerchantItemId, item.UnitPrice ?? 0, item.Quantity));
         }
 
         public void AddDiscount(ShoppingCartDiscount discount)
