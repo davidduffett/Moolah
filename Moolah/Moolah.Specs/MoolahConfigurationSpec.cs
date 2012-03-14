@@ -1,5 +1,6 @@
 ﻿using Machine.Specifications;
 using Moolah.DataCash;
+using Moolah.GoogleCheckout;
 using Moolah.PayPal;
 
 namespace Moolah.Specs
@@ -62,5 +63,20 @@ namespace Moolah.Specs
             Config = MoolahConfiguration.Current.PayPal;
 
         static PayPalConfiguration Config;
+    }
+
+    [Subject(typeof(MoolahConfiguration))]
+    public class When_loading_google_checkout_configuration_from_application_config
+    {
+        It should_provide_correct_merchant_id = () =>
+            Config.MerchantId.ShouldEqual("googleMerchantId");
+
+        It should_provide_correct_merchant_key = () =>
+            Config.MerchantKey.ShouldEqual("googleMerchantKey");
+
+        Because of = () =>
+            Config = MoolahConfiguration.Current.GoogleCheckout;
+
+        static GoogleCheckoutConfiguration Config;
     }
 }

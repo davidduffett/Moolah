@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Text;
 using System.Web;
 using NLog;
 
@@ -47,7 +46,7 @@ namespace Moolah.PayPal
             if (string.IsNullOrWhiteSpace(cancelUrl)) throw new ArgumentNullException("cancelUrl");
             if (string.IsNullOrWhiteSpace(confirmationUrl)) throw new ArgumentNullException("confirmationUrl");
 
-            log("SetExpressCheckout.Request", new { Amount = amount, CancelUrl = cancelUrl, ConfirmationUrl = confirmationUrl });
+            _logger.Log("SetExpressCheckout.Request", new { Amount = amount, CancelUrl = cancelUrl, ConfirmationUrl = confirmationUrl });
 
             var request = _requestBuilder.SetExpressCheckout(amount, cancelUrl, confirmationUrl);
             return setExpressCheckoutRequestFor(request);
@@ -59,7 +58,7 @@ namespace Moolah.PayPal
             if (string.IsNullOrWhiteSpace(cancelUrl)) throw new ArgumentNullException("cancelUrl");
             if (string.IsNullOrWhiteSpace(confirmationUrl)) throw new ArgumentNullException("confirmationUrl");
 
-            log("SetExpressCheckout.Request", orderDetails);
+            _logger.Log("SetExpressCheckout.Request", orderDetails);
 
             return setExpressCheckoutRequestFor(_requestBuilder.SetExpressCheckout(orderDetails, cancelUrl, confirmationUrl));
         }
@@ -68,29 +67,9 @@ namespace Moolah.PayPal
         {
             var response = sendToPayPal(request);
 
-            log("SetExpressCheckout.Response", response);
+            _logger.Log("SetExpressCheckout.Response", response);
 
             return _responseParser.SetExpressCheckout(response);
-        }
-
-        static void log(string message, object details = null)
-        {
-            _logger.Info(() =>
-                {
-                    var sb = new StringBuilder();
-                    sb.Append(message);
-                    if (details is NameValueCollection)
-                    {
-                        foreach (var key in ((NameValueCollection)details).AllKeys) 
-                            sb.AppendFormat(" {0}: '{1}'", key, ((NameValueCollection)details)[key]);
-                    } 
-                    else
-                    {
-                        foreach (var property in details.GetType().GetProperties())
-                            sb.AppendFormat(" {0}: '{1}'", property.Name, property.GetValue(details, null));
-                    }
-                    return sb.ToString();
-                });
         }
 
         public PayPalExpressCheckoutDetails GetExpressCheckoutDetails(string payPalToken)

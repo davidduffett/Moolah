@@ -10,6 +10,7 @@
         <xs:element ref="DataCashMoTo" minOccurs="0" maxOccurs="1" />
         <xs:element ref="DataCash3DSecure" minOccurs="0" maxOccurs="1" />
         <xs:element ref="PayPal" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="GoogleCheckout" minOccurs="0" maxOccurs="1" />
       </xs:all>
     </xs:complexType>
   </xs:element>
@@ -66,6 +67,24 @@
           <xs:attribute name="userId" type="xs:string" use="optional" />
           <xs:attribute name="password" type="xs:string" use="optional" />
           <xs:attribute name="signature" type="xs:string" use="optional" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GoogleCheckout">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="environment" default="Test">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="Live" />
+                <xs:enumeration value="Test" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="merchantId" type="xs:string" use="required" />
+          <xs:attribute name="merchantKey" type="xs:string" use="required" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>

@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GCheckout, Version=2.5.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\GCheckout\GCheckout.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
@@ -62,7 +66,19 @@
     <Compile Include="DataCash\DataCashRequestBuilderBase.cs" />
     <Compile Include="DataCash\DataCashResponseParser.cs" />
     <Compile Include="DataCash\DataCashStatus.cs" />
+    <Compile Include="GoogleCheckout\ButtonSize.cs" />
+    <Compile Include="GoogleCheckout\ButtonStyle.cs" />
+    <Compile Include="GoogleCheckout\CheckoutOptions.cs" />
+    <Compile Include="GoogleCheckout\CheckoutShoppingCartRequestWrapper.cs" />
+    <Compile Include="GoogleCheckout\GoogleCheckoutGateway.cs" />
+    <Compile Include="GoogleCheckout\GoogleCheckoutConfiguration.cs" />
+    <Compile Include="GoogleCheckout\GoogleCheckoutRedirect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GoogleCheckout\GoogleCheckoutRequestBuilder.cs" />
+    <Compile Include="GoogleCheckout\ShoppingCart.cs" />
     <Compile Include="HttpClient.cs" />
+    <Compile Include="LoggerExtensions.cs" />
     <Compile Include="MoolahConfiguration.cs">
       <DependentUpon>MoolahConfiguration.xsd</DependentUpon>
     </Compile>
@@ -86,7 +102,6 @@
     <Compile Include="XPathExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Moolah.nuspec" />
     <None Include="MoolahConfiguration.xsd">
       <SubType>Designer</SubType>
     </None>
