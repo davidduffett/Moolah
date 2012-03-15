@@ -24,7 +24,7 @@
 	
 	<!-- AssemblyInfo -->
 	<property name="application.copyright" value="Copyright David Duffett ${datetime::get-year(datetime::now())}" overwrite="false" />
-	<property name="application.version" value="${build.number}" overwrite="false" />
+	<property name="application.version" value="${build.number}" />
 	<include buildfile="assemblyinfo.build" />
 
 	<!-- MSBuild -->
