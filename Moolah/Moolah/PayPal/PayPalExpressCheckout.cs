@@ -81,7 +81,7 @@ namespace Moolah.PayPal
             return _responseParser.GetExpressCheckoutDetails(response);
         }
 
-        public PayPalPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId)
+        public IPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId)
         {
             if (amount <= 0) throw new ArgumentOutOfRangeException("amount", "Amount must be greater than zero.");
             if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");

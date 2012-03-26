@@ -129,12 +129,6 @@ namespace Moolah.Specs.PayPal
         It should_not_include_item_url_for_lines_where_not_specified = () =>
             Request["L_PAYMENTREQUEST_n_ITEMURL1"].ShouldBeNull();
 
-        It should_include_tax_for_each_line = () =>
-            {
-                Request["L_PAYMENTREQUEST_0_TAXAMT0"].ShouldEqual(OrderDetails.Items.First().Tax.AsPayPalFormatString());
-                Request["L_PAYMENTREQUEST_0_TAXAMT1"].ShouldEqual(OrderDetails.Items.Last().Tax.AsPayPalFormatString());
-            };
-
         Because of = () =>
             Request = SUT.SetExpressCheckout(OrderDetails, CancelUrl, ConfirmationUrl);
 
@@ -152,17 +146,13 @@ namespace Moolah.Specs.PayPal
                                                                                     Description = "First Item",
                                                                                     Name = "FIRST",
                                                                                     Number = 1,
-                                                                                    Quantity = 3,
-                                                                                    UnitPrice = 5.99m,
-                                                                                    ItemUrl = "http://localhost/product?123"
+                                                                                    ItemUrl = "http://localhost/product?123&navigationid=3"
                                                                                 },
                                                                             new OrderDetailsItem
                                                                                 {
                                                                                     Description = "Second Item",
                                                                                     Name = "2ND",
-                                                                                    Number = 2,
-                                                                                    Quantity = 1,
-                                                                                    UnitPrice = 11m
+                                                                                    Number = 2
                                                                                 }
                                                                         }
                                                         };
@@ -189,6 +179,12 @@ namespace Moolah.Specs.PayPal
             Request["L_PAYMENTREQUEST_0_AMT1"].ShouldEqual(OrderDetails.Items.Last().UnitPrice.AsPayPalFormatString());
         };
 
+        It should_include_each_line_tax_amount = () =>
+        {
+            Request["L_PAYMENTREQUEST_0_TAXAMT0"].ShouldEqual(OrderDetails.Items.First().Tax.AsPayPalFormatString());
+            Request["L_PAYMENTREQUEST_0_TAXAMT1"].ShouldEqual(OrderDetails.Items.Last().Tax.AsPayPalFormatString());
+        };
+
         Because of = () =>
             Request = SUT.SetExpressCheckout(OrderDetails, CancelUrl, ConfirmationUrl);
 
@@ -200,12 +196,14 @@ namespace Moolah.Specs.PayPal
                                                    new OrderDetailsItem
                                                        {
                                                            Quantity = 3,
-                                                           UnitPrice = 5.99m
+                                                           UnitPrice = 5.99m,
+                                                           Tax = 1.19m
                                                        },
                                                    new OrderDetailsItem
                                                        {
                                                            Quantity = 1,
-                                                           UnitPrice = 11m
+                                                           UnitPrice = 11m,
+                                                           Tax = 2m
                                                        }
                                                }
                                };
@@ -224,13 +222,43 @@ namespace Moolah.Specs.PayPal
     }
 
     [Subject(typeof(PayPalRequestBuilder))]
-    public class When_not_specifying_allow_note_to_set_express_checkout : PayPalRequestBuilderContext
+    public class When_specifying_not_to_allow_note_to_set_express_checkout : PayPalRequestBuilderContext
     {
         It should_include_it_in_the_request = () =>
             Request["ALLOWNOTE"].ShouldEqual("0");
 
         Because of = () =>
             Request = SUT.SetExpressCheckout(new OrderDetails { AllowNote = false }, CancelUrl, ConfirmationUrl);
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_specifying_enable_buyer_marketing_email_opt_in_to_set_express_checkout : PayPalRequestBuilderContext
+    {
+        It should_include_it_in_the_request = () =>
+            Request["BUYEREMAILOPTINENABLE"].ShouldEqual("1");
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(new OrderDetails { EnableCustomerMarketingEmailOptIn = true }, CancelUrl, ConfirmationUrl);
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_specifying_not_to_enable_buyer_marketing_email_opt_in_to_set_express_checkout : PayPalRequestBuilderContext
+    {
+        It should_include_it_in_the_request = () =>
+            Request["BUYEREMAILOPTINENABLE"].ShouldEqual("0");
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(new OrderDetails { EnableCustomerMarketingEmailOptIn = false }, CancelUrl, ConfirmationUrl);
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_specifying_custom_field_to_set_express_checkout : PayPalRequestBuilderContext
+    {
+        It should_include_it_in_the_request = () =>
+            Request["PAYMENTREQUEST_0_CUSTOM"].ShouldEqual("some custom value");
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(new OrderDetails { CustomField = "some custom value" }, CancelUrl, ConfirmationUrl);
     }
 
     [Subject(typeof(PayPalRequestBuilder))]

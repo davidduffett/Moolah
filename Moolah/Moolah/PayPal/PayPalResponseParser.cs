@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
+using System.Linq;
 
 namespace Moolah.PayPal
 {
@@ -8,7 +10,7 @@ namespace Moolah.PayPal
     {
         PayPalExpressCheckoutToken SetExpressCheckout(NameValueCollection payPalResponse);
         PayPalExpressCheckoutDetails GetExpressCheckoutDetails(NameValueCollection payPalResponse);
-        PayPalPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse);
+        IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse);
     }
 
     public class PayPalResponseParser : IPayPalResponseParser
@@ -63,11 +65,155 @@ namespace Moolah.PayPal
                            DeliveryState = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTATE"],
                            DeliveryPostcode = payPalResponse["PAYMENTREQUEST_0_SHIPTOZIP"],
                            DeliveryCountryCode = payPalResponse["PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE"],
-                           DeliveryPhoneNumber = payPalResponse["PAYMENTREQUEST_0_SHIPTOPHONENUM"]
+                           DeliveryPhoneNumber = payPalResponse["PAYMENTREQUEST_0_SHIPTOPHONENUM"],
+                           OrderDetails = parseOrderDetails(payPalResponse)
                        };
         }
 
-        public PayPalPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse)
+        OrderDetails parseOrderDetails(NameValueCollection payPalResponse)
+        {
+            var orderDetails = new OrderDetails
+            {
+                OrderTotal = decimal.Parse(payPalResponse["PAYMENTREQUEST_0_AMT"]),
+                TaxTotal = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_TAXAMT", payPalResponse),
+                ShippingTotal = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_SHIPPINGAMT", payPalResponse),
+                ShippingDiscount = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_SHIPDISCAMT", payPalResponse),
+                AllowNote = parseOptionalBooleanValueFromResponse("ALLOWNOTE", payPalResponse),
+                OrderDescription = parseOptionalStringValueFromResponse("PAYMENTREQUEST_0_DESC", payPalResponse),
+                CustomField = payPalResponse["PAYMENTREQUEST_0_CUSTOM"]
+            };
+
+            var orderDetailsItems = new Dictionary<int, OrderDetailsItem>();
+            var discountDetailses = new Dictionary<int, DiscountDetails>();
+
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_AMT")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_AMT".Length));
+                var amount = decimal.Parse(payPalResponse[key]);
+                var isDiscount = amount < 0;
+
+                if (isDiscount)
+                    discountDetailses.Add(itemNumber, new DiscountDetails { Amount = amount });
+                else
+                    orderDetailsItems.Add(itemNumber, new OrderDetailsItem { UnitPrice = amount });
+            }
+
+            parseLineNumbers(payPalResponse, orderDetailsItems);
+            parseLineDescritions(payPalResponse, orderDetailsItems);
+            parseLineItemUrls(payPalResponse, orderDetailsItems);
+            parseLineNames(payPalResponse, orderDetailsItems, discountDetailses);
+            parseLineQuantities(payPalResponse, orderDetailsItems, discountDetailses);
+            parseLineTaxAmounts(payPalResponse, orderDetailsItems, discountDetailses);
+
+            if (orderDetailsItems.Values.Any())
+                orderDetails.Items = orderDetailsItems.Values;
+            if (discountDetailses.Values.Any())
+                orderDetails.Discounts = discountDetailses.Values;
+
+            return orderDetails;
+        }
+
+        void parseLineNumbers(NameValueCollection payPalResponse, IDictionary<int, OrderDetailsItem> orderDetailsItems)
+        {
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_NUMBER")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_NUMBER".Length));
+
+                if (orderDetailsItems.ContainsKey(itemNumber))
+                    orderDetailsItems[itemNumber].Number = parseOptionalIntegerValueFromResponse(key, payPalResponse);
+            }
+        }
+
+        void parseLineDescritions(NameValueCollection payPalResponse, IDictionary<int, OrderDetailsItem> orderDetailsItems)
+        {
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_DESC")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_DESC".Length));
+
+                if (orderDetailsItems.ContainsKey(itemNumber))
+                    orderDetailsItems[itemNumber].Description = parseOptionalStringValueFromResponse(key, payPalResponse);
+            }
+        }
+
+        void parseLineItemUrls(NameValueCollection payPalResponse, IDictionary<int, OrderDetailsItem> orderDetailsItems)
+        {
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_ITEMURL")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_ITEMURL".Length));
+
+                if (orderDetailsItems.ContainsKey(itemNumber))
+                    orderDetailsItems[itemNumber].ItemUrl = parseOptionalStringValueFromResponse(key, payPalResponse);
+            }
+        }
+
+        void parseLineNames(NameValueCollection payPalResponse, IDictionary<int, OrderDetailsItem> orderDetailsItems, IDictionary<int, DiscountDetails> discountDetailses)
+        {
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_NAME")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_NAME".Length));
+
+                if (orderDetailsItems.ContainsKey(itemNumber))
+                    orderDetailsItems[itemNumber].Name = parseOptionalStringValueFromResponse(key, payPalResponse);
+                if (discountDetailses.ContainsKey(itemNumber))
+                    discountDetailses[itemNumber].Description = parseOptionalStringValueFromResponse(key, payPalResponse);
+            }
+        }
+
+        void parseLineQuantities(NameValueCollection payPalResponse, IDictionary<int, OrderDetailsItem> orderDetailsItems, IDictionary<int, DiscountDetails> discountDetailses)
+        {
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_QTY")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_QTY".Length));
+
+                if (orderDetailsItems.ContainsKey(itemNumber))
+                    orderDetailsItems[itemNumber].Quantity = parseOptionalIntegerValueFromResponse(key, payPalResponse);
+                if (discountDetailses.ContainsKey(itemNumber))
+                    discountDetailses[itemNumber].Quantity = parseOptionalIntegerValueFromResponse(key, payPalResponse);
+            }
+        }
+
+        void parseLineTaxAmounts(NameValueCollection payPalResponse, IDictionary<int, OrderDetailsItem> orderDetailsItems, IDictionary<int, DiscountDetails> discountDetailses)
+        {
+            foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_TAXAMT")).OrderBy(x => x))
+            {
+                var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_TAXAMT".Length));
+
+                if (orderDetailsItems.ContainsKey(itemNumber))
+                    orderDetailsItems[itemNumber].Tax = parseOptionalDecimalValueFromResponse(key, payPalResponse);
+                if (discountDetailses.ContainsKey(itemNumber))
+                    discountDetailses[itemNumber].Tax = parseOptionalDecimalValueFromResponse(key, payPalResponse);
+            }
+        }
+        
+        int? parseOptionalIntegerValueFromResponse(string fieldName, NameValueCollection payPalResponse)
+        {
+            return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
+                       ? (int?)null
+                       : int.Parse(payPalResponse[fieldName]);
+        }
+
+        decimal? parseOptionalDecimalValueFromResponse(string fieldName, NameValueCollection payPalResponse)
+        {
+            return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
+                       ? (decimal?)null
+                       : decimal.Parse(payPalResponse[fieldName]);
+        }
+
+        bool? parseOptionalBooleanValueFromResponse(string fieldName, NameValueCollection payPalResponse)
+        {
+            return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
+                       ? (bool?)null
+                       : payPalResponse[fieldName] == "1";
+        }
+
+        string parseOptionalStringValueFromResponse(string fieldName, NameValueCollection payPalResponse)
+        {
+            return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
+                       ? null
+                       : payPalResponse[fieldName];
+        }
+
+        public IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse)
         {
             var response = new PayPalPaymentResponse(payPalResponse);
 

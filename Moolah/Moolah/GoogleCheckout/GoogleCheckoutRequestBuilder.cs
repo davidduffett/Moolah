@@ -30,6 +30,9 @@ namespace Moolah.GoogleCheckout
             foreach (var discount in shoppingCart.Discounts)
                 request.AddDiscount(discount);
 
+            // TODO: Support different tax rates
+            request.SetGlobalTaxRate(.2);
+
             return request;
         }
 

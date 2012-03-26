@@ -4,6 +4,12 @@ namespace Moolah.PayPal
 {
     public class OrderDetails
     {
+        public OrderDetails()
+        {
+            Items = new OrderDetailsItem[0];
+            Discounts = new DiscountDetails[0];
+        }
+
         /// <summary>
         /// If you pass the generic order description parameter along with any two of the following line-item parameters, the order description value does not display.
         /// <see cref="OrderDetailsItem.Name"/>
@@ -22,7 +28,7 @@ namespace Moolah.PayPal
         /// <summary>
         /// Total shipping cost for this order. PayPal calculates the sum of the shipping cost and the handling cost.
         /// Although you may change the value later, try to pass in a shipping amount that is reasonably accurate. 
-        /// If you specify a value then you must also specify <see cref="ItemTotal"/>.
+        /// If you specify a value then you must also specify <see cref="OrderTotal"/>.
         /// </summary>
         public decimal? ShippingTotal { get; set; }
         /// <summary>
@@ -42,6 +48,16 @@ namespace Moolah.PayPal
         /// buyer can enter special instructions to the merchant and click Save. The instructions are returned in the responses to GetExpressCheckoutDetails and DoExpressCheckoutPayment.
         /// </summary>
         public bool? AllowNote { get; set; }
+        /// <summary>
+        /// Enables the buyer to provide an email address to be used for notifying them of promotions or special events.
+        /// </summary>
+        public bool? EnableCustomerMarketingEmailOptIn { get; set; }
+        /// <summary>
+        /// A free-form field for your own use. The value you specify is available only if the transaction includes a purchase.
+        /// This field is ignored if you set up a billing agreement for a recurring payment that is not immediately charged.
+        /// Character length and limitations: 256 single-byte alphanumeric characters
+        /// </summary>
+        public string CustomField { get; set; }
     }
 
     public class DiscountDetails

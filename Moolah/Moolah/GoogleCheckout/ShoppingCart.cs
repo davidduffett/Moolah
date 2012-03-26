@@ -21,8 +21,11 @@ namespace Moolah.GoogleCheckout
         /// <summary>
         /// Item unit price.
         /// </summary>
-        /// TODO: Why does Automapper need this to be nullable?
-        public decimal? UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
+        /// <summary>
+        /// The tax included in the item unit price.  Amounts must be sent to Google ex-tax.
+        /// </summary>
+        public decimal Tax { get; set; }
         /// <summary>
         /// Item unit quantity.
         /// </summary>
@@ -53,5 +56,9 @@ namespace Moolah.GoogleCheckout
         /// If a quantity is specified then the discount will be applied that many times.
         /// </summary>
         public decimal Amount { get; set; }
+        /// <summary>
+        /// The tax included in the discount amount.  Amounts must be sent to Google ex-tax.
+        /// </summary>
+        public decimal Tax { get; set; }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
-using GCheckout.Checkout;
 using Machine.Fakes;
 using Machine.Specifications;
 using Moolah.GoogleCheckout;
 using Moq;
 using It = Machine.Specifications.It;
-using ShoppingCartItem = Moolah.GoogleCheckout.ShoppingCartItem;
 
 namespace Moolah.Specs.GoogleCheckout
 {
@@ -21,14 +19,23 @@ namespace Moolah.Specs.GoogleCheckout
         It should_set_environment_type = () =>
             Result.Environment.ShouldEqual(Configuration.EnvironmentType);
 
+        It should_set_british_vat_20pc = () =>
+            Result.GlobalTaxRate.ShouldEqual(.2);
+
         It should_contain_all_items = () =>
         {
             foreach (var item in ShoppingCart.Items)
                 Result.Items.ShouldContain(x => x.Name == item.Name &&
                                                 x.Description == item.Description &&
                                                 x.MerchantItemID == item.MerchantItemId &&
-                                                x.Price == item.UnitPrice &&
                                                 x.Quantity == item.Quantity);
+        };
+
+        It should_set_unit_prices_as_ex_tax = () =>
+        {
+            foreach (var item in ShoppingCart.Items)
+                Result.Items.ShouldContain(x => x.MerchantItemID == item.MerchantItemId &&
+                                                x.Price == (item.UnitPrice - item.Tax));
         };
 
         It should_contain_all_discounts = () =>
@@ -36,8 +43,14 @@ namespace Moolah.Specs.GoogleCheckout
             foreach (var discount in ShoppingCart.Discounts)
                 Result.Items.ShouldContain(x => x.Name == discount.Name &&
                                                 x.Description == discount.Description &&
-                                                x.Price == -Math.Abs(discount.Amount) &&
                                                 x.Quantity == discount.Quantity);
+        };
+
+        It should_set_discount_amounts_as_ex_tax = () =>
+        {
+            foreach (var discount in ShoppingCart.Discounts)
+                Result.Items.ShouldContain(x => x.Name == discount.Name &&
+                                                x.Price == -(Math.Abs(discount.Amount) - Math.Abs(discount.Tax)));
         };
 
         Establish context = () =>
@@ -46,13 +59,13 @@ namespace Moolah.Specs.GoogleCheckout
             {
                 Items = new[]
                 {
-                    new ShoppingCartItem { Name = "Name 1", Description = "Desc 1", MerchantItemId = "Id 1", Quantity = 1, UnitPrice = 1.99m },
-                    new ShoppingCartItem { Name = "Name 2", Description = "Desc 2", MerchantItemId = "Id 2", Quantity = 2, UnitPrice = 2.99m }
+                    new ShoppingCartItem { Name = "Name 1", Description = "Desc 1", MerchantItemId = "Id 1", Quantity = 1, UnitPrice = 1.99m, Tax = 0.99m },
+                    new ShoppingCartItem { Name = "Name 2", Description = "Desc 2", MerchantItemId = "Id 2", Quantity = 2, UnitPrice = 2.99m, Tax = 1.3m }
                 },
                 Discounts = new[]
                 {
-                    new ShoppingCartDiscount { Name = "Discount Name 1", Description = "Discount Desc 1", Quantity = 1, Amount = 1.99m },
-                    new ShoppingCartDiscount { Name = "Discount Name 2", Description = "Discount Desc 2", Quantity = 2, Amount = -2.99m }
+                    new ShoppingCartDiscount { Name = "Discount Name 1", Description = "Discount Desc 1", Quantity = 1, Amount = 1.99m, Tax = 0m },
+                    new ShoppingCartDiscount { Name = "Discount Name 2", Description = "Discount Desc 2", Quantity = 2, Amount = -2.99m, Tax = 1.3m }
                 }
             };
             Configuration = new GoogleCheckoutConfiguration(PaymentEnvironment.Test, "merchantId", "merchantKey");

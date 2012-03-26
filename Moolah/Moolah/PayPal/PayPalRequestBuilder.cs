@@ -51,6 +51,8 @@ namespace Moolah.PayPal
             addOptionalValueToRequest("PAYMENTREQUEST_0_SHIPPINGAMT", orderDetails.ShippingTotal, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_SHIPDISCAMT", orderDetails.ShippingDiscount, request);
             addOptionalValueToRequest("ALLOWNOTE", orderDetails.AllowNote, request);
+            addOptionalValueToRequest("BUYEREMAILOPTINENABLE", orderDetails.EnableCustomerMarketingEmailOptIn, request);
+            addOptionalValueToRequest("PAYMENTREQUEST_0_CUSTOM", orderDetails.CustomField, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_DESC", orderDetails.OrderDescription, request);
 
             var lineNumber = 0;

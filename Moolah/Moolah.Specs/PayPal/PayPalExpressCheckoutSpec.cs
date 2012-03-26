@@ -97,7 +97,7 @@ namespace Moolah.Specs.PayPal
         Because of = () =>
             Result = SUT.DoExpressCheckoutPayment(Amount, Token, PayerId);
 
-        static PayPalPaymentResponse Result;
+        static IPaymentResponse Result;
         static PayPalPaymentResponse ExpectedResult;
         const decimal Amount = 12.99m;
         const string Token = "tokenValue";
