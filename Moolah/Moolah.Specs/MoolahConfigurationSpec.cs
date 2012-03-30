@@ -59,6 +59,12 @@ namespace Moolah.Specs
         It should_provide_correct_signature = () =>
             Config.Signature.ShouldEqual("paypalSignature");
 
+        It should_provide_locale_code = () =>
+            Config.LocaleCode.ShouldEqual("paypalLocaleCode");
+
+        It should_provide_use_locale_from_current_culture = () =>
+            Config.UseLocaleFromCurrentCulture.ShouldBeTrue();
+
         Because of = () =>
             Config = MoolahConfiguration.Current.PayPal;
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using Machine.Fakes;
 using Machine.Specifications;
@@ -40,6 +41,33 @@ namespace Moolah.Specs.PayPal
         protected static PayPalConfiguration Configuration;
     }
 
+    [Behaviors]
+    public class SetExpressCheckoutBehavior
+    {
+        It should_specify_correct_method = () =>
+            Request["METHOD"].ShouldEqual("SetExpressCheckout");
+
+        It should_specify_formatted_amount = () =>
+            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
+
+        It should_specify_currency_code = () =>
+            Request["PAYMENTREQUEST_0_CURRENCYCODE"].ShouldEqual("GBP");
+
+        It should_specify_sale_payment_action = () =>
+            Request["PAYMENTREQUEST_0_PAYMENTACTION"].ShouldEqual("Sale");
+
+        It should_specify_cancel_url = () =>
+            Request["cancelUrl"].ShouldEqual(CancelUrl);
+
+        It should_specify_return_url = () =>
+            Request["returnUrl"].ShouldEqual(ConfirmationUrl);
+
+        protected static NameValueCollection Request;
+        protected static decimal Amount;
+        protected static string CancelUrl;
+        protected static string ConfirmationUrl;
+    }
+
     [Subject(typeof(PayPalRequestBuilder))]
     public class When_building_a_request_with_values_that_must_be_url_encoded
     {
@@ -60,29 +88,99 @@ namespace Moolah.Specs.PayPal
     public class When_building_set_express_checkout_request_for_an_amount : PayPalRequestBuilderContext
     {
         Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
-
-        It should_specify_correct_method = () =>
-            Request["METHOD"].ShouldEqual("SetExpressCheckout");
-
-        It should_specify_formatted_amount = () =>
-            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
-
-        It should_specify_currency_code = () =>
-            Request["PAYMENTREQUEST_0_CURRENCYCODE"].ShouldEqual("GBP");
-
-        It should_specify_sale_payment_action = () =>
-            Request["PAYMENTREQUEST_0_PAYMENTACTION"].ShouldEqual("Sale");
-
-        It should_specify_cancel_url = () =>
-            Request["cancelUrl"].ShouldEqual(CancelUrl);
-
-        It should_specify_return_url = () =>
-            Request["returnUrl"].ShouldEqual(ConfirmationUrl);
+        Behaves_like<SetExpressCheckoutBehavior> set_express_checkout;
 
         Because of = () =>
             Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
 
-        const decimal Amount = 12.99m;
+        protected const decimal Amount = 12.99m;
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_set_express_checkout_request_and_locale_code_is_set : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<SetExpressCheckoutBehavior> set_express_checkout;
+
+        It should_specify_the_paypal_locale_code = () =>
+            Request["LOCALECODE"].ShouldEqual(LocaleCode);
+
+        Establish context = () =>
+            Configuration.LocaleCode = LocaleCode;
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+
+        protected const decimal Amount = 12.99m;
+        const string LocaleCode = "GB";
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_set_express_checkout_request_and_an_unsupported_locale_code_is_set : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<SetExpressCheckoutBehavior> set_express_checkout;
+
+        It should_not_specify_the_paypal_locale_code = () =>
+            Request["LOCALECODE"].ShouldBeNull();
+
+        Establish context = () =>
+           Configuration.LocaleCode = LocaleCode;
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+
+        protected const decimal Amount = 12.99m;
+        const string LocaleCode = "dud";
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_set_express_checkout_request_and_use_locale_from_current_culture_is_set_with_supported_culture : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<SetExpressCheckoutBehavior> set_express_checkout;
+
+        It should_specify_the_paypal_locale_code = () =>
+            Request["LOCALECODE"].ShouldEqual(LocaleCode);
+
+        Establish context = () =>
+        {
+            Configuration.UseLocaleFromCurrentCulture = true;
+            Culture.Current = new CultureInfo("da-DK");
+        };
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+
+        Cleanup after = () =>
+            Culture.Reset();
+
+        protected const decimal Amount = 12.99m;
+        const string LocaleCode = "da_DK";
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_set_express_checkout_request_and_use_locale_from_current_culture_is_set_with_unsupported_culture : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<SetExpressCheckoutBehavior> set_express_checkout;
+
+        It should_not_specify_the_paypal_locale_code = () =>
+            Request["LOCALECODE"].ShouldBeNull();
+
+        Establish context = () =>
+        {
+            Configuration.UseLocaleFromCurrentCulture = true;
+            Culture.Current = new CultureInfo("af-ZA");
+        };
+
+        Because of = () =>
+            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+
+        Cleanup after = () =>
+            Culture.Reset();
+
+        protected const decimal Amount = 12.99m;
     }
 
     [Subject(typeof(PayPalRequestBuilder))]

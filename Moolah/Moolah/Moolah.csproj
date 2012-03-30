@@ -87,6 +87,7 @@
     <Compile Include="PaymentGateways.cs" />
     <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PayPal\LocaleCodes.cs" />
     <Compile Include="PayPal\OrderDetails.cs" />
     <Compile Include="PayPal\PayPalConfiguration.cs" />
     <Compile Include="PayPal\PayPalDecimalExtension.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="PayPal\PayPalResponseParser.cs" />
     <Compile Include="PayPal\PayPalAck.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Culture.cs" />
     <Compile Include="SystemTime.cs" />
     <Compile Include="XPathExtensions.cs" />
   </ItemGroup>

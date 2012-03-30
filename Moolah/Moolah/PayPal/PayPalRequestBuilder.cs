@@ -41,6 +41,12 @@ namespace Moolah.PayPal
             request["PAYMENTREQUEST_0_AMT"] = amount.AsPayPalFormatString();
             request["cancelUrl"] = cancelUrl;
             request["returnUrl"] = confirmationUrl;
+
+            if (_configuration.UseLocaleFromCurrentCulture)
+                request["LOCALECODE"] = Culture.Current.ToPayPalLocaleCode();
+            else if (LocaleCodes.LocaleCodeSupported(_configuration.LocaleCode))
+                request["LOCALECODE"] = _configuration.LocaleCode;
+
             return request;
         }
 

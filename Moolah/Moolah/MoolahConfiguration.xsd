@@ -67,6 +67,8 @@
           <xs:attribute name="userId" type="xs:string" use="optional" />
           <xs:attribute name="password" type="xs:string" use="optional" />
           <xs:attribute name="signature" type="xs:string" use="optional" />
+          <xs:attribute name="localeCode" type="xs:string" use="optional" />
+          <xs:attribute name="useLocaleFromCurrentCulture" type="xs:boolean" use="optional" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>

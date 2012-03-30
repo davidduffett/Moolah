@@ -86,6 +86,7 @@
     <Compile Include="GoogleCheckout\IntegrationTest.cs" />
     <Compile Include="GoogleCheckout\ShippingMethodExtensionsSpec.cs" />
     <Compile Include="MoolahConfigurationSpec.cs" />
+    <Compile Include="PayPal\LocaleCodesSpec.cs" />
     <Compile Include="PayPal\IntegrationTest.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutSpec.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderSpec.cs" />

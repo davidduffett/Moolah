@@ -50,6 +50,8 @@ namespace Moolah.PayPal
             public const string UserId = "userId";
             public const string Password = "password";
             public const string Signature = "signature";
+            public const string LocaleCode = "localeCode";
+            public const string UseLocaleFromCurrentCulture = "useLocaleFromCurrentCulture";
         }
 
         [ConfigurationProperty(Attributes.Environment)]
@@ -78,6 +80,28 @@ namespace Moolah.PayPal
         {
             get { return (string) this[Attributes.Signature]; }
             set { this[Attributes.Signature] = value; }
+        }
+
+        /// <summary>
+        /// PayPal Locale Code to use (optional).
+        /// If <seealso cref="UseLocaleFromCurrentCulture"/> is specified, then this is ignored.
+        /// </summary>
+        [ConfigurationProperty(Attributes.LocaleCode)]
+        public string LocaleCode
+        {
+            get { return (string) this[Attributes.LocaleCode]; }
+            set { this[Attributes.LocaleCode] = value; }
+        }
+
+        /// <summary>
+        /// If PayPal supports it, the current culture is used for the PayPal locale.
+        /// If it isn't supported, no locale code is specified (defaults to US).
+        /// </summary>
+        [ConfigurationProperty(Attributes.UseLocaleFromCurrentCulture)]
+        public bool UseLocaleFromCurrentCulture
+        {
+            get { return (bool) this[Attributes.UseLocaleFromCurrentCulture]; }
+            set { this[Attributes.UseLocaleFromCurrentCulture] = value; }
         }
 
         public string Host
