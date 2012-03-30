@@ -19,13 +19,9 @@ namespace Moolah.GoogleCheckout
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// Item unit price.
+        /// Item unit price, excluding tax.
         /// </summary>
-        public decimal UnitPrice { get; set; }
-        /// <summary>
-        /// The tax included in the item unit price.  Amounts must be sent to Google ex-tax.
-        /// </summary>
-        public decimal Tax { get; set; }
+        public decimal UnitPriceExTax { get; set; }
         /// <summary>
         /// Item unit quantity.
         /// </summary>
@@ -52,13 +48,9 @@ namespace Moolah.GoogleCheckout
         /// </summary>
         public int? Quantity { get; set; }
         /// <summary>
-        /// Amount of the discount, can be specified as either negative or positive values but will always be deducted from the order value.
+        /// Amount of the discount, excluding tax, can be specified as either negative or positive values but will always be deducted from the order value.
         /// If a quantity is specified then the discount will be applied that many times.
         /// </summary>
-        public decimal Amount { get; set; }
-        /// <summary>
-        /// The tax included in the discount amount.  Amounts must be sent to Google ex-tax.
-        /// </summary>
-        public decimal Tax { get; set; }
+        public decimal AmountExTax { get; set; }
     }
 }

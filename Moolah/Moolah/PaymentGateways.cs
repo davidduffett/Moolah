@@ -1,4 +1,5 @@
-﻿using Moolah.GoogleCheckout;
+﻿using System.Collections.Generic;
+using Moolah.GoogleCheckout;
 using Moolah.PayPal;
 
 namespace Moolah
@@ -101,6 +102,6 @@ namespace Moolah
         /// <returns>
         /// A Google Checkout URL to redirect the customer to.
         /// </returns>
-        GoogleCheckoutRedirect RequestCheckout(ShoppingCart shoppingCart, CheckoutOptions options);
+        GoogleCheckoutRedirect RequestCheckout(ShoppingCart shoppingCart, CheckoutOptions options = null, IEnumerable<ShippingMethod> shippingMethods = null);
     }
 }

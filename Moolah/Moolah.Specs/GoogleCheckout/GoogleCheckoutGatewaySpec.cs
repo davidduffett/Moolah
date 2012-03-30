@@ -1,4 +1,5 @@
-﻿using GCheckout.Util;
+﻿using System.Collections.Generic;
+using GCheckout.Util;
 using Machine.Fakes;
 using Machine.Specifications;
 using Moolah.GoogleCheckout;
@@ -126,12 +127,13 @@ namespace Moolah.Specs.GoogleCheckout
         };
 
         Because of = () =>
-            Result = SUT.RequestCheckout(ShoppingCart, Options);
+            Result = SUT.RequestCheckout(ShoppingCart, Options, ShippingMethods);
 
         protected static GoogleCheckoutGateway SUT;
         protected static GoogleCheckoutRedirect Result;
         protected static ShoppingCart ShoppingCart;
         protected static CheckoutOptions Options;
+        protected static IEnumerable<ShippingMethod> ShippingMethods;
         protected static GoogleCheckoutConfiguration Configuration;
         protected static IGoogleCheckoutRequestBuilder RequestBuilder;
         protected static CheckoutShoppingCartRequestWrapper Request;
@@ -173,12 +175,15 @@ namespace Moolah.Specs.GoogleCheckout
     }
 
     [Subject(typeof(GoogleCheckoutGateway))]
-    public class When_requesting_google_checkout_with_options_and_response_is_good : GoogleCheckoutRequestContext
+    public class When_requesting_google_checkout_with_options_and_shipping_methods_and_response_is_good : GoogleCheckoutRequestContext
     {
         Behaves_like<GoogleCheckoutRequestBehavior> a_google_checkout_request;
 
         It should_add_options_to_the_request = () =>
             RequestBuilder.WasToldTo(x => x.AddOptions(Request, Options));
+
+        It should_add_shipping_methods_to_the_request = () =>
+            RequestBuilder.WasToldTo(x => x.AddShippingMethods(Request, ShippingMethods));
 
         It should_return_the_redirect_url = () =>
             Result.RedirectUrl.ShouldEqual(RedirectUrl);
@@ -189,6 +194,7 @@ namespace Moolah.Specs.GoogleCheckout
         Establish context = () =>
         {
             Options = new CheckoutOptions();
+            ShippingMethods = new List<ShippingMethod> { new ShippingMethod() };
             Response = new FakeGCheckoutResponse(isGood: true, responseXml: GoogleResponse, redirectUrl: RedirectUrl);
             Request.WhenToldTo(x => x.Send()).Return(Response);
         };

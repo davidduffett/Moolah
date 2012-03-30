@@ -11,13 +11,13 @@ namespace Moolah.Specs.GoogleCheckout
             {
                 Items = new[]
                 {
-                    new ShoppingCartItem { Name = "Name 1", Description = "Desc 1", MerchantItemId = "Id 1", Quantity = 1, UnitPrice = 1.99m },
-                    new ShoppingCartItem { Name = "Name 2", Description = "Desc 2", MerchantItemId = "Id 2", Quantity = 2, UnitPrice = 2.99m }
+                    new ShoppingCartItem { Name = "Name 1", Description = "Desc 1", MerchantItemId = "Id 1", Quantity = 1, UnitPriceExTax = 1.99m },
+                    new ShoppingCartItem { Name = "Name 2", Description = "Desc 2", MerchantItemId = "Id 2", Quantity = 2, UnitPriceExTax = 2.99m }
                 },
                 Discounts = new[]
                 {
-                    new ShoppingCartDiscount { Name = "Discount Name 1", Description = "Discount Desc 1", Quantity = 1, Amount = 1.99m },
-                    new ShoppingCartDiscount { Name = "Discount Name 2", Description = "Discount Desc 2", Quantity = 2, Amount = -2.99m }
+                    new ShoppingCartDiscount { Name = "Discount Name 1", Description = "Discount Desc 1", Quantity = 1, AmountExTax = 1.99m },
+                    new ShoppingCartDiscount { Name = "Discount Name 2", Description = "Discount Desc 2", Quantity = 2, AmountExTax = -2.99m }
                 }
             };
         };

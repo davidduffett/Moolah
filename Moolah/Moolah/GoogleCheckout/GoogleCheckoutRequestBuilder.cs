@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using GCheckout.Checkout;
 
 namespace Moolah.GoogleCheckout
 {
     public interface IGoogleCheckoutRequestBuilder
     {
-        CheckoutShoppingCartRequestWrapper CreateRequest(ShoppingCart shoppingCart);
+        CheckoutShoppingCartRequest CreateRequest(ShoppingCart shoppingCart);
         void AddOptions(CheckoutShoppingCartRequest request, CheckoutOptions options);
+        void AddShippingMethods(CheckoutShoppingCartRequest request, IEnumerable<ShippingMethod> shippingMethods);
     }
 
     public class GoogleCheckoutRequestBuilder : IGoogleCheckoutRequestBuilder
@@ -19,19 +21,19 @@ namespace Moolah.GoogleCheckout
             _configuration = configuration;
         }
 
-        public CheckoutShoppingCartRequestWrapper CreateRequest(ShoppingCart shoppingCart)
+        public CheckoutShoppingCartRequest CreateRequest(ShoppingCart shoppingCart)
         {
-            var request = new CheckoutShoppingCartRequestWrapper(_configuration.MerchantId, _configuration.MerchantKey,
-                                                                 _configuration.EnvironmentType, "GBP", 0);
+            var request = new CheckoutShoppingCartRequest(_configuration.MerchantId, _configuration.MerchantKey,
+                                                          _configuration.EnvironmentType, "GBP", 0);
 
             foreach (var item in shoppingCart.Items)
-                request.AddItem(item);
+                request.AddItem(item.Name, item.Description, item.MerchantItemId, item.UnitPriceExTax, item.Quantity);
 
             foreach (var discount in shoppingCart.Discounts)
-                request.AddDiscount(discount);
+                request.AddItem(discount.Name, discount.Description, -Math.Abs(discount.AmountExTax), discount.Quantity ?? 1);
 
             // TODO: Support different tax rates
-            request.SetGlobalTaxRate(.2);
+            request.AddWorldAreaTaxRule(.2d, true);
 
             return request;
         }
@@ -42,6 +44,16 @@ namespace Moolah.GoogleCheckout
             request.ContinueShoppingUrl = options.ContinueShoppingUrl;
             request.RequestBuyerPhoneNumber = options.RequestBuyerPhoneNumber;
             request.AnalyticsData = options.AnalyticsData;
+        }
+
+        public void AddShippingMethods(CheckoutShoppingCartRequest request, IEnumerable<ShippingMethod> shippingMethods)
+        {
+            foreach (var shippingMethod in shippingMethods)
+            {
+                // Is there a way for me to test this method call?
+                request.AddFlatRateShippingMethod(shippingMethod.Name, shippingMethod.PriceExTax,
+                                                  shippingMethod.ToShippingRestrictions());
+            }
         }
     }
 }

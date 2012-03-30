@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GCheckout;
+﻿using GCheckout;
 using GCheckout.Checkout;
 
 namespace Moolah.GoogleCheckout
@@ -11,8 +9,6 @@ namespace Moolah.GoogleCheckout
     /// </summary>
     public class CheckoutShoppingCartRequestWrapper : CheckoutShoppingCartRequest
     {
-        private readonly List<GCheckout.Checkout.ShoppingCartItem> _items = new List<GCheckout.Checkout.ShoppingCartItem>();
-
         protected CheckoutShoppingCartRequestWrapper()
             : base("test", "test", EnvironmentType.Sandbox, "test", 0)
         {
@@ -22,28 +18,5 @@ namespace Moolah.GoogleCheckout
             : base(MerchantID, MerchantKey, Env, Currency, CartExpirationMinutes)
         {
         }
-
-        public void AddItem(ShoppingCartItem item)
-        {
-            _items.Add(AddItem(item.Name, item.Description, item.MerchantItemId, item.UnitPrice - item.Tax, item.Quantity));
-        }
-
-        public void AddDiscount(ShoppingCartDiscount discount)
-        {
-            _items.Add(AddItem(discount.Name, discount.Description, -(Math.Abs(discount.Amount) - Math.Abs(discount.Tax)), discount.Quantity ?? 1));
-        }
-
-        public void SetGlobalTaxRate(double taxRate)
-        {
-            GlobalTaxRate = taxRate;
-            AddWorldAreaTaxRule(taxRate, true);
-        }
-
-        public IEnumerable<GCheckout.Checkout.ShoppingCartItem> Items
-        {
-            get { return _items; }
-        }
-
-        public double GlobalTaxRate { get; private set; }
     }
 }

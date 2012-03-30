@@ -76,6 +76,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GoogleCheckout\GoogleCheckoutRequestBuilder.cs" />
+    <Compile Include="GoogleCheckout\ShippingMethod.cs" />
     <Compile Include="GoogleCheckout\ShoppingCart.cs" />
     <Compile Include="HttpClient.cs" />
     <Compile Include="LoggerExtensions.cs" />

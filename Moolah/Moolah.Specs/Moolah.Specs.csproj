@@ -84,6 +84,7 @@
     <Compile Include="GoogleCheckout\GoogleCheckoutGatewaySpec.cs" />
     <Compile Include="GoogleCheckout\GoogleCheckoutRequestBuilderSpec.cs" />
     <Compile Include="GoogleCheckout\IntegrationTest.cs" />
+    <Compile Include="GoogleCheckout\ShippingMethodExtensionsSpec.cs" />
     <Compile Include="MoolahConfigurationSpec.cs" />
     <Compile Include="PayPal\IntegrationTest.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutSpec.cs" />

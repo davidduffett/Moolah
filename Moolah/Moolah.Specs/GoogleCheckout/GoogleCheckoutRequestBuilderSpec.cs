@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
+using GCheckout.AutoGen;
+using GCheckout.Checkout;
 using Machine.Fakes;
 using Machine.Specifications;
 using Moolah.GoogleCheckout;
-using Moq;
-using It = Machine.Specifications.It;
+using ShoppingCart = Moolah.GoogleCheckout.ShoppingCart;
+using ShoppingCartItem = Moolah.GoogleCheckout.ShoppingCartItem;
 
 namespace Moolah.Specs.GoogleCheckout
 {
@@ -19,8 +22,14 @@ namespace Moolah.Specs.GoogleCheckout
         It should_set_environment_type = () =>
             Result.Environment.ShouldEqual(Configuration.EnvironmentType);
 
-        It should_set_british_vat_20pc = () =>
-            Result.GlobalTaxRate.ShouldEqual(.2);
+        It should_set_global_tax_rule = () =>
+            Result.DefaultTaxRules.First().taxarea.Item.ShouldBeOfType<WorldArea>();
+
+        It should_set_global_tax_rate_of_20pc = () =>
+            Result.DefaultTaxRules.First().rate.ShouldEqual(0.2d);
+
+        It should_set_shipping_to_be_taxed = () =>
+            Result.DefaultTaxRules.First().shippingtaxed.ShouldBeTrue();
 
         It should_contain_all_items = () =>
         {
@@ -28,14 +37,8 @@ namespace Moolah.Specs.GoogleCheckout
                 Result.Items.ShouldContain(x => x.Name == item.Name &&
                                                 x.Description == item.Description &&
                                                 x.MerchantItemID == item.MerchantItemId &&
-                                                x.Quantity == item.Quantity);
-        };
-
-        It should_set_unit_prices_as_ex_tax = () =>
-        {
-            foreach (var item in ShoppingCart.Items)
-                Result.Items.ShouldContain(x => x.MerchantItemID == item.MerchantItemId &&
-                                                x.Price == (item.UnitPrice - item.Tax));
+                                                x.Quantity == item.Quantity &&
+                                                x.Price == item.UnitPriceExTax);
         };
 
         It should_contain_all_discounts = () =>
@@ -43,14 +46,8 @@ namespace Moolah.Specs.GoogleCheckout
             foreach (var discount in ShoppingCart.Discounts)
                 Result.Items.ShouldContain(x => x.Name == discount.Name &&
                                                 x.Description == discount.Description &&
-                                                x.Quantity == discount.Quantity);
-        };
-
-        It should_set_discount_amounts_as_ex_tax = () =>
-        {
-            foreach (var discount in ShoppingCart.Discounts)
-                Result.Items.ShouldContain(x => x.Name == discount.Name &&
-                                                x.Price == -(Math.Abs(discount.Amount) - Math.Abs(discount.Tax)));
+                                                x.Quantity == discount.Quantity &&
+                                                x.Price == -Math.Abs(discount.AmountExTax));
         };
 
         Establish context = () =>
@@ -59,13 +56,13 @@ namespace Moolah.Specs.GoogleCheckout
             {
                 Items = new[]
                 {
-                    new ShoppingCartItem { Name = "Name 1", Description = "Desc 1", MerchantItemId = "Id 1", Quantity = 1, UnitPrice = 1.99m, Tax = 0.99m },
-                    new ShoppingCartItem { Name = "Name 2", Description = "Desc 2", MerchantItemId = "Id 2", Quantity = 2, UnitPrice = 2.99m, Tax = 1.3m }
+                    new ShoppingCartItem { Name = "Name 1", Description = "Desc 1", MerchantItemId = "Id 1", Quantity = 1, UnitPriceExTax = 1.99m },
+                    new ShoppingCartItem { Name = "Name 2", Description = "Desc 2", MerchantItemId = "Id 2", Quantity = 2, UnitPriceExTax = 2.99m }
                 },
                 Discounts = new[]
                 {
-                    new ShoppingCartDiscount { Name = "Discount Name 1", Description = "Discount Desc 1", Quantity = 1, Amount = 1.99m, Tax = 0m },
-                    new ShoppingCartDiscount { Name = "Discount Name 2", Description = "Discount Desc 2", Quantity = 2, Amount = -2.99m, Tax = 1.3m }
+                    new ShoppingCartDiscount { Name = "Discount Name 1", Description = "Discount Desc 1", Quantity = 1, AmountExTax = 1.99m },
+                    new ShoppingCartDiscount { Name = "Discount Name 2", Description = "Discount Desc 2", Quantity = 2, AmountExTax = -2.99m }
                 }
             };
             Configuration = new GoogleCheckoutConfiguration(PaymentEnvironment.Test, "merchantId", "merchantKey");
@@ -76,7 +73,7 @@ namespace Moolah.Specs.GoogleCheckout
             Result = SUT.CreateRequest(ShoppingCart);
 
         static GoogleCheckoutRequestBuilder SUT;
-        static CheckoutShoppingCartRequestWrapper Result;
+        static CheckoutShoppingCartRequest Result;
         static GoogleCheckoutConfiguration Configuration;
         static ShoppingCart ShoppingCart;
     }
@@ -85,16 +82,16 @@ namespace Moolah.Specs.GoogleCheckout
     public class When_adding_checkout_options_to_request : WithFakes
     {
         It should_set_edit_cart_url = () =>
-            RequestMock.Object.EditCartUrl.ShouldEqual(Options.EditCartUrl);
+            Request.EditCartUrl.ShouldEqual(Options.EditCartUrl);
 
         It should_set_continue_shopping_url = () =>
-            RequestMock.Object.ContinueShoppingUrl.ShouldEqual(Options.ContinueShoppingUrl);
+            Request.ContinueShoppingUrl.ShouldEqual(Options.ContinueShoppingUrl);
 
         It should_set_request_buyer_phone_number = () =>
-            RequestMock.Object.RequestBuyerPhoneNumber.ShouldEqual(Options.RequestBuyerPhoneNumber);
+            Request.RequestBuyerPhoneNumber.ShouldEqual(Options.RequestBuyerPhoneNumber);
 
         It should_set_analytics_data = () =>
-            RequestMock.Object.AnalyticsData.ShouldEqual(Options.AnalyticsData);
+            Request.AnalyticsData.ShouldEqual(Options.AnalyticsData);
 
         Establish context = () =>
         {
@@ -106,17 +103,17 @@ namespace Moolah.Specs.GoogleCheckout
                                 EditCartUrl = "edit",
                                 RequestBuyerPhoneNumber = true
                             };
-            RequestMock = new Mock<CheckoutShoppingCartRequestWrapper>();
-            RequestMock.SetupAllProperties();
+            Request = new CheckoutShoppingCartRequest(Configuration.MerchantId, Configuration.MerchantKey,
+                                                      Configuration.EnvironmentType, "GBP", 0);
             SUT = new GoogleCheckoutRequestBuilder(Configuration);
         };
 
         Because of = () =>
-            SUT.AddOptions(RequestMock.Object, Options);
+            SUT.AddOptions(Request, Options);
 
         static GoogleCheckoutRequestBuilder SUT;
         static GoogleCheckoutConfiguration Configuration;
-        static Mock<CheckoutShoppingCartRequestWrapper> RequestMock;
+        static CheckoutShoppingCartRequest Request;
         static CheckoutOptions Options;
     }
 }

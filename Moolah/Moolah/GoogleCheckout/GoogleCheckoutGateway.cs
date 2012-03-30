@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using NLog;
 
@@ -48,7 +49,7 @@ namespace Moolah.GoogleCheckout
             return _configuration.ButtonSrc + '?' + queryString;
         }
 
-        public GoogleCheckoutRedirect RequestCheckout(ShoppingCart shoppingCart, CheckoutOptions options = null)
+        public GoogleCheckoutRedirect RequestCheckout(ShoppingCart shoppingCart, CheckoutOptions options = null, IEnumerable<ShippingMethod> shippingMethods = null)
         {
             if (shoppingCart == null) throw new ArgumentNullException("shoppingCart");
 
@@ -56,6 +57,8 @@ namespace Moolah.GoogleCheckout
             var request = _requestBuilder.CreateRequest(shoppingCart);
             if (options != null)
                 _requestBuilder.AddOptions(request, options);
+            if (shippingMethods != null)
+                _requestBuilder.AddShippingMethods(request, shippingMethods);
 
             var response = request.Send();
 
