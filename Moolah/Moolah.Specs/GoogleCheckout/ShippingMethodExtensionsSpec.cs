@@ -31,23 +31,12 @@ namespace Moolah.Specs.GoogleCheckout
     }
 
     [Subject(typeof(ShippingMethodExtensions))]
-    public class When_getting_shipping_restrictions_from_shipping_method_with_allowed_areas : ShippingRestrictionsContext
+    public class When_getting_shipping_restrictions_from_shipping_method_with_excluded_areas_only : ShippingRestrictionsContext
     {
-        It should_apply_only_to_those_areas = () =>
-        {
-            var postalArea = ShippingRestrictions.XmlRestrictions.allowedareas.Items[0] as PostalArea;
-            postalArea.countrycode.ShouldEqual("UK");
-            postalArea.postalcodepattern.ShouldEqual("ED");
-        };
+        It should_apply_to_the_entire_world = () =>
+            ShippingRestrictions.XmlRestrictions.allowedareas.Items[0].ShouldBeOfType<WorldArea>();
 
-        Establish context = () =>
-            ShippingMethod.AllowedPostalAreas = new List<PostalArea> { new PostalArea { countrycode = "UK", postalcodepattern = "ED" } };
-    }
-
-    [Subject(typeof(ShippingMethodExtensions))]
-    public class When_getting_shipping_restrictions_from_shipping_method_with_excluded_areas : ShippingRestrictionsContext
-    {
-        It should_not_apply_to_those_areas = () =>
+        It should_not_apply_to_excluded_areas = () =>
         {
             var postalArea = ShippingRestrictions.XmlRestrictions.excludedareas.Items[0] as PostalArea;
             postalArea.countrycode.ShouldEqual("UK");
@@ -56,6 +45,23 @@ namespace Moolah.Specs.GoogleCheckout
 
         Establish context = () =>
             ShippingMethod.ExcludedPostalAreas = new List<PostalArea> { new PostalArea { countrycode = "UK", postalcodepattern = "ED" } };
+    }
+
+    [Subject(typeof(ShippingMethodExtensions))]
+    public class When_getting_shipping_restrictions_from_shipping_method_with_allowed_areas_only : ShippingRestrictionsContext
+    {
+        It should_apply_to_those_areas = () =>
+        {
+            var postalArea = ShippingRestrictions.XmlRestrictions.allowedareas.Items[0] as PostalArea;
+            postalArea.countrycode.ShouldEqual("UK");
+            postalArea.postalcodepattern.ShouldEqual("ED");
+        };
+
+        It should_not_exclude_any_areas = () =>
+            ShippingRestrictions.XmlRestrictions.excludedareas.Items.Count().ShouldEqual(0);
+
+        Establish context = () =>
+            ShippingMethod.AllowedPostalAreas = new List<PostalArea> { new PostalArea { countrycode = "UK", postalcodepattern = "ED" } };
     }
 
     [Subject(typeof(ShippingMethodExtensions))]

@@ -16,6 +16,7 @@ namespace Moolah.GoogleCheckout
         public decimal PriceExTax { get; set; }
         /// <summary>
         /// Postal areas that are allowed for this shipping method.  For example, the entire UK.
+        /// Note that if no allowed postal areas are provided, the shipping method will be treated as Worldwide.
         /// </summary>
         public IEnumerable<PostalArea> AllowedPostalAreas { get; set; }
         /// <summary>
@@ -30,15 +31,10 @@ namespace Moolah.GoogleCheckout
         {
             var restrictions = new GCheckout.Checkout.ShippingRestrictions();
 
-            if ((shippingMethod.AllowedPostalAreas == null || !shippingMethod.AllowedPostalAreas.Any()) &&
-                (shippingMethod.ExcludedPostalAreas == null || !shippingMethod.ExcludedPostalAreas.Any()))
-            {
+            if (shippingMethod.AllowedPostalAreas == null || !shippingMethod.AllowedPostalAreas.Any())
                 // Entire world
                 restrictions.AddAllowedWorldArea();
-                return restrictions;
-            }
-
-            if (shippingMethod.AllowedPostalAreas != null)
+            else if (shippingMethod.AllowedPostalAreas != null)
                 foreach (var area in shippingMethod.AllowedPostalAreas)
                     restrictions.AddAllowedPostalArea(area.countrycode, area.postalcodepattern);
 
