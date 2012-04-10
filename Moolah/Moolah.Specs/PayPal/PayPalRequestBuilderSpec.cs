@@ -183,11 +183,9 @@ namespace Moolah.Specs.PayPal
         protected const decimal Amount = 12.99m;
     }
 
-    [Subject(typeof(PayPalRequestBuilder))]
-    public class When_building_set_express_checkout_request_with_order_details : PayPalRequestBuilderContext
+    [Behaviors]
+    public class OrderDetailsBehavior
     {
-        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
-
         It should_specify_the_tax_value_for_the_order = () =>
             Request["PAYMENTREQUEST_0_TAXAMT"].ShouldEqual(OrderDetails.TaxTotal.AsPayPalFormatString());
 
@@ -204,10 +202,10 @@ namespace Moolah.Specs.PayPal
             Request["PAYMENTREQUEST_0_DESC"].ShouldEqual(OrderDetails.OrderDescription);
 
         It should_include_each_line_description = () =>
-            {
-                Request["L_PAYMENTREQUEST_0_DESC0"].ShouldEqual(OrderDetails.Items.First().Description);
-                Request["L_PAYMENTREQUEST_0_DESC1"].ShouldEqual(OrderDetails.Items.Last().Description);
-            };
+        {
+            Request["L_PAYMENTREQUEST_0_DESC0"].ShouldEqual(OrderDetails.Items.First().Description);
+            Request["L_PAYMENTREQUEST_0_DESC1"].ShouldEqual(OrderDetails.Items.Last().Description);
+        };
 
         It should_include_each_line_name = () =>
         {
@@ -227,33 +225,43 @@ namespace Moolah.Specs.PayPal
         It should_not_include_item_url_for_lines_where_not_specified = () =>
             Request["L_PAYMENTREQUEST_n_ITEMURL1"].ShouldBeNull();
 
+        protected static OrderDetails OrderDetails;
+        protected static NameValueCollection Request;
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_set_express_checkout_request_with_order_details : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<OrderDetailsBehavior> add_oder_details;
+
         Because of = () =>
             Request = SUT.SetExpressCheckout(OrderDetails, CancelUrl, ConfirmationUrl);
 
-        static readonly OrderDetails OrderDetails = new OrderDetails
-                                                        {
-                                                            OrderDescription = "Some order",
-                                                            OrderTotal = 100m,
-                                                            ShippingDiscount = -7.9m,
-                                                            ShippingTotal = 0.54m,
-                                                            TaxTotal = 5m,
-                                                            Items = new[]
-                                                                        {
-                                                                            new OrderDetailsItem
-                                                                                {
-                                                                                    Description = "First Item",
-                                                                                    Name = "FIRST",
-                                                                                    Number = 1,
-                                                                                    ItemUrl = "http://localhost/product?123&navigationid=3"
-                                                                                },
-                                                                            new OrderDetailsItem
-                                                                                {
-                                                                                    Description = "Second Item",
-                                                                                    Name = "2ND",
-                                                                                    Number = 2
-                                                                                }
-                                                                        }
-                                                        };
+        protected static readonly OrderDetails OrderDetails = new OrderDetails
+        {
+            OrderDescription = "Some order",
+            OrderTotal = 100m,
+            ShippingDiscount = -7.9m,
+            ShippingTotal = 0.54m,
+            TaxTotal = 5m,
+            Items = new[]
+                        {
+                            new OrderDetailsItem
+                                {
+                                    Description = "First Item",
+                                    Name = "FIRST",
+                                    Number = 1,
+                                    ItemUrl = "http://localhost/product?123&navigationid=3"
+                                },
+                            new OrderDetailsItem
+                                {
+                                    Description = "Second Item",
+                                    Name = "2ND",
+                                    Number = 2
+                                }
+                        }
+        };
     }
 
     [Subject(typeof(PayPalRequestBuilder))]
@@ -409,11 +417,9 @@ namespace Moolah.Specs.PayPal
         const string PayPalToken = "tokenValue";
     }
 
-    [Subject(typeof(PayPalRequestBuilder))]
-    public class When_building_do_express_checkout_payment_request : PayPalRequestBuilderContext
+    [Behaviors]
+    public class DoExpressCheckoutPaymentRequestBehavior
     {
-        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
-
         It should_specify_correct_method = () =>
             Request["METHOD"].ShouldEqual("DoExpressCheckoutPayment");
 
@@ -423,21 +429,78 @@ namespace Moolah.Specs.PayPal
         It should_specify_the_paypal_payer_id = () =>
             Request["PAYERID"].ShouldEqual(PayPalPayerId);
 
-        It should_specify_formatted_amount = () =>
-            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
-
         It should_specify_currency_code = () =>
             Request["PAYMENTREQUEST_0_CURRENCYCODE"].ShouldEqual("GBP");
 
         It should_specify_sale_payment_action = () =>
-           Request["PAYMENTREQUEST_0_PAYMENTACTION"].ShouldEqual("Sale");
+            Request["PAYMENTREQUEST_0_PAYMENTACTION"].ShouldEqual("Sale");
+
+        protected static NameValueCollection Request;
+        protected static string PayPalToken;
+        protected static string PayPalPayerId;
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_do_express_checkout_payment_request : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<DoExpressCheckoutPaymentRequestBehavior> do_express_checkout_payment_request;
+
+        It should_specify_formatted_amount = () =>
+            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
 
         Because of = () =>
-            Request = SUT.DoExpressCheckoutPayment(Amount, PayPalToken, PayPalPayerId);
+           Request = SUT.DoExpressCheckoutPayment(Amount, PayPalToken, PayPalPayerId);
 
-        const string PayPalToken = "tokenValue";
-        const string PayPalPayerId = "payerId";
-        const decimal Amount = 12.99m;
+        protected const string PayPalToken = "tokenValue";
+        protected const string PayPalPayerId = "payerId";
+        protected const decimal Amount = 12.99m;
+    }
+
+    [Subject(typeof(PayPalRequestBuilder))]
+    public class When_building_do_express_checkout_payment_request_with_order_details : PayPalRequestBuilderContext
+    {
+        Behaves_like<PayPalCommonRequestBehavior> a_paypal_nvp_request;
+        Behaves_like<DoExpressCheckoutPaymentRequestBehavior> do_express_checkout_payment_request;
+        Behaves_like<OrderDetailsBehavior> add_order_details;
+            
+        It should_specify_formatted_amount = () =>
+            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(OrderDetails.OrderTotal.ToString("0.00"));
+
+        Establish context = () =>
+        {
+            OrderDetails = new OrderDetails
+            {
+                OrderDescription = "Some order",
+                OrderTotal = 100m,
+                ShippingDiscount = -7.9m,
+                ShippingTotal = 0.54m,
+                TaxTotal = 5m,
+                Items = new[]
+                            {
+                                new OrderDetailsItem
+                                    {
+                                        Description = "First Item",
+                                        Name = "FIRST",
+                                        Number = 1,
+                                        ItemUrl = "http://localhost/product?123&navigationid=3"
+                                    },
+                                new OrderDetailsItem
+                                    {
+                                        Description = "Second Item",
+                                        Name = "2ND",
+                                        Number = 2
+                                    }
+                            }
+            };
+        };
+
+        Because of = () =>
+           Request = SUT.DoExpressCheckoutPayment(OrderDetails, PayPalToken, PayPalPayerId);
+
+        protected static OrderDetails OrderDetails;
+        protected const string PayPalToken = "tokenValue";
+        protected const string PayPalPayerId = "payerId";
     }
 
     [Subject(typeof(PayPalRequestBuilder))]

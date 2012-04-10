@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Moolah.PayPal
 {
+    [Serializable]
     public class OrderDetails
     {
         public OrderDetails()
@@ -60,6 +62,7 @@ namespace Moolah.PayPal
         public string CustomField { get; set; }
     }
 
+    [Serializable]
     public class DiscountDetails
     {
         /// <summary>
@@ -81,6 +84,7 @@ namespace Moolah.PayPal
         public decimal? Tax { get; set; }
     }
 
+    [Serializable]
     public class OrderDetailsItem
     {
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 
 namespace Moolah.PayPal
 {
+    [Serializable]
     public class PayPalExpressCheckoutDetails
     {
         public PayPalExpressCheckoutDetails()

@@ -8,9 +8,10 @@ namespace Moolah.PayPal
     public interface IPayPalRequestBuilder
     {
         NameValueCollection SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl);
+        NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl);
         NameValueCollection GetExpressCheckoutDetails(string payPalToken);
         NameValueCollection DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId);
-        NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl);
+        NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
     }
 
     /// <summary>
@@ -53,11 +54,20 @@ namespace Moolah.PayPal
         public NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl)
         {
             var request = getBaseSetExpressCheckoutRequest(orderDetails.OrderTotal, cancelUrl, confirmationUrl);
+            addOrderDetailsValues(orderDetails, request);
+
+            // SetExpressCheckout specific
+            addOptionalValueToRequest("ALLOWNOTE", orderDetails.AllowNote, request);
+            addOptionalValueToRequest("BUYEREMAILOPTINENABLE", orderDetails.EnableCustomerMarketingEmailOptIn, request);
+
+            return request;
+        }
+
+        void addOrderDetailsValues(OrderDetails orderDetails, NameValueCollection request)
+        {
             addOptionalValueToRequest("PAYMENTREQUEST_0_TAXAMT", orderDetails.TaxTotal, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_SHIPPINGAMT", orderDetails.ShippingTotal, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_SHIPDISCAMT", orderDetails.ShippingDiscount, request);
-            addOptionalValueToRequest("ALLOWNOTE", orderDetails.AllowNote, request);
-            addOptionalValueToRequest("BUYEREMAILOPTINENABLE", orderDetails.EnableCustomerMarketingEmailOptIn, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_CUSTOM", orderDetails.CustomField, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_DESC", orderDetails.OrderDescription, request);
 
@@ -75,28 +85,26 @@ namespace Moolah.PayPal
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_ITEMURL" + lineNumber, line.ItemUrl, request);
 
-                    itemTotal += (line.UnitPrice ?? 0) * (line.Quantity ?? 1);
+                    itemTotal += (line.UnitPrice ?? 0)*(line.Quantity ?? 1);
                     lineNumber++;
                 }
             }
             if (orderDetails.Discounts != null)
             {
-                foreach(var line in orderDetails.Discounts)
+                foreach (var line in orderDetails.Discounts)
                 {
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_NAME" + lineNumber, line.Description, request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_AMT" + lineNumber, line.Amount.AsNegativeValue(), request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_TAXAMT" + lineNumber, line.Tax.AsNegativeValue(), request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
 
-                    itemTotal += line.Amount.AsNegativeValue() * (line.Quantity ?? 1);
+                    itemTotal += line.Amount.AsNegativeValue()*(line.Quantity ?? 1);
                     lineNumber++;
                 }
             }
 
             if (itemTotal > 0)
                 addOptionalValueToRequest("PAYMENTREQUEST_0_ITEMAMT", itemTotal, request);
-            
-            return request;
         }
 
         void addOptionalValueToRequest(string fieldName, int? value, NameValueCollection request)
@@ -148,6 +156,22 @@ namespace Moolah.PayPal
             queryString["PWD"] = _configuration.Password;
             queryString["SIGNATURE"] = _configuration.Signature;
             return queryString;
+        }
+
+        public NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId)
+        {
+            var request = getQueryWithCredentials();
+
+            request["METHOD"] = "DoExpressCheckoutPayment";
+            request["TOKEN"] = payPalToken;
+            request["PAYERID"] = payPalPayerId;
+            request["PAYMENTREQUEST_0_AMT"] = orderDetails.OrderTotal.AsPayPalFormatString();
+            request["PAYMENTREQUEST_0_CURRENCYCODE"] = "GBP";
+            request["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
+
+            addOrderDetailsValues(orderDetails, request);
+
+            return request;
         }
     }
 }
