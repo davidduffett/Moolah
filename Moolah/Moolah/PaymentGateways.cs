@@ -82,6 +82,14 @@ namespace Moolah
         /// <param name="payPalToken">The PayPal token returned in the initial <see cref="SetExpressCheckout"/> call.</param>
         /// <param name="payPalPayerId">The PayPal PayerID returned in the <see cref="GetExpressCheckoutDetails"/> call.</param>
         IPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId);
+
+        /// <summary>
+        /// Performs the payment.
+        /// </summary>
+        /// <param name="orderDetails">Detailed information on the order this checkout is for.</param>
+        /// <param name="payPalToken">The PayPal token returned in the initial <see cref="SetExpressCheckout"/> call.</param>
+        /// <param name="payPalPayerId">The PayPal PayerID returned in the <see cref="GetExpressCheckoutDetails"/> call.</param>        
+        IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
     }
 
     public interface IGoogleCheckout

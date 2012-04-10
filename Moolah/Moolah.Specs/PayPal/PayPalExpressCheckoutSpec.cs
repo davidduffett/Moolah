@@ -103,4 +103,30 @@ namespace Moolah.Specs.PayPal
         const string Token = "tokenValue";
         const string PayerId = "payerId";
     }
+
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_do_express_checkout_payment_is_called_with_order_details : PayPalExpressCheckoutContext
+    {
+        It should_return_the_correct_result = () =>
+            Result.ShouldEqual(ExpectedResult);
+
+        Establish context = () =>
+        {
+            OrderDetails = new OrderDetails();
+            ExpectedResult = new PayPalPaymentResponse(new NameValueCollection());
+            RequestBuilder.WhenToldTo(x => x.DoExpressCheckoutPayment(OrderDetails, Token, PayerId))
+                .Return(HttpUtility.ParseQueryString(Request));
+            ResponseParser.WhenToldTo(x => x.DoExpressCheckoutPayment(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
+                .Return(ExpectedResult);
+        };
+
+        Because of = () =>
+            Result = SUT.DoExpressCheckoutPayment(OrderDetails, Token, PayerId);
+
+        static IPaymentResponse Result;
+        static PayPalPaymentResponse ExpectedResult;
+        static OrderDetails OrderDetails;
+        const string Token = "tokenValue";
+        const string PayerId = "payerId";
+    }
 }

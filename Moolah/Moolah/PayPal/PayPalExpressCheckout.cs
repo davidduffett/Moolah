@@ -60,7 +60,8 @@ namespace Moolah.PayPal
 
             _logger.Log("SetExpressCheckout.Request", orderDetails);
 
-            return setExpressCheckoutRequestFor(_requestBuilder.SetExpressCheckout(orderDetails, cancelUrl, confirmationUrl));
+            var request = _requestBuilder.SetExpressCheckout(orderDetails, cancelUrl, confirmationUrl);
+            return setExpressCheckoutRequestFor(request);
         }
 
         PayPalExpressCheckoutToken setExpressCheckoutRequestFor(NameValueCollection request)
@@ -88,6 +89,21 @@ namespace Moolah.PayPal
             if (string.IsNullOrWhiteSpace(payPalPayerId)) throw new ArgumentNullException("payPalPayerId");
 
             var request = _requestBuilder.DoExpressCheckoutPayment(amount, payPalToken, payPalPayerId);
+            return doExpressCheckoutPaymentFor(request);
+        }
+
+        public IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId)
+        {
+            if (orderDetails == null) throw new ArgumentNullException("orderDetails");
+            if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
+            if (string.IsNullOrWhiteSpace(payPalPayerId)) throw new ArgumentNullException("payPalPayerId");
+
+            var request = _requestBuilder.DoExpressCheckoutPayment(orderDetails, payPalToken, payPalPayerId);
+            return doExpressCheckoutPaymentFor(request);
+        }
+
+        IPaymentResponse doExpressCheckoutPaymentFor(NameValueCollection request)
+        {
             var response = sendToPayPal(request);
             return _responseParser.DoExpressCheckoutPayment(response);
         }
