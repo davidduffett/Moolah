@@ -36,6 +36,7 @@ namespace Moolah.Specs.DataCash
 
         Establish context = () =>
         {
+            Card = new CardDetails();
             var requestDoc = new XDocument();
             const string httpResponse = "<PaymentResponse/>";
             ExpectedResponse.WhenToldTo(x => x.Status).Return(PaymentStatus.Pending);
@@ -96,6 +97,8 @@ namespace Moolah.Specs.DataCash
 
         Establish context = () =>
         {
+            Card = new CardDetails();
+
             // Payment
             var paymentRequest = new XDocument();
             const string paymentHttpResponse = "<PaymentResponse/>";

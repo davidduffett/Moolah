@@ -396,8 +396,6 @@ namespace Moolah.Specs.PayPal
         {
             OrderTotal = 100m
         };
-        const string CancelUrl = "http://yoursite.com/paypalconfirm";
-        const string ConfirmationUrl = "http://yoursite.com/basket";
     }
 
     [Subject(typeof(PayPalRequestBuilder))]

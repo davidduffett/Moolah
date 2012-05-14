@@ -13,6 +13,7 @@ namespace Moolah.Specs.DataCash
 
         Establish context = () =>
         {
+            Card = new CardDetails();
             Configuration = new DataCashConfiguration(PaymentEnvironment.Test, "merchantId", "password");
             PaymentRequestBuilder = An<IDataCashPaymentRequestBuilder>();
             HttpClient = An<IHttpClient>();

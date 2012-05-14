@@ -49,25 +49,37 @@ namespace Moolah.PayPal
 
         public PayPalExpressCheckoutDetails GetExpressCheckoutDetails(NameValueCollection payPalResponse)
         {
-            return new PayPalExpressCheckoutDetails(payPalResponse)
-                       {
-                           CustomerPhoneNumber = payPalResponse["PHONENUM"],
-                           CustomerMarketingEmail = payPalResponse["BUYERMARKETINGEMAIL"],
-                           PayPalEmail = payPalResponse["EMAIL"],
-                           PayPalPayerId = payPalResponse["PAYERID"],
-                           CustomerTitle = payPalResponse["SALUTATION"],
-                           CustomerFirstName = payPalResponse["FIRSTNAME"],
-                           CustomerLastName = payPalResponse["LASTNAME"],
-                           DeliveryName = payPalResponse["PAYMENTREQUEST_0_SHIPTONAME"],
-                           DeliveryStreet1 = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTREET"],
-                           DeliveryStreet2 = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTREET2"],
-                           DeliveryCity = payPalResponse["PAYMENTREQUEST_0_SHIPTOCITY"],
-                           DeliveryState = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTATE"],
-                           DeliveryPostcode = payPalResponse["PAYMENTREQUEST_0_SHIPTOZIP"],
-                           DeliveryCountryCode = payPalResponse["PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE"],
-                           DeliveryPhoneNumber = payPalResponse["PAYMENTREQUEST_0_SHIPTOPHONENUM"],
-                           OrderDetails = parseOrderDetails(payPalResponse)
-                       };
+            PayPalExpressCheckoutDetails response = null;
+
+            parsePayPalAck(payPalResponse,
+                success: () =>
+                {
+                    response = new PayPalExpressCheckoutDetails(payPalResponse)
+                    {
+                        CustomerPhoneNumber = payPalResponse["PHONENUM"],
+                        CustomerMarketingEmail = payPalResponse["BUYERMARKETINGEMAIL"],
+                        PayPalEmail = payPalResponse["EMAIL"],
+                        PayPalPayerId = payPalResponse["PAYERID"],
+                        CustomerTitle = payPalResponse["SALUTATION"],
+                        CustomerFirstName = payPalResponse["FIRSTNAME"],
+                        CustomerLastName = payPalResponse["LASTNAME"],
+                        DeliveryName = payPalResponse["PAYMENTREQUEST_0_SHIPTONAME"],
+                        DeliveryStreet1 = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTREET"],
+                        DeliveryStreet2 = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTREET2"],
+                        DeliveryCity = payPalResponse["PAYMENTREQUEST_0_SHIPTOCITY"],
+                        DeliveryState = payPalResponse["PAYMENTREQUEST_0_SHIPTOSTATE"],
+                        DeliveryPostcode = payPalResponse["PAYMENTREQUEST_0_SHIPTOZIP"],
+                        DeliveryCountryCode = payPalResponse["PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE"],
+                        DeliveryPhoneNumber = payPalResponse["PAYMENTREQUEST_0_SHIPTOPHONENUM"],
+                        OrderDetails = parseOrderDetails(payPalResponse)
+                    };
+                },
+                fail: message =>
+                {
+                    throw new Exception(message);
+                });
+
+            return response;
         }
 
         OrderDetails parseOrderDetails(NameValueCollection payPalResponse)

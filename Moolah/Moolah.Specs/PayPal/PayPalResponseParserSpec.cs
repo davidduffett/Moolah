@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web;
 using Machine.Fakes;
 using Machine.Specifications;
@@ -111,7 +112,7 @@ namespace Moolah.Specs.PayPal
 
         Because of = () =>
         {
-            var payPalResponse = HttpUtility.ParseQueryString("PAYMENTREQUEST_0_AMT=5.00&PHONENUM=phone-number&BUYERMARKETINGEMAIL=marketing-email&" +
+            var payPalResponse = HttpUtility.ParseQueryString("ACK=Success&PAYMENTREQUEST_0_AMT=5.00&PHONENUM=phone-number&BUYERMARKETINGEMAIL=marketing-email&" +
                 "EMAIL=paypal-email&PAYERID=payer-id&SALUTATION=title&FIRSTNAME=first-name&LASTNAME=last-name&" +
                 "PAYMENTREQUEST_0_SHIPTONAME=delivery-name&PAYMENTREQUEST_0_SHIPTOSTREET=street-1&PAYMENTREQUEST_0_SHIPTOSTREET2=street-2&" +
                 "PAYMENTREQUEST_0_SHIPTOCITY=city&PAYMENTREQUEST_0_SHIPTOSTATE=state&PAYMENTREQUEST_0_SHIPTOZIP=postcode&" +
@@ -120,6 +121,22 @@ namespace Moolah.Specs.PayPal
         };
 
         static PayPalExpressCheckoutDetails Response;
+    }
+
+    [Subject(typeof(PayPalResponseParser))]
+    public class When_parsing_failed_get_express_checkout_details_response : PayPalResponseParserContext
+    {
+        It should_throw_an_exception = () =>
+            exception.ShouldNotBeNull();
+
+        Because of = () =>
+        {
+            var payPalResponse = HttpUtility.ParseQueryString(
+                "TIMESTAMP=2012%2d02%2d26T16%3a13%3a12Z&CORRELATIONID=ff25e376319b6&ACK=Failure&VERSION=78&BUILD=2571254&L_ERRORCODE0=10002&L_SHORTMESSAGE0=Security%20error&L_LONGMESSAGE0=Security%20header%20is%20not%20valid&L_SEVERITYCODE0=Error");
+            exception = Catch.Exception(() => SUT.GetExpressCheckoutDetails(payPalResponse));
+        };
+
+        static Exception exception;
     }
 
     [Subject(typeof(PayPalResponseParser))]
@@ -212,6 +229,7 @@ namespace Moolah.Specs.PayPal
         Because of = () =>
         {
             var payPalResponse = HttpUtility.ParseQueryString(string.Empty);
+            payPalResponse.Add("ACK", "Success");
             payPalResponse.Add("PAYMENTREQUEST_0_TAXAMT", "5.00");
             payPalResponse.Add("PAYMENTREQUEST_0_SHIPPINGAMT", "0.54");
             payPalResponse.Add("PAYMENTREQUEST_0_SHIPDISCAMT", "-7.90");
@@ -268,7 +286,7 @@ namespace Moolah.Specs.PayPal
 
         Because of = () =>
         {
-            var payPalResponse = HttpUtility.ParseQueryString("PAYMENTREQUEST_0_AMT=12.45");
+            var payPalResponse = HttpUtility.ParseQueryString("ACK=Success&PAYMENTREQUEST_0_AMT=12.45");
             Response = SUT.GetExpressCheckoutDetails(payPalResponse);
         };
 
