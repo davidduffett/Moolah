@@ -64,6 +64,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardTypeSpec.cs" />
+    <Compile Include="CardUtilitySpec.cs" />
     <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCash3DSecureGatewaySpec.cs">
       <SubType>Code</SubType>

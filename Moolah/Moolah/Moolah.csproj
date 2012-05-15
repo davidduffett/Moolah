@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardDetails.cs" />
+    <Compile Include="CardType.cs" />
+    <Compile Include="CardUtility.cs" />
     <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilder.cs" />
     <Compile Include="DataCash\DataCash3DSecureGateway.cs">
       <SubType>Code</SubType>
