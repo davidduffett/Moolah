@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Moolah
 {
@@ -10,6 +11,9 @@ namespace Moolah
         public static CardType DinersClub = new CardType("Diners Club", @"^3(?:0[0-5]|[68][0-9])[0-9]{11}$");
         public static CardType Discover = new CardType("Discover", @"^6(?:011|5[0-9]{2})[0-9]{12}$");
         public static CardType JCB = new CardType("JCB", @"^(?:2131|1800|35\d{3})\d{11}$");
+
+        public static IEnumerable<CardType> AllCardTypes = new[] 
+            { Visa, Mastercard, AmericanExpress, DinersClub, Discover, JCB };
 
         readonly Regex _regex;
 
@@ -25,8 +29,8 @@ namespace Moolah
 
         public bool IsMatch(string cardNumber)
         {
-            return cardNumber != null && 
-                   _regex.IsMatch(cardNumber.Replace(" ", string.Empty).Replace("-", string.Empty));
+            return cardNumber != null &&
+                   _regex.IsMatch(cardNumber.StripSpacesAndDashes());
         }
     }
 }
