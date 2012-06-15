@@ -40,7 +40,7 @@ namespace Moolah.PayPal
             _responseParser = responseParser;
         }
 
-        public PayPalExpressCheckoutToken SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl)
+        public PayPalExpressCheckoutToken SetExpressCheckout(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl)
         {
             if (amount <= 0) throw new ArgumentOutOfRangeException("amount", "Amount must be greater than zero.");
             if (string.IsNullOrWhiteSpace(cancelUrl)) throw new ArgumentNullException("cancelUrl");
@@ -48,7 +48,7 @@ namespace Moolah.PayPal
 
             _logger.Log("SetExpressCheckout.Request", new { Amount = amount, CancelUrl = cancelUrl, ConfirmationUrl = confirmationUrl });
 
-            var request = _requestBuilder.SetExpressCheckout(amount, cancelUrl, confirmationUrl);
+            var request = _requestBuilder.SetExpressCheckout(amount,currencyCodeType, cancelUrl, confirmationUrl);
             return setExpressCheckoutRequestFor(request);
         }
 
@@ -82,17 +82,17 @@ namespace Moolah.PayPal
             return _responseParser.GetExpressCheckoutDetails(response);
         }
 
-        public IPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId)
+        public IPaymentResponse DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId)
         {
             if (amount <= 0) throw new ArgumentOutOfRangeException("amount", "Amount must be greater than zero.");
             if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
             if (string.IsNullOrWhiteSpace(payPalPayerId)) throw new ArgumentNullException("payPalPayerId");
 
-            var request = _requestBuilder.DoExpressCheckoutPayment(amount, payPalToken, payPalPayerId);
+            var request = _requestBuilder.DoExpressCheckoutPayment(amount,currencyCodeType, payPalToken, payPalPayerId);
             return doExpressCheckoutPaymentFor(request);
         }
 
-        public IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId)
+        public IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails,  string payPalToken, string payPalPayerId)
         {
             if (orderDetails == null) throw new ArgumentNullException("orderDetails");
             if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");

@@ -30,7 +30,7 @@ namespace Moolah.Specs.PayPal
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
 
         Because of = () =>
-            Response = Gateway.SetExpressCheckout(16m, "http://localhost/cancel", "http://localhost/confirm");
+            Response = Gateway.SetExpressCheckout(16m,CurrencyCodeType.GBP,  "http://localhost/cancel", "http://localhost/confirm");
 
         Establish context = () =>
             Gateway = new PayPalExpressCheckout(new PayPalConfiguration(PaymentEnvironment.Test));

@@ -7,11 +7,11 @@ namespace Moolah.PayPal
 {
     public interface IPayPalRequestBuilder
     {
-        NameValueCollection SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl);
+        NameValueCollection SetExpressCheckout(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl);
         NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl);
         NameValueCollection GetExpressCheckoutDetails(string payPalToken);
-        NameValueCollection DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId);
-        NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
+        NameValueCollection DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId);
+        NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails,  string payPalToken, string payPalPayerId);
     }
 
     /// <summary>
@@ -27,17 +27,17 @@ namespace Moolah.PayPal
             _configuration = configuration;
         }
 
-        public NameValueCollection SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl)
+        public NameValueCollection SetExpressCheckout(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl)
         {
-            var request = getBaseSetExpressCheckoutRequest(amount, cancelUrl, confirmationUrl);
+            var request = getBaseSetExpressCheckoutRequest(amount,currencyCodeType, cancelUrl, confirmationUrl);
             return request;
         }
 
-        NameValueCollection getBaseSetExpressCheckoutRequest(decimal amount, string cancelUrl, string confirmationUrl)
+        NameValueCollection getBaseSetExpressCheckoutRequest(decimal amount,CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl)
         {
             var request = getQueryWithCredentials();
             request["METHOD"] = "SetExpressCheckout";
-            request["PAYMENTREQUEST_0_CURRENCYCODE"] = "GBP";
+            request["PAYMENTREQUEST_0_CURRENCYCODE"] = currencyCodeType.ToString();
             request["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
             request["PAYMENTREQUEST_0_AMT"] = amount.AsPayPalFormatString();
             request["cancelUrl"] = cancelUrl;
@@ -53,7 +53,7 @@ namespace Moolah.PayPal
 
         public NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl)
         {
-            var request = getBaseSetExpressCheckoutRequest(orderDetails.OrderTotal, cancelUrl, confirmationUrl);
+            var request = getBaseSetExpressCheckoutRequest(orderDetails.OrderTotal,orderDetails.CurrencyCodeType, cancelUrl, confirmationUrl);
             addOrderDetailsValues(orderDetails, request);
 
             // SetExpressCheckout specific
@@ -135,14 +135,14 @@ namespace Moolah.PayPal
             return request;
         }
 
-        public NameValueCollection DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId)
+        public NameValueCollection DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId)
         {
             var request = getQueryWithCredentials();
             request["METHOD"] = "DoExpressCheckoutPayment";
             request["TOKEN"] = payPalToken;
             request["PAYERID"] = payPalPayerId;
             request["PAYMENTREQUEST_0_AMT"] = amount.ToString("0.00");
-            request["PAYMENTREQUEST_0_CURRENCYCODE"] = "GBP";
+            request["PAYMENTREQUEST_0_CURRENCYCODE"] = currencyCodeType.ToString();
             request["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
             return request;
         }
@@ -158,7 +158,7 @@ namespace Moolah.PayPal
             return queryString;
         }
 
-        public NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId)
+        public NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails,  string payPalToken, string payPalPayerId)
         {
             var request = getQueryWithCredentials();
 
@@ -166,7 +166,7 @@ namespace Moolah.PayPal
             request["TOKEN"] = payPalToken;
             request["PAYERID"] = payPalPayerId;
             request["PAYMENTREQUEST_0_AMT"] = orderDetails.OrderTotal.AsPayPalFormatString();
-            request["PAYMENTREQUEST_0_CURRENCYCODE"] = "GBP";
+            request["PAYMENTREQUEST_0_CURRENCYCODE"] = orderDetails.CurrencyCodeType.ToString();
             request["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
 
             addOrderDetailsValues(orderDetails, request);

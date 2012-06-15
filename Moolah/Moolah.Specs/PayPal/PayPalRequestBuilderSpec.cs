@@ -75,7 +75,7 @@ namespace Moolah.Specs.PayPal
             request.ToString().ShouldNotContain('?');
 
         Because of = () =>
-            request = SUT.SetExpressCheckout(1, "http://localhost/?something=2&somethingelse=1",
+            request = SUT.SetExpressCheckout(1, CurrencyCodeType.GBP, "http://localhost/?something=2&somethingelse=1",
                                     "http://localhost/?something=2&somethingelse=1");
         Establish context = () =>
             SUT = new PayPalRequestBuilder(new PayPalConfiguration(PaymentEnvironment.Test));
@@ -91,7 +91,7 @@ namespace Moolah.Specs.PayPal
         Behaves_like<SetExpressCheckoutBehavior> set_express_checkout;
 
         Because of = () =>
-            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+            Request = SUT.SetExpressCheckout(Amount, CurrencyCodeType.GBP, CancelUrl, ConfirmationUrl);
 
         protected const decimal Amount = 12.99m;
     }
@@ -109,7 +109,7 @@ namespace Moolah.Specs.PayPal
             Configuration.LocaleCode = LocaleCode;
 
         Because of = () =>
-            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+            Request = SUT.SetExpressCheckout(Amount, CurrencyCodeType.GBP, CancelUrl, ConfirmationUrl);
 
         protected const decimal Amount = 12.99m;
         const string LocaleCode = "GB";
@@ -128,7 +128,7 @@ namespace Moolah.Specs.PayPal
            Configuration.LocaleCode = LocaleCode;
 
         Because of = () =>
-            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+            Request = SUT.SetExpressCheckout(Amount, CurrencyCodeType.GBP, CancelUrl, ConfirmationUrl);
 
         protected const decimal Amount = 12.99m;
         const string LocaleCode = "dud";
@@ -150,7 +150,7 @@ namespace Moolah.Specs.PayPal
         };
 
         Because of = () =>
-            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+            Request = SUT.SetExpressCheckout(Amount, CurrencyCodeType.GBP, CancelUrl, ConfirmationUrl);
 
         Cleanup after = () =>
             Culture.Reset();
@@ -175,7 +175,7 @@ namespace Moolah.Specs.PayPal
         };
 
         Because of = () =>
-            Request = SUT.SetExpressCheckout(Amount, CancelUrl, ConfirmationUrl);
+            Request = SUT.SetExpressCheckout(Amount, CurrencyCodeType.GBP, CancelUrl, ConfirmationUrl);
 
         Cleanup after = () =>
             Culture.Reset();
@@ -448,7 +448,7 @@ namespace Moolah.Specs.PayPal
             Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
 
         Because of = () =>
-           Request = SUT.DoExpressCheckoutPayment(Amount, PayPalToken, PayPalPayerId);
+           Request = SUT.DoExpressCheckoutPayment(Amount, CurrencyCodeType.GBP, PayPalToken, PayPalPayerId);
 
         protected const string PayPalToken = "tokenValue";
         protected const string PayPalPayerId = "payerId";
@@ -474,6 +474,7 @@ namespace Moolah.Specs.PayPal
                 ShippingDiscount = -7.9m,
                 ShippingTotal = 0.54m,
                 TaxTotal = 5m,
+                CurrencyCodeType = CurrencyCodeType.GBP,
                 Items = new[]
                             {
                                 new OrderDetailsItem

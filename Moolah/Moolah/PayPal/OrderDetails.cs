@@ -12,6 +12,7 @@ namespace Moolah.PayPal
             Discounts = new DiscountDetails[0];
         }
 
+        public CurrencyCodeType CurrencyCodeType { get; set; }
         /// <summary>
         /// If you pass the generic order description parameter along with any two of the following line-item parameters, the order description value does not display.
         /// <see cref="OrderDetailsItem.Name"/>
