@@ -11,7 +11,6 @@ SET NANT="%~dp0..\tools\nant\nant.exe"
 SET BUILD_FILE="%~dp0main.build"
 
 %NANT% /f:%BUILD_FILE% %*
-pause
 
 if %ERRORLEVEL% NEQ 0 goto errors
 

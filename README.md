@@ -160,7 +160,8 @@ You may want to specify more than just the transaction amount to PayPal in order
 					new DiscountDetails { Description = "Loyalty discount", Amount = -0.99m }
 				},
 			ShippingTotal = 2m,
-			OrderTotal = 14.99m
+			OrderTotal = 14.99m,
+			CurrencyCodeType = CurrencyCodeType.GBP
 		}, cancelUrl, confirmationUrl);
 	
 #### Confirmation page
