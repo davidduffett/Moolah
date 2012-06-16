@@ -89,6 +89,7 @@
     <Compile Include="PaymentGateways.cs" />
     <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PayPal\CurrencyCodeType.cs" />
     <Compile Include="PayPal\LocaleCodes.cs" />
     <Compile Include="PayPal\OrderDetails.cs" />
     <Compile Include="PayPal\PayPalConfiguration.cs" />

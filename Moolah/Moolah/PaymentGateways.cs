@@ -49,7 +49,7 @@ namespace Moolah
         /// When the customer navigates to the confirmationUrl, you should then call
         /// <see cref="GetExpressCheckoutDetails"/> to retrieve details about the express checkout.
         /// </returns>
-        PayPalExpressCheckoutToken SetExpressCheckout(decimal amount, string cancelUrl, string confirmationUrl);
+        PayPalExpressCheckoutToken SetExpressCheckout(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl);
 
         /// <summary>
         /// Starts a PayPal express checkout session by providing a token and URL
@@ -81,7 +81,7 @@ namespace Moolah
         /// <param name="amount">Transaction amount.  You may have adjusted the amount depending on the delivery options the customer specified in PayPal.</param>
         /// <param name="payPalToken">The PayPal token returned in the initial <see cref="SetExpressCheckout"/> call.</param>
         /// <param name="payPalPayerId">The PayPal PayerID returned in the <see cref="GetExpressCheckoutDetails"/> call.</param>
-        IPaymentResponse DoExpressCheckoutPayment(decimal amount, string payPalToken, string payPalPayerId);
+        IPaymentResponse DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId);
 
         /// <summary>
         /// Performs the payment.
