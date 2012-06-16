@@ -138,7 +138,7 @@ You should then redirect the customer to PayPal using the `response.RedirectUrl`
 	
 	var cancelUrl = "http://yoursite.com/basket";
 	var confirmationUrl = "http://yoursite.com/paypalconfirm";
-	var response = gateway.SetExpressCheckout(12.99m, cancelUrl, confirmationUrl);
+	var response = gateway.SetExpressCheckout(12.99m, CurrencyCodeType.GBP, cancelUrl, confirmationUrl);
 	if (response.Status == PaymentStatus.Failed)
 		throw new Exception(response.FailureMessage);
 	RedirectTo(response.RedirectUrl); 
@@ -175,7 +175,7 @@ These values must be used when retrieving customer details, or performing the pa
 	
 	var checkoutDetails = gateway.GetExpressCheckoutDetails(Request["token"]);
 	
-	var response = gateway.DoExpressCheckoutPayment(12.99m, Request["token"], Request["PayerID"]);
+	var response = gateway.DoExpressCheckoutPayment(12.99m, CurrencyCodeType.GBP, Request["token"], Request["PayerID"]);
 	if (response.Status == PaymentStatus.Failed)
 	{
 		if (response.IsSystemFailure)
