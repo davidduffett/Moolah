@@ -3,7 +3,8 @@
 	<!-- Targets -->
 	<target name="Build" depends="AssemblyInfo, MSBuild" />
 	<target name="BuildAndTest" depends="Build, MSpec" />
-	<target name="BuildAndPackage" depends="BuildAndTest, Package" />
+	<target name="BuildAndPackage" depends="Build, Package" />
+	<target name="BuildAndTestAndPackage" depends="BuildAndTest, Package" />
 	<target name="TeamCity">
 		<property name="teamcity.build" value="true" />
 		<call target="BuildAndTest" />

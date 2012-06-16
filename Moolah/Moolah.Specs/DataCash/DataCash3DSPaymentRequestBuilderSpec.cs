@@ -20,7 +20,7 @@ namespace Moolah.Specs.DataCash
             Result.XPathValue("Request/Transaction/TxnDetails/ThreeDSecure/purchase_desc").ShouldEqual(Configuration.PurchaseDescription);
 
         It should_contain_3d_secure_purchase_date_time = () =>
-            Result.XPathValue("Request/Transaction/TxnDetails/ThreeDSecure/purchase_datetime").ShouldEqual(SystemTime.Now.ToString("yyyyMMdd HH:mm:ss"));
+            Result.XPathValue("Request/Transaction/TxnDetails/ThreeDSecure/purchase_datetime").ShouldEqual(FakeSystemTime.Now.ToString("yyyyMMdd HH:mm:ss"));
 
         It should_contain_browser_device_category = () =>
             Result.XPathValue("Request/Transaction/TxnDetails/ThreeDSecure/Browser/device_category").ShouldEqual("0");
@@ -33,20 +33,22 @@ namespace Moolah.Specs.DataCash
 
         Because of = () =>
         {
-            SystemTime.Now = DateTime.Now;
-
             HttpRequest = An<HttpRequestBase>();
             HttpRequest.WhenToldTo(x => x.UserAgent).Return(UserAgent);
             HttpRequest.WhenToldTo(x => x.Headers).Return(
                 new NameValueCollection { { "Accept", AcceptHeaders } });
 
-            var builder = new DataCash3DSecureRequestBuilder(Configuration, HttpRequest);
+            var builder = new DataCash3DSecureRequestBuilder(Configuration, HttpRequest) { SystemTime = FakeSystemTime };
             Result = builder.Build(MerchantReference, Amount, CardDetails);
         };
 
-        Cleanup after = () =>
-            SystemTime.Reset();
+        Establish context = () =>
+            {
+                FakeSystemTime = An<ITimeProvider>();
+                FakeSystemTime.WhenToldTo(x => x.Now).Return(new DateTime(2012, 05, 30, 15, 39, 25));
+            };
 
+        static ITimeProvider FakeSystemTime;
         protected static XDocument Result;
         protected static DataCash3DSecureConfiguration Configuration = new DataCash3DSecureConfiguration(
             PaymentEnvironment.Test, "merchant", "password123",

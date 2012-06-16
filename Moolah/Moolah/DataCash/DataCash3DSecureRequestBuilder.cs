@@ -13,6 +13,8 @@ namespace Moolah.DataCash
         private readonly DataCash3DSecureConfiguration _configuration;
         private readonly HttpRequestBase _httpRequest;
 
+        public ITimeProvider SystemTime { get; set; }
+
         public DataCash3DSecureRequestBuilder(DataCash3DSecureConfiguration configuration)
             : this(configuration, new HttpRequestWrapper(HttpContext.Current.Request))
         {
@@ -24,6 +26,7 @@ namespace Moolah.DataCash
             if (httpRequest == null) throw new ArgumentNullException("httpRequest");
             _configuration = configuration;
             _httpRequest = httpRequest;
+            SystemTime = new TimeProvider();
         }
 
         public XDocument Build(string merchantReference, decimal amount, CardDetails card)
