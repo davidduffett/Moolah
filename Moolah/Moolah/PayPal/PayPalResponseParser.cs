@@ -92,6 +92,7 @@ namespace Moolah.PayPal
                 ShippingDiscount = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_SHIPDISCAMT", payPalResponse),
                 AllowNote = parseOptionalBooleanValueFromResponse("ALLOWNOTE", payPalResponse),
                 OrderDescription = parseOptionalStringValueFromResponse("PAYMENTREQUEST_0_DESC", payPalResponse),
+                CurrencyCodeType = parseOptionalEnumValueFromResponse<CurrencyCodeType>("PAYMENTREQUEST_0_CURRENCYCODE", payPalResponse),
                 CustomField = payPalResponse["PAYMENTREQUEST_0_CUSTOM"]
             };
 
@@ -217,13 +218,19 @@ namespace Moolah.PayPal
                        ? (bool?)null
                        : payPalResponse[fieldName] == "1";
         }
-
+        T parseOptionalEnumValueFromResponse<T>(string fieldName, NameValueCollection payPalResponse) where T : struct
+        {
+            T value;
+            Enum.TryParse(payPalResponse[fieldName], out value);
+            return value;
+        }
         string parseOptionalStringValueFromResponse(string fieldName, NameValueCollection payPalResponse)
         {
             return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
                        ? null
                        : payPalResponse[fieldName];
         }
+
 
         public IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse)
         {
