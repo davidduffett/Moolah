@@ -34,6 +34,9 @@ namespace Moolah.Specs.DataCash
         It should_build_request_parse_and_return_payment_response = () =>
             Response.ShouldEqual(ExpectedResponse);
 
+        It should_offer_access_to_the_merchant_id = () => 
+           SUT.MerchantId.ShouldEqual("merchantId");
+
         Establish context = () =>
         {
             Card = new CardDetails();

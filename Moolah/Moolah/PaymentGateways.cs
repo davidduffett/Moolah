@@ -33,6 +33,11 @@ namespace Moolah
         /// <param name="transactionReference">Transaction reference returned by the Gateway for the original 3D-Secure payment request.</param>
         /// <param name="PARes">Payer Authentication Response (PARes) returned by the bank in response to the user entering their 3D-Secure credentials.</param>
         I3DSecureResponse Authorise(string transactionReference, string PARes);
+
+        /// <summary>
+        /// Merchant vTID number
+        /// </summary>
+        string MerchantId { get; }
     }
 
     public interface IPayPalExpressCheckout

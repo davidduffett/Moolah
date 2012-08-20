@@ -63,5 +63,13 @@ namespace Moolah.DataCash
             var response = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
             return _responseParser.Parse(response);
         }
+
+        /// <summary>
+        /// Merchant vTID number
+        /// </summary>
+        public string MerchantId
+        {
+            get { return _configuration.MerchantId; }
+        }
     }
 }
