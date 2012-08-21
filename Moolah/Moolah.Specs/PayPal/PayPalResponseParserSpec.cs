@@ -226,6 +226,9 @@ namespace Moolah.Specs.PayPal
             Response.OrderDetails.Discounts.Last().Tax.ShouldEqual(-0.63m); //L_PAYMENTREQUEST_0_TAXAMT3
         };
 
+        It should_provide_currency_code = () =>
+            Response.OrderDetails.CurrencyCodeType.ShouldEqual(CurrencyCodeType.GBP);
+
         Because of = () =>
         {
             var payPalResponse = HttpUtility.ParseQueryString(string.Empty);
@@ -257,6 +260,7 @@ namespace Moolah.Specs.PayPal
             payPalResponse.Add("L_PAYMENTREQUEST_0_AMT3", "-3.25");
             payPalResponse.Add("L_PAYMENTREQUEST_0_TAXAMT2", "-0.29");
             payPalResponse.Add("L_PAYMENTREQUEST_0_TAXAMT3", "-0.63");
+            payPalResponse.Add("PAYMENTREQUEST_0_CURRENCYCODE", "GBP");
             Response = SUT.GetExpressCheckoutDetails(payPalResponse);
         };
 
