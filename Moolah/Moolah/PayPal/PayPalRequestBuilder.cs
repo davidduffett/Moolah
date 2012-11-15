@@ -11,7 +11,8 @@ namespace Moolah.PayPal
         NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl);
         NameValueCollection GetExpressCheckoutDetails(string payPalToken);
         NameValueCollection DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId);
-        NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails,  string payPalToken, string payPalPayerId);
+        NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
+        NameValueCollection RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD);
     }
 
     /// <summary>
@@ -29,11 +30,11 @@ namespace Moolah.PayPal
 
         public NameValueCollection SetExpressCheckout(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl)
         {
-            var request = getBaseSetExpressCheckoutRequest(amount,currencyCodeType, cancelUrl, confirmationUrl);
+            var request = getBaseSetExpressCheckoutRequest(amount, currencyCodeType, cancelUrl, confirmationUrl);
             return request;
         }
 
-        NameValueCollection getBaseSetExpressCheckoutRequest(decimal amount,CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl)
+        NameValueCollection getBaseSetExpressCheckoutRequest(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl)
         {
             var request = getQueryWithCredentials();
             request["METHOD"] = "SetExpressCheckout";
@@ -53,7 +54,7 @@ namespace Moolah.PayPal
 
         public NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl)
         {
-            var request = getBaseSetExpressCheckoutRequest(orderDetails.OrderTotal,orderDetails.CurrencyCodeType, cancelUrl, confirmationUrl);
+            var request = getBaseSetExpressCheckoutRequest(orderDetails.OrderTotal, orderDetails.CurrencyCodeType, cancelUrl, confirmationUrl);
             addOrderDetailsValues(orderDetails, request);
 
             // SetExpressCheckout specific
@@ -85,7 +86,7 @@ namespace Moolah.PayPal
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_ITEMURL" + lineNumber, line.ItemUrl, request);
 
-                    itemTotal += (line.UnitPrice ?? 0)*(line.Quantity ?? 1);
+                    itemTotal += (line.UnitPrice ?? 0) * (line.Quantity ?? 1);
                     lineNumber++;
                 }
             }
@@ -98,7 +99,7 @@ namespace Moolah.PayPal
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_TAXAMT" + lineNumber, line.Tax.AsNegativeValue(), request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
 
-                    itemTotal += line.Amount.AsNegativeValue()*(line.Quantity ?? 1);
+                    itemTotal += line.Amount.AsNegativeValue() * (line.Quantity ?? 1);
                     lineNumber++;
                 }
             }
@@ -158,7 +159,7 @@ namespace Moolah.PayPal
             return queryString;
         }
 
-        public NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails,  string payPalToken, string payPalPayerId)
+        public NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId)
         {
             var request = getQueryWithCredentials();
 
@@ -170,6 +171,33 @@ namespace Moolah.PayPal
             request["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
 
             addOrderDetailsValues(orderDetails, request);
+
+            return request;
+        }
+
+        public NameValueCollection RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD)
+        {
+            var request = getQueryWithCredentials();
+            request["METHOD"] = "RefundTransaction";
+            request["TRANSACTIONID"] = transactionId;
+            if (refundType == RefundType.Full)
+            {
+                return request;
+            }
+
+            request["REFUNDTYPE"] = "Partial";
+            request["AMT"] = amount.ToString();
+            request["CURRENCYCODE"] = currencyCodeType.ToString();
+            request["NOTE"] = description;
+            return request;
+        }
+
+        public NameValueCollection RefundTransaction(string transactionId)
+        {
+            var request = getQueryWithCredentials();
+            request["METHOD"] = "RefundTransaction";
+            request["TRANSACTIONID"] = transactionId;
+            request["REFUNDTYPE"] = "FULL";
 
             return request;
         }

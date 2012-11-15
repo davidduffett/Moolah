@@ -11,6 +11,7 @@ namespace Moolah.PayPal
         PayPalExpressCheckoutToken SetExpressCheckout(NameValueCollection payPalResponse);
         PayPalExpressCheckoutDetails GetExpressCheckoutDetails(NameValueCollection payPalResponse);
         IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse);
+        PaypalRefundResponse RefundTransaction(NameValueCollection payPalResponse);
     }
 
     public class PayPalResponseParser : IPayPalResponseParser
@@ -197,7 +198,7 @@ namespace Moolah.PayPal
                     discountDetailses[itemNumber].Tax = parseOptionalDecimalValueFromResponse(key, payPalResponse);
             }
         }
-        
+
         int? parseOptionalIntegerValueFromResponse(string fieldName, NameValueCollection payPalResponse)
         {
             return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
@@ -236,7 +237,7 @@ namespace Moolah.PayPal
         {
             var response = new PayPalPaymentResponse(payPalResponse);
 
-            parsePayPalAck(payPalResponse, 
+            parsePayPalAck(payPalResponse,
                 success: () =>
                 {
                     response.TransactionReference = payPalResponse["PAYMENTINFO_0_TRANSACTIONID"];
@@ -286,6 +287,30 @@ namespace Moolah.PayPal
                     fail(failureMessage);
                     break;
             }
+        }
+
+        public PaypalRefundResponse RefundTransaction(NameValueCollection payPalResponse)
+        {
+            var result = new PaypalRefundResponse();
+            parsePayPalAck(payPalResponse, () =>
+            {
+                result.Status = PaymentStatus.Successful;
+                result.TransactionId = payPalResponse["REFUNDTRANSACTIONID"];
+                result.FeeRefundAmount = ParseRefundAmounts(payPalResponse, "FEEREFUNDAMT");
+                result.GrossRefundAmount = ParseRefundAmounts(payPalResponse, "GROSSREFUNDAMT");
+                result.NetRefundAmount = ParseRefundAmounts(payPalResponse, "NETREFUNDAMT");
+                result.TotalRefundAmount = ParseRefundAmounts(payPalResponse, "TOTALREFUNDEDAMOUNT");
+            },
+            _ => result.Status = PaymentStatus.Failed);
+
+            return result;
+        }
+
+        private decimal ParseRefundAmounts(NameValueCollection payPalResponse, string fieldName)
+        {
+            decimal result;
+            decimal.TryParse(payPalResponse[fieldName], out result);
+            return result;
         }
     }
 }

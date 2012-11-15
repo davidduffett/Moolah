@@ -14,7 +14,7 @@ namespace Moolah.PayPal
         private readonly IPayPalRequestBuilder _requestBuilder;
         private readonly IPayPalResponseParser _responseParser;
 
-        public PayPalExpressCheckout() 
+        public PayPalExpressCheckout()
             : this(MoolahConfiguration.Current.PayPal)
         {
         }
@@ -48,7 +48,7 @@ namespace Moolah.PayPal
 
             _logger.Log("SetExpressCheckout.Request", new { Amount = amount, CancelUrl = cancelUrl, ConfirmationUrl = confirmationUrl });
 
-            var request = _requestBuilder.SetExpressCheckout(amount,currencyCodeType, cancelUrl, confirmationUrl);
+            var request = _requestBuilder.SetExpressCheckout(amount, currencyCodeType, cancelUrl, confirmationUrl);
             return setExpressCheckoutRequestFor(request);
         }
 
@@ -76,7 +76,7 @@ namespace Moolah.PayPal
         public PayPalExpressCheckoutDetails GetExpressCheckoutDetails(string payPalToken)
         {
             if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
-            
+
             var request = _requestBuilder.GetExpressCheckoutDetails(payPalToken);
             var response = sendToPayPal(request);
             return _responseParser.GetExpressCheckoutDetails(response);
@@ -88,11 +88,11 @@ namespace Moolah.PayPal
             if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
             if (string.IsNullOrWhiteSpace(payPalPayerId)) throw new ArgumentNullException("payPalPayerId");
 
-            var request = _requestBuilder.DoExpressCheckoutPayment(amount,currencyCodeType, payPalToken, payPalPayerId);
+            var request = _requestBuilder.DoExpressCheckoutPayment(amount, currencyCodeType, payPalToken, payPalPayerId);
             return doExpressCheckoutPaymentFor(request);
         }
 
-        public IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails,  string payPalToken, string payPalPayerId)
+        public IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId)
         {
             if (orderDetails == null) throw new ArgumentNullException("orderDetails");
             if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
@@ -111,6 +111,12 @@ namespace Moolah.PayPal
         private NameValueCollection sendToPayPal(NameValueCollection queryString)
         {
             return HttpUtility.ParseQueryString(_httpClient.Get(_configuration.Host + "?" + queryString));
+        }
+
+        public PaypalRefundResponse RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD)
+        {
+            var response = sendToPayPal(_requestBuilder.RefundTransaction(transactionId, refundType, amount, description, currencyCodeType));
+            return _responseParser.RefundTransaction(response);
         }
     }
 }
