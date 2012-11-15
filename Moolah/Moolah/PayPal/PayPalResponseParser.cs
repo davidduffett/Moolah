@@ -296,9 +296,20 @@ namespace Moolah.PayPal
             {
                 result.Status = PaymentStatus.Successful;
                 result.TransactionId = payPalResponse["REFUNDTRANSACTIONID"];
+                result.FeeRefundAmount = ParseRefundAmounts(payPalResponse, "FEEREFUNDAMT");
+                result.GrossRefundAmount = ParseRefundAmounts(payPalResponse, "GROSSREFUNDAMT");
+                result.NetRefundAmount = ParseRefundAmounts(payPalResponse, "NETREFUNDAMT");
+                result.TotalRefundAmount = ParseRefundAmounts(payPalResponse, "TOTALREFUNDEDAMOUNT");
             },
             _ => result.Status = PaymentStatus.Failed);
 
+            return result;
+        }
+
+        private decimal ParseRefundAmounts(NameValueCollection payPalResponse, string fieldName)
+        {
+            decimal result;
+            decimal.TryParse(payPalResponse[fieldName], out result);
             return result;
         }
     }

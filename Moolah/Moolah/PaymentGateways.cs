@@ -102,8 +102,8 @@ namespace Moolah
         /// <param name="transactionId">The transaction Id received from the DoExpressCheckoutPayment call.</param>
         /// <param name="refundType">Type of refund. Default is full.</param>
         /// <param name="amount">The amount to refund. This parameter is only needed for partial refunds.</param>
-        /// <param name="description">A note about the refund. Only needed for partial refunds.</param>
-        /// <param name="currencyCodeType">The Currency Code for the refund. Only needed for partial refunds.</param>
+        /// <param name="description">A note about the refund.</param>
+        /// <param name="currencyCodeType">The Currency Code for the refund.</param>
         /// <returns>The status of the refund.</returns>
         PaypalRefundResponse RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD);
     }
