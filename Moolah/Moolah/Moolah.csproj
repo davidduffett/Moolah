@@ -99,9 +99,11 @@
     <Compile Include="PayPal\PayPalExpressCheckoutToken.cs" />
     <Compile Include="PayPal\PayPalPaymentResponse.cs" />
     <Compile Include="PayPal\PayPalPaymentStatus.cs" />
+    <Compile Include="PayPal\PaypalRefundResponse.cs" />
     <Compile Include="PayPal\PayPalRequestBuilder.cs" />
     <Compile Include="PayPal\PayPalResponseParser.cs" />
     <Compile Include="PayPal\PayPalAck.cs" />
+    <Compile Include="PayPal\RefundType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Culture.cs" />
     <Compile Include="TimeProvider.cs" />
