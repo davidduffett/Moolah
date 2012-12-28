@@ -9,6 +9,7 @@ namespace Moolah.PayPal
     {
         NameValueCollection SetExpressCheckout(decimal amount, CurrencyCodeType currencyCodeType, string cancelUrl, string confirmationUrl);
         NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl);
+        NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl, NameValueCollection optionalFields);
         NameValueCollection GetExpressCheckoutDetails(string payPalToken);
         NameValueCollection DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId);
         NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
@@ -60,6 +61,20 @@ namespace Moolah.PayPal
             // SetExpressCheckout specific
             addOptionalValueToRequest("ALLOWNOTE", orderDetails.AllowNote, request);
             addOptionalValueToRequest("BUYEREMAILOPTINENABLE", orderDetails.EnableCustomerMarketingEmailOptIn, request);
+
+            return request;
+        }
+
+        public NameValueCollection SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl, NameValueCollection optionalFields)
+        {
+            var request = SetExpressCheckout(orderDetails, cancelUrl, confirmationUrl);
+
+            foreach(string key in optionalFields)
+            {
+                //Make sure we're not overwriting a field that's already been set
+                if(request[key] == null)
+                    addOptionalValueToRequest(key, optionalFields[key], request);
+            }
 
             return request;
         }

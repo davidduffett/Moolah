@@ -64,6 +64,18 @@ namespace Moolah.PayPal
             return setExpressCheckoutRequestFor(request);
         }
 
+        public PayPalExpressCheckoutToken SetExpressCheckout(OrderDetails orderDetails, string cancelUrl, string confirmationUrl, NameValueCollection optionalFields)
+        {
+            if(orderDetails == null) throw new ArgumentNullException("orderDetails");
+            if(string.IsNullOrWhiteSpace(cancelUrl)) throw new ArgumentNullException("cancelUrl");
+            if(string.IsNullOrWhiteSpace(confirmationUrl)) throw new ArgumentNullException("confirmationUrl");
+
+            _logger.Log("SetExpressCheckout.Request", orderDetails);
+
+            var request = _requestBuilder.SetExpressCheckout(orderDetails, cancelUrl, confirmationUrl, optionalFields);
+            return setExpressCheckoutRequestFor(request);
+        }
+
         PayPalExpressCheckoutToken setExpressCheckoutRequestFor(NameValueCollection request)
         {
             var response = sendToPayPal(request);
