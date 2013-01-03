@@ -35,6 +35,7 @@ If you do this, you simply need to new up the gateway without the configuration 
 
 ## Examples
 ### DataCash (MoTo)
+#### Payment
 
 	var configuration = new DataCashConfiguration(PaymentEnvironment.Test, "merchantId", "password");
 	var gateway = new DataCashMoToGateway(configuration);
@@ -60,6 +61,10 @@ If you do this, you simply need to new up the gateway without the configuration 
 	else
 		DisplayMessage("Transaction successful! DataCash Reference: {0}", response.TransactionReference);
 
+#### Refund Transaction
+You can refund transactions by providing the DataCash reference of the original transaction to refund, and an amount less than or equal to that original transaction amount, less any refunds already made on it.
+
+	var response = gateway.RefundTransaction("original_datacash_reference", 12.99m);
 
 ### DataCash (3D-Secure)
 
