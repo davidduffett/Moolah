@@ -49,5 +49,19 @@
         </ThreeDSecure>
     </CardTxn>
 </Response>";
+
+        public const string RefundResponseFormat =
+            @"
+<Response>
+    <datacash_reference>{0}</datacash_reference>
+    <HistoricTxn>
+        <authcode>896876</authcode>
+    </HistoricTxn>
+    <merchantreference>4100000088888888</merchantreference>
+    <mode>LIVE</mode>
+    <reason>ACCEPTED</reason>
+    <status>{1}</status>
+    <time>1071567375</time>
+</Response>";
     }
 }

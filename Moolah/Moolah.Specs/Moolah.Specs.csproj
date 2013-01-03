@@ -77,6 +77,7 @@
     <Compile Include="DataCash\DataCash3DSPaymentRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCashMoToGatewaySpec.cs" />
     <Compile Include="DataCash\DataCashPaymentRequestBuilderSpec.cs" />
+    <Compile Include="DataCash\RefundTransactionRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCashResponseParserSpec.cs" />
     <Compile Include="DataCash\DataCashResponses.cs" />
     <Compile Include="DataCash\Integration3DSecure.cs">
@@ -84,6 +85,7 @@
     </Compile>
     <Compile Include="DataCash\IntegrationContext.cs" />
     <Compile Include="DataCash\IntegrationMoTo.cs" />
+    <Compile Include="DataCash\RefundTransactionResponseParserSpec.cs" />
     <Compile Include="GoogleCheckout\FakeGCheckoutResponse.cs">
       <SubType>Code</SubType>
     </Compile>

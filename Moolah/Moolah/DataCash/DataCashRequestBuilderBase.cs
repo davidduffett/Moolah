@@ -13,6 +13,11 @@ namespace Moolah.DataCash
         XDocument Build(string transactionReference, string PARes);
     }
 
+    public interface IDataCashRefundTransactionRequestBuilder
+    {
+        XDocument Build(string originalTransactionReference, decimal amount);
+    }
+
     public abstract class DataCashRequestBuilderBase
     {
         private readonly DataCashConfiguration _configuration;
