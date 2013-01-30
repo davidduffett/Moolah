@@ -56,7 +56,7 @@ namespace Moolah.DataCash
         {
             return new XElement("TxnDetails",
                 new XElement("merchantreference", merchantReference),
-                new XElement("amount", amount.ToString("0.00")));
+                new XElement("amount", new XAttribute("currency", "GBP"), amount.ToString("0.00")));
         }
 
         protected virtual XElement CardTxnElement(CardDetails card)
