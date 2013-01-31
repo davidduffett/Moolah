@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="CardTypeSpec.cs" />
     <Compile Include="CardUtilitySpec.cs" />
+    <Compile Include="DataCash\Integration3DSecureRefunds.cs" />
+    <Compile Include="DataCash\IntegrationMoToRefunds.cs" />
     <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCash3DSecureGatewaySpec.cs">
       <SubType>Code</SubType>
