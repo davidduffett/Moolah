@@ -3,21 +3,22 @@ using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
-    public class DataCash3DSecureGateway : I3DSecurePaymentGateway
+    public class DataCash3DSecureGateway : I3DSecurePaymentGateway, ICanRefundTransactions
     {
         private readonly DataCash3DSecureConfiguration _configuration;
         private readonly IHttpClient _httpClient;
         private readonly IDataCashPaymentRequestBuilder _paymentPaymentRequestBuilder;
         private readonly IDataCashAuthorizeRequestBuilder _authorizeRequestBuilder;
         private readonly IDataCash3DSecureResponseParser _responseParser;
-        
+        private readonly IRefundGateway _refundGateway;
+
         public DataCash3DSecureGateway()
             : this(MoolahConfiguration.Current.DataCash3DSecure)
         {
         }
 
         public DataCash3DSecureGateway(DataCash3DSecureConfiguration configuration)
-            : this(configuration, new HttpClient(), new DataCash3DSecureRequestBuilder(configuration), new DataCash3DSecureAuthorizeRequestBuilder(configuration), new DataCash3DSecureResponseParser())
+            : this(configuration, new HttpClient(), new DataCash3DSecureRequestBuilder(configuration), new DataCash3DSecureAuthorizeRequestBuilder(configuration), new DataCash3DSecureResponseParser(), new RefundGateway(configuration))
         {
         }
 
@@ -29,18 +30,21 @@ namespace Moolah.DataCash
             IHttpClient httpClient, 
             IDataCashPaymentRequestBuilder paymentRequestBuilder, 
             IDataCashAuthorizeRequestBuilder authorizeRequestBuilder,
-            IDataCash3DSecureResponseParser responseParser)
+            IDataCash3DSecureResponseParser responseParser,
+            IRefundGateway refundGateway)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             if (httpClient == null) throw new ArgumentNullException("httpClient");
             if (paymentRequestBuilder == null) throw new ArgumentNullException("paymentRequestBuilder");
             if (authorizeRequestBuilder == null) throw new ArgumentNullException("authorizeRequestBuilder");
             if (responseParser == null) throw new ArgumentNullException("responseParser");
+            if (refundGateway == null) throw new ArgumentNullException("refundGateway");
             _configuration = configuration;
             _httpClient = httpClient;
             _paymentPaymentRequestBuilder = paymentRequestBuilder;
             _authorizeRequestBuilder = authorizeRequestBuilder;
             _responseParser = responseParser;
+            _refundGateway = refundGateway;
         }
 
         public I3DSecureResponse Payment(string merchantReference, decimal amount, CardDetails card)
@@ -70,6 +74,11 @@ namespace Moolah.DataCash
         public string MerchantId
         {
             get { return _configuration.MerchantId; }
+        }
+
+        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount)
+        {
+            return _refundGateway.Refund(originalTransactionReference, amount);
         }
     }
 }

@@ -71,6 +71,7 @@
     <Compile Include="DataCash\DataCashStatus.cs" />
     <Compile Include="DataCash\RefundTransactionResponseParser.cs" />
     <Compile Include="DataCash\RefundTransactionResponse.cs" />
+    <Compile Include="DataCash\RefundGateway.cs" />
     <Compile Include="GoogleCheckout\ButtonSize.cs" />
     <Compile Include="GoogleCheckout\ButtonStyle.cs" />
     <Compile Include="GoogleCheckout\CheckoutOptions.cs" />
