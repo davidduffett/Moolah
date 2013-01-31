@@ -5,7 +5,7 @@ using Moolah.PayPal;
 
 namespace Moolah
 {
-    public interface IPaymentGateway
+    public interface IPaymentGateway : ICanRefundTransactions
     {
         /// <summary>
         /// Attempts to transact the specified amount using the card details provided.
@@ -16,7 +16,7 @@ namespace Moolah
         ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card);
     }
 
-    public interface I3DSecurePaymentGateway
+    public interface I3DSecurePaymentGateway : ICanRefundTransactions
     {
         /// <summary>
         /// Attempts to make a card payment.  If the card is enrolled in 3D-Secure, then the Access Control Server URL (ACSUrl)
