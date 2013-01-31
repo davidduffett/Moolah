@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
-    public class DataCashMoToGateway : IPaymentGateway, ICanRefundTransactions
+    public class DataCashMoToGateway : IPaymentGateway
     {
         private readonly DataCashConfiguration _configuration;
         private readonly IHttpClient _httpClient;
