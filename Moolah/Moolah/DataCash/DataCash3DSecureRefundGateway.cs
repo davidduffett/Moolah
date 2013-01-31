@@ -1,6 +1,6 @@
 ﻿namespace Moolah.DataCash
 {
-    public interface IDataCash3DSecureRefundGateway
+    public interface IDataCash3DSecureRefundGateway : IRefundGateway
     {
     }
 

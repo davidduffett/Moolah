@@ -1,10 +1,10 @@
 ﻿namespace Moolah.DataCash
 {
-    public interface IDataCashMotoRefundGateway
+    public interface IDataCashMoToRefundGateway : IRefundGateway
     {
     }
 
-    public class DataCashMoToRefundGateway : RefundGateway, IDataCashMotoRefundGateway
+    public class DataCashMoToRefundGateway : RefundGateway, IDataCashMoToRefundGateway
     {
         public DataCashMoToRefundGateway()
             : base(MoolahConfiguration.Current.DataCashMoTo)
