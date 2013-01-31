@@ -56,6 +56,7 @@
     <Compile Include="DataCash\DataCash3DSecureGateway.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataCash\DataCash3DSecureRefundGateway.cs" />
     <Compile Include="DataCash\DataCash3DSecureResponseParser.cs" />
     <Compile Include="DataCash\DataCash3DSecureRequestBuilder.cs" />
     <Compile Include="DataCash\DataCashConfiguration.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="DataCash\DataCashFailureReason.cs" />
     <Compile Include="DataCash\DataCashFailureReasons.cs" />
     <Compile Include="DataCash\DataCashMoToGateway.cs" />
+    <Compile Include="DataCash\DataCashMoToRefundGateway.cs" />
     <Compile Include="DataCash\DataCashPaymentResponse.cs" />
     <Compile Include="DataCash\DataCashMoToRequestBuilder.cs" />
     <Compile Include="DataCash\RefundTransactionRequestBuilder.cs" />
