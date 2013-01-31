@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="CardTypeSpec.cs" />
     <Compile Include="CardUtilitySpec.cs" />
+    <Compile Include="DataCash\Integration3DSecureRefunds.cs" />
+    <Compile Include="DataCash\IntegrationMoToRefunds.cs" />
     <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCash3DSecureGatewaySpec.cs">
       <SubType>Code</SubType>
@@ -77,6 +79,7 @@
     <Compile Include="DataCash\DataCash3DSPaymentRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCashMoToGatewaySpec.cs" />
     <Compile Include="DataCash\DataCashPaymentRequestBuilderSpec.cs" />
+    <Compile Include="DataCash\RefundGatewaySpec.cs" />
     <Compile Include="DataCash\RefundTransactionRequestBuilderSpec.cs" />
     <Compile Include="DataCash\DataCashResponseParserSpec.cs" />
     <Compile Include="DataCash\DataCashResponses.cs" />

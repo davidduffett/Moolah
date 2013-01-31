@@ -5,7 +5,7 @@ using Moolah.PayPal;
 
 namespace Moolah
 {
-    public interface IPaymentGateway
+    public interface IPaymentGateway : ICanRefundTransactions
     {
         /// <summary>
         /// Attempts to transact the specified amount using the card details provided.
@@ -14,16 +14,9 @@ namespace Moolah
         /// <param name="amount">The amount to transact.</param>
         /// <param name="card">Credit or debit card details.</param>
         ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card);
-
-        /// <summary>
-        /// Attempts to refund a historic DataCash transaction.
-        /// </summary>
-        /// <param name="originalTransactionReference">The DataCash reference provided for the original transaction you are refunding.</param>
-        /// <param name="amount">The amount you wish to refund, which must be less than or equal to the original transaction amount, less any previous refunds made for that transaction.</param>
-        IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount);
     }
 
-    public interface I3DSecurePaymentGateway
+    public interface I3DSecurePaymentGateway : ICanRefundTransactions
     {
         /// <summary>
         /// Attempts to make a card payment.  If the card is enrolled in 3D-Secure, then the Access Control Server URL (ACSUrl)
@@ -46,6 +39,16 @@ namespace Moolah
         /// Merchant vTID number
         /// </summary>
         string MerchantId { get; }
+    }
+
+    public interface ICanRefundTransactions
+    {
+        /// <summary>
+        /// Attempts to refund a historic DataCash transaction.
+        /// </summary>
+        /// <param name="originalTransactionReference">The DataCash reference provided for the original transaction you are refunding.</param>
+        /// <param name="amount">The amount you wish to refund, which must be less than or equal to the original transaction amount, less any previous refunds made for that transaction.</param>
+        IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount);   
     }
 
     public interface IPayPalExpressCheckout

@@ -23,7 +23,8 @@ namespace Moolah.Specs.DataCash
             Gateway = new DataCash3DSecureGateway(Configuration, new HttpClient(), 
                 new DataCash3DSecureRequestBuilder(Configuration, HttpRequest), 
                 new DataCash3DSecureAuthorizeRequestBuilder(Configuration), 
-                new DataCash3DSecureResponseParser());
+                new DataCash3DSecureResponseParser(),
+                new RefundGateway(Configuration));
             Response = Gateway.Payment(MerchantReference(), 12.99m, new CardDetails { Number = CardNumber, Cv2 = "123", ExpiryDate = ExpiryDate });
         };
 
