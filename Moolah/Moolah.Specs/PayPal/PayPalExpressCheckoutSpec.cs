@@ -131,14 +131,14 @@ namespace Moolah.Specs.PayPal
     }
 
     [Subject(typeof(PayPalExpressCheckout))]
-    public class When_calling_refund_transaction_with_transaction_id_only : PayPalExpressCheckoutContext
+    public class When_calling_refund_full_transaction : PayPalExpressCheckoutContext
     {
         It should_return_the_correct_result = () =>
             Result.ShouldEqual(ExpectedResult);
 
         Establish context = () =>
         {
-            ExpectedResult = new PayPalRefundResponse();
+            ExpectedResult = An<IPayPalRefundResponse>();
             RequestBuilder.WhenToldTo(x => x.RefundFullTransaction(TransactionId))
                 .Return(HttpUtility.ParseQueryString(Request));
             ResponseParser.WhenToldTo(x => x.RefundTransaction(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
@@ -146,15 +146,15 @@ namespace Moolah.Specs.PayPal
         };
 
         Because of = () =>
-            Result = SUT.RefundTransaction(TransactionId);
+            Result = SUT.RefundFullTransaction(TransactionId);
 
-        static PayPalRefundResponse Result;
-        static PayPalRefundResponse ExpectedResult;
+        static IPayPalRefundResponse Result;
+        static IPayPalRefundResponse ExpectedResult;
         const string TransactionId = "123ABC";
     }
 
     [Subject(typeof(PayPalExpressCheckout))]
-    public class When_calling_refund_transaction_with_specified_amount : PayPalExpressCheckoutContext
+    public class When_calling_refund_partial_transaction : PayPalExpressCheckoutContext
     {
         It should_return_the_correct_result = () =>
             Result.ShouldEqual(ExpectedResult);
@@ -169,10 +169,10 @@ namespace Moolah.Specs.PayPal
         };
 
         Because of = () =>
-            Result = SUT.RefundTransaction(TransactionId, Amount, CurrencyCode, Description);
+            Result = SUT.RefundPartialTransaction(TransactionId, Amount, CurrencyCode, Description);
 
-        static PayPalRefundResponse Result;
-        static PayPalRefundResponse ExpectedResult;
+        static IPayPalRefundResponse Result;
+        static IPayPalRefundResponse ExpectedResult;
         const string TransactionId = "123ABC";
         const decimal Amount = 123m;
         const CurrencyCodeType CurrencyCode = CurrencyCodeType.PLN;

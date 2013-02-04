@@ -112,7 +112,7 @@ namespace Moolah
         /// </summary>
         /// <param name="transactionId">The PayPal transaction id to be refunded.</param>
         /// <returns>The status of the refund.</returns>
-        PayPalRefundResponse RefundTransaction(string transactionId);
+        IPayPalRefundResponse RefundFullTransaction(string transactionId);
 
         /// <summary>
         /// Performs a partial transaction refund.
@@ -122,7 +122,7 @@ namespace Moolah
         /// <param name="currencyCodeType">The Currency Code for the refund.</param>
         /// <param name="description">A note about the refund. Optional.</param>
         /// <returns>The status of the refund.</returns>
-        PayPalRefundResponse RefundTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description = null);
+        IPayPalRefundResponse RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description = null);
     }
 
     public interface IGoogleCheckout

@@ -125,7 +125,7 @@ namespace Moolah.PayPal
             return HttpUtility.ParseQueryString(_httpClient.Get(_configuration.Host + "?" + queryString));
         }
 
-        public PayPalRefundResponse RefundTransaction(string transactionId)
+        public IPayPalRefundResponse RefundFullTransaction(string transactionId)
         {
             if (String.IsNullOrWhiteSpace(transactionId)) throw new ArgumentNullException("transactionId", "Transaction id must be specified");
             
@@ -134,7 +134,7 @@ namespace Moolah.PayPal
             return _responseParser.RefundTransaction(response);
         }
 
-        public PayPalRefundResponse RefundTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description = null)
+        public IPayPalRefundResponse RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description = null)
         {
             if (String.IsNullOrWhiteSpace(transactionId)) throw new ArgumentNullException("transactionId", "Transaction id must be specified");
             if (amount <= 0) throw new ArgumentOutOfRangeException("amount", "Amount must be greater than zero.");
