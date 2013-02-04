@@ -129,4 +129,53 @@ namespace Moolah.Specs.PayPal
         const string Token = "tokenValue";
         const string PayerId = "payerId";
     }
+
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_calling_refund_transaction_with_transaction_id_only : PayPalExpressCheckoutContext
+    {
+        It should_return_the_correct_result = () =>
+            Result.ShouldEqual(ExpectedResult);
+
+        Establish context = () =>
+        {
+            ExpectedResult = new PayPalRefundResponse();
+            RequestBuilder.WhenToldTo(x => x.RefundFullTransaction(TransactionId))
+                .Return(HttpUtility.ParseQueryString(Request));
+            ResponseParser.WhenToldTo(x => x.RefundTransaction(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
+                .Return(ExpectedResult);
+        };
+
+        Because of = () =>
+            Result = SUT.RefundTransaction(TransactionId);
+
+        static PayPalRefundResponse Result;
+        static PayPalRefundResponse ExpectedResult;
+        const string TransactionId = "123ABC";
+    }
+
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_calling_refund_transaction_with_specified_amount : PayPalExpressCheckoutContext
+    {
+        It should_return_the_correct_result = () =>
+            Result.ShouldEqual(ExpectedResult);
+
+        Establish context = () =>
+        {
+            ExpectedResult = new PayPalRefundResponse();
+            RequestBuilder.WhenToldTo(x => x.RefundPartialTransaction(TransactionId, Amount, CurrencyCode, Description))
+                .Return(HttpUtility.ParseQueryString(Request));
+            ResponseParser.WhenToldTo(x => x.RefundTransaction(Param<NameValueCollection>.Matches(r => r.ToString() == Response)))
+                .Return(ExpectedResult);
+        };
+
+        Because of = () =>
+            Result = SUT.RefundTransaction(TransactionId, Amount, CurrencyCode, Description);
+
+        static PayPalRefundResponse Result;
+        static PayPalRefundResponse ExpectedResult;
+        const string TransactionId = "123ABC";
+        const decimal Amount = 123m;
+        const CurrencyCodeType CurrencyCode = CurrencyCodeType.PLN;
+        const string Description = "Description";
+    }
 }

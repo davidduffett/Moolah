@@ -11,7 +11,7 @@ namespace Moolah.PayPal
         PayPalExpressCheckoutToken SetExpressCheckout(NameValueCollection payPalResponse);
         PayPalExpressCheckoutDetails GetExpressCheckoutDetails(NameValueCollection payPalResponse);
         IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse);
-        PaypalRefundResponse RefundTransaction(NameValueCollection payPalResponse);
+        PayPalRefundResponse RefundTransaction(NameValueCollection payPalResponse);
     }
 
     public class PayPalResponseParser : IPayPalResponseParser
@@ -289,9 +289,9 @@ namespace Moolah.PayPal
             }
         }
 
-        public PaypalRefundResponse RefundTransaction(NameValueCollection payPalResponse)
+        public PayPalRefundResponse RefundTransaction(NameValueCollection payPalResponse)
         {
-            var result = new PaypalRefundResponse();
+            var result = new PayPalRefundResponse();
             parsePayPalAck(payPalResponse, () =>
             {
                 result.Status = PaymentStatus.Successful;
