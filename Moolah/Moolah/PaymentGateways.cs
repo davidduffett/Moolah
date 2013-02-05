@@ -108,15 +108,21 @@ namespace Moolah
         IPaymentResponse DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
 
         /// <summary>
-        /// Performs a refund for the specified transaction.
+        /// Performs a full transaction refund.
+        /// </summary>
+        /// <param name="transactionId">The PayPal transaction id to be refunded.</param>
+        /// <returns>The status of the refund.</returns>
+        IPayPalRefundResponse RefundFullTransaction(string transactionId);
+
+        /// <summary>
+        /// Performs a partial transaction refund.
         /// </summary>
         /// <param name="transactionId">The transaction Id received from the DoExpressCheckoutPayment call.</param>
-        /// <param name="refundType">Type of refund. Default is full.</param>
-        /// <param name="amount">The amount to refund. This parameter is only needed for partial refunds.</param>
-        /// <param name="description">A note about the refund.</param>
+        /// <param name="amount">The amount to refund.</param>
         /// <param name="currencyCodeType">The Currency Code for the refund.</param>
+        /// <param name="description">A note about the refund. Optional.</param>
         /// <returns>The status of the refund.</returns>
-        PaypalRefundResponse RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD);
+        IPayPalRefundResponse RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description = null);
     }
 
     public interface IGoogleCheckout

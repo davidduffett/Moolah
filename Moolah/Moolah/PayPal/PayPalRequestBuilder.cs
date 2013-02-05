@@ -13,7 +13,8 @@ namespace Moolah.PayPal
         NameValueCollection GetExpressCheckoutDetails(string payPalToken);
         NameValueCollection DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId);
         NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
-        NameValueCollection RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD);
+        NameValueCollection RefundFullTransaction(string transactionId);
+        NameValueCollection RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description);        
     }
 
     /// <summary>
@@ -190,30 +191,24 @@ namespace Moolah.PayPal
             return request;
         }
 
-        public NameValueCollection RefundTransaction(string transactionId, RefundType refundType = RefundType.Full, decimal amount = 0, string description = null, CurrencyCodeType currencyCodeType = CurrencyCodeType.USD)
-        {
-            var request = getQueryWithCredentials();
-            request["METHOD"] = "RefundTransaction";
-            request["TRANSACTIONID"] = transactionId;
-            if (refundType == RefundType.Full)
-            {
-                return request;
-            }
-
-            request["REFUNDTYPE"] = "Partial";
-            request["AMT"] = amount.ToString();
-            request["CURRENCYCODE"] = currencyCodeType.ToString();
-            request["NOTE"] = description;
-            return request;
-        }
-
-        public NameValueCollection RefundTransaction(string transactionId)
+        public NameValueCollection RefundFullTransaction(string transactionId)
         {
             var request = getQueryWithCredentials();
             request["METHOD"] = "RefundTransaction";
             request["TRANSACTIONID"] = transactionId;
             request["REFUNDTYPE"] = "FULL";
+            return request;
+        }
 
+        public NameValueCollection RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description)
+        {
+            var request = getQueryWithCredentials();
+            request["METHOD"] = "RefundTransaction";
+            request["TRANSACTIONID"] = transactionId;
+            request["REFUNDTYPE"] = "Partial";
+            request["AMT"] = amount.ToString();
+            request["CURRENCYCODE"] = currencyCodeType.ToString();
+            request["NOTE"] = description;
             return request;
         }
     }

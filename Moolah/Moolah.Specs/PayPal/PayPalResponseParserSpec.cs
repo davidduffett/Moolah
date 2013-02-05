@@ -374,4 +374,58 @@ namespace Moolah.Specs.PayPal
 
         static IPaymentResponse Response;
     }
+
+    [Subject(typeof(PayPalResponseParser))]
+    public class When_parsing_refund_transaction_when_it_succeeded : PayPalResponseParserContext
+    {
+        It should_have_successful_payment_status = () =>
+            Response.Status.ShouldEqual(PaymentStatus.Successful);
+
+        It should_provide_transaction_reference = () =>
+            Response.TransactionReference.ShouldEqual("QWE123");
+
+        It should_provide_fee_refund_amount = () =>
+            Response.FeeRefundAmount.ShouldEqual(9.99m);
+
+        It should_provide_gross_refund_amount = () =>
+            Response.GrossRefundAmount.ShouldEqual(30m);
+
+        It should_provide_net_refund_amount = () =>
+            Response.NetRefundAmount.ShouldEqual(30m);
+
+        It should_provide_total_refund_amount = () =>
+            Response.TotalRefundAmount.ShouldEqual(50m);
+
+        Because of = () =>
+        {
+            var payPalResponse = HttpUtility.ParseQueryString("ACK=Success&REFUNDTRANSACTIONID=QWE123&FEEREFUNDAMT=9.99&GROSSREFUNDAMT=30&NETREFUNDAMT=30&TOTALREFUNDEDAMOUNT=50");
+            Response = SUT.RefundTransaction(payPalResponse);
+        };
+
+        static IPayPalRefundResponse Response;
+    }
+
+    [Subject(typeof(PayPalResponseParser))]
+    public class When_parsing_refund_transaction_when_it_failed : PayPalResponseParserContext
+    {
+        It should_have_failed_payment_status = () =>
+            Response.Status.ShouldEqual(PaymentStatus.Failed);
+
+        It should_be_a_system_failure = () =>
+            Response.IsSystemFailure.ShouldBeTrue();
+
+        It should_provide_a_failure_message = () =>
+            Response.FailureMessage.ShouldNotBeEmpty();
+
+        It should_not_provide_paypal_transaction_reference = () =>
+            Response.TransactionReference.ShouldBeNull();
+
+        Because of = () =>
+        {
+            var payPalResponse = HttpUtility.ParseQueryString("ACK=Failure&L_ERRORCODE0=10002&L_SHORTMESSAGE0=Security%20error&L_LONGMESSAGE0=Security%20header%20is%20not%20valid&L_SEVERITYCODE0=Error");
+            Response = SUT.RefundTransaction(payPalResponse);
+        };
+
+        static IPayPalRefundResponse Response;
+    }
 }
