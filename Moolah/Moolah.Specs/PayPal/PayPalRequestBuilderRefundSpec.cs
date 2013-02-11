@@ -37,7 +37,7 @@ namespace Moolah.Specs.PayPal
         It should_specify_transaction_id = () =>
             Request["TRANSACTIONID"].ShouldEqual(TransactionId);
 
-        It should_specify_amount = () =>
+        It should_specify_amount_rounded_to_two_decimal_places = () =>
             Request["AMT"].ShouldEqual("100.10");
 
         It should_specify_currency_code = () =>
@@ -50,7 +50,7 @@ namespace Moolah.Specs.PayPal
             Request = SUT.RefundPartialTransaction(TransactionId, Amount, CurrencyCode, Description);
 
         const string TransactionId = "QWE123";
-        const decimal Amount = 100.10m;
+        const decimal Amount = 100.1000m;
         const CurrencyCodeType CurrencyCode = CurrencyCodeType.PLN;
         const string Description = "Refund!";
     }

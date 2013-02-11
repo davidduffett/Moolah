@@ -206,7 +206,7 @@ namespace Moolah.PayPal
             request["METHOD"] = "RefundTransaction";
             request["TRANSACTIONID"] = transactionId;
             request["REFUNDTYPE"] = "Partial";
-            request["AMT"] = amount.ToString();
+            request["AMT"] = amount.ToString("0.00");
             request["CURRENCYCODE"] = currencyCodeType.ToString();
             request["NOTE"] = description;
             return request;
