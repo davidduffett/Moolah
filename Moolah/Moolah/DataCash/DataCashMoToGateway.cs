@@ -43,9 +43,9 @@ namespace Moolah.DataCash
             _refundGateway = refundGateway;
         }
 
-        public ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card)
+        public ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null)
         {
-            var requestDocument = _paymentRequestBuilder.Build(merchantReference, amount, card);
+            var requestDocument = _paymentRequestBuilder.Build(merchantReference, amount, card, billingAddress);
             var response = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
             return _responseParser.Parse(response);
         }

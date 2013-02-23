@@ -47,7 +47,7 @@ namespace Moolah.Specs.DataCash
             ExpectedResponse.WhenToldTo(x => x.Status).Return(PaymentStatus.Pending);
             ExpectedResponse.WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(true);
 
-            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Card))
+            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Card, null))
                 .Return(requestDoc);
             HttpClient.WhenToldTo(x => x.Post(Configuration.Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);
@@ -114,7 +114,7 @@ namespace Moolah.Specs.DataCash
             paymentResponse.WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(false);
             paymentResponse.WhenToldTo(x => x.TransactionReference).Return(transactionReference);
 
-            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Card)).Return(paymentRequest);
+            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Card, null)).Return(paymentRequest);
             HttpClient.WhenToldTo(x => x.Post(Configuration.Host, paymentRequest.ToString(SaveOptions.DisableFormatting))).Return(paymentHttpResponse);
             ResponseParser.WhenToldTo(x => x.Parse(paymentHttpResponse)).Return(paymentResponse);
 

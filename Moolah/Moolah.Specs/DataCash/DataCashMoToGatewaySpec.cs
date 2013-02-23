@@ -18,7 +18,7 @@ namespace Moolah.Specs.DataCash
 
             var requestDoc = new XDocument();
             const string httpResponse = "<PaymentResponse/>";
-            The<IDataCashPaymentRequestBuilder>().WhenToldTo(x => x.Build(MerchantReference, Amount, Card))
+            The<IDataCashPaymentRequestBuilder>().WhenToldTo(x => x.Build(MerchantReference, Amount, Card, null))
                 .Return(requestDoc);
             The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCashConfiguration>().Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);

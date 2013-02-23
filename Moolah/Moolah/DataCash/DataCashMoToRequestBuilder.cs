@@ -12,11 +12,11 @@ namespace Moolah.DataCash
         {
         }
 
-        public XDocument Build(string merchantReference, decimal amount, CardDetails card)
+        public XDocument Build(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress)
         {
             return GetDocument(
                 TxnDetailsElement(merchantReference, amount),
-                CardTxnElement(card));
+                CardTxnElement(card, billingAddress));
         }
     }
 }

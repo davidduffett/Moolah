@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace Moolah.DataCash
 {
     public interface IDataCashPaymentRequestBuilder
     {
-        XDocument Build(string merchantReference, decimal amount, CardDetails card);
+        XDocument Build(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress);
     }
 
     public interface IDataCashAuthorizeRequestBuilder
@@ -59,27 +60,45 @@ namespace Moolah.DataCash
                 new XElement("amount", new XAttribute("currency", "GBP"), amount.ToString("0.00")));
         }
 
-        protected virtual XElement CardTxnElement(CardDetails card)
+        protected virtual XElement CardTxnElement(CardDetails card, BillingAddress billingAddress)
         {
             return new XElement("CardTxn",
                                 new XElement("method", "auth"),
-                                CardElement(card));
+                                CardElement(card, billingAddress));
         }
 
-        protected virtual XElement CardElement(CardDetails card)
+        protected virtual XElement CardElement(CardDetails card, BillingAddress billingAddress)
         {
             return new XElement("Card",
                                 new XElement("pan", card.Number),
                                 new XElement("expirydate", card.ExpiryDate),
                                 new XElement("startdate", card.StartDate),
                                 new XElement("issuenumber", card.IssueNumber),
-                                Cv2AvsElement(card));
+                                Cv2AvsElement(card, billingAddress));
         }
 
-        protected virtual XElement Cv2AvsElement(CardDetails card)
+        protected virtual XElement Cv2AvsElement(CardDetails card, BillingAddress billingAddress)
         {
-            return new XElement("Cv2Avs",
-                                new XElement("cv2", card.Cv2));
+            var cv2AvsElements = new List<XElement>();
+            if (billingAddress != null)
+            {
+                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress1))
+                    cv2AvsElements.Add(new XElement("street_address1", billingAddress.StreetAddress1));
+                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress2))
+                    cv2AvsElements.Add(new XElement("street_address2", billingAddress.StreetAddress2));
+                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress3))
+                    cv2AvsElements.Add(new XElement("street_address3", billingAddress.StreetAddress3));
+                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress4))
+                    cv2AvsElements.Add(new XElement("street_address4", billingAddress.StreetAddress4));
+                if (!string.IsNullOrWhiteSpace(billingAddress.City))
+                    cv2AvsElements.Add(new XElement("city", billingAddress.City));
+                if (!string.IsNullOrWhiteSpace(billingAddress.State))
+                    cv2AvsElements.Add(new XElement("state_province", billingAddress.State));
+                if (!string.IsNullOrWhiteSpace(billingAddress.Postcode))
+                    cv2AvsElements.Add(new XElement("postcode", billingAddress.Postcode));
+            }
+            cv2AvsElements.Add(new XElement("cv2", card.Cv2));
+            return new XElement("Cv2Avs", cv2AvsElements.ToArray());
         }
     }
 }

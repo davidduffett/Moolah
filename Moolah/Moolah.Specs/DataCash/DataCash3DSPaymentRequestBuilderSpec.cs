@@ -39,7 +39,7 @@ namespace Moolah.Specs.DataCash
                 new NameValueCollection { { "Accept", AcceptHeaders } });
 
             var builder = new DataCash3DSecureRequestBuilder(Configuration, HttpRequest) { SystemTime = FakeSystemTime };
-            Result = builder.Build(MerchantReference, Amount, CardDetails);
+            Result = builder.Build(MerchantReference, Amount, CardDetails, null);
         };
 
         Establish context = () =>

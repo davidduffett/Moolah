@@ -29,11 +29,11 @@ namespace Moolah.DataCash
             SystemTime = new TimeProvider();
         }
 
-        public XDocument Build(string merchantReference, decimal amount, CardDetails card)
+        public XDocument Build(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress)
         {
             return GetDocument(
                 TxnDetailsElement(merchantReference, amount),
-                CardTxnElement(card));
+                CardTxnElement(card, billingAddress));
         }
 
         protected override XElement TxnDetailsElement(string merchantReference, decimal amount)
