@@ -20,6 +20,10 @@ namespace Moolah.DataCash
             if (document.TryGetXPathValue("Response/datacash_reference", out transactionReference))
                 response.TransactionReference = transactionReference;
 
+            string avsCv2Result;
+            if (document.TryGetXPathValue("Response/CardTxn/Cv2Avs/cv2avs_status", out avsCv2Result))
+                response.AvsCv2Result = avsCv2Result;
+
             var dataCashStatus = int.Parse(document.XPathValue("Response/status"));
             switch (dataCashStatus)
             {

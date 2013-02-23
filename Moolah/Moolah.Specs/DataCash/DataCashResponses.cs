@@ -10,6 +10,10 @@
         <card_scheme>Mastercard</card_scheme>
         <country>United Kingdom</country>
         <issuer>HSBC</issuer>
+        <Cv2Avs>
+            <cv2avs_status>{2}</cv2avs_status>
+            <policy>2</policy>
+        </Cv2Avs>
     </CardTxn>
     <datacash_reference>{0}</datacash_reference>
     <merchantreference>4567890</merchantreference>
@@ -27,6 +31,10 @@
         <card_scheme>Mastercard</card_scheme>
         <country>United Kingdom</country>
         <issuer>HSBC</issuer>
+        <Cv2Avs>
+            <cv2avs_status>{1}</cv2avs_status>
+            <policy>2</policy>
+        </Cv2Avs>
     </CardTxn>
     <merchantreference>4567890</merchantreference>
     <mode>LIVE</mode>
@@ -47,6 +55,10 @@
             <pareq_message>{1}</pareq_message>
             <acs_url>{2}</acs_url>
         </ThreeDSecure>
+        <Cv2Avs>
+            <cv2avs_status>{3}</cv2avs_status>
+            <policy>2</policy>
+        </Cv2Avs>
     </CardTxn>
 </Response>";
 

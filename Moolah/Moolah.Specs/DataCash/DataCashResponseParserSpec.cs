@@ -21,12 +21,16 @@ namespace Moolah.Specs.DataCash
         It should_set_correct_system_failure = () =>
             Response.IsSystemFailure.ShouldEqual(IsSystemFailure);
 
+        It should_set_avscv2_result = () =>
+            Response.AvsCv2Result.ShouldEqual(ExpectedAvsCv2Result);
+
         protected static ICardPaymentResponse Response;
         protected static string DataCashReference;
         protected static PaymentStatus ExpectedStatus;        
         protected static string ExpectedFailureMessage;
         protected static CardFailureType ExpectedFailureType;
         protected static bool IsSystemFailure;
+        protected static string ExpectedAvsCv2Result;
     }
 
     public abstract class DataCashResponseParserContext
@@ -48,6 +52,7 @@ namespace Moolah.Specs.DataCash
         protected static bool IsSystemFailure;
         protected static string DataCashReference;
         protected static int StatusCode;
+        protected static string ExpectedAvsCv2Result;
     }
 
     [Subject(typeof(DataCashResponseParser))]
@@ -63,7 +68,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "ALL MATCH";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -80,7 +86,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = DataCashFailureReasons.CleanFailures[DataCashStatus.NotAuthorised].Type;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -98,7 +105,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = DataCashFailureReasons.SystemFailures[systemFailureCode].Type;
             IsSystemFailure = true;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -115,7 +123,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.General;
             IsSystemFailure = true;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -132,7 +141,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.General;
             IsSystemFailure = true;
             DataCashReference = null;
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 }

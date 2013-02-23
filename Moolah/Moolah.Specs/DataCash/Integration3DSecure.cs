@@ -50,6 +50,9 @@ namespace Moolah.Specs.DataCash
         It should_provide_a_datacash_transaction_reference = () =>
             Response.TransactionReference.ShouldNotBeEmpty();
 
+        It should_provide_an_avscv2_result = () =>
+            Response.AvsCv2Result.ShouldNotBeEmpty();
+
         It should_not_have_a_failure_message = () =>
             Response.FailureMessage.ShouldBeNull();
 

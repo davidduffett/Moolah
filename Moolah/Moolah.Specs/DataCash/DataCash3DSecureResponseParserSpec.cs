@@ -23,6 +23,7 @@ namespace Moolah.Specs.DataCash
         protected static bool IsSystemFailure;
         protected static string DataCashReference;
         protected static int StatusCode;
+        protected static string ExpectedAvsCv2Result;
     }
 
     [Subject(typeof(DataCash3DSecureResponseParser))]
@@ -38,7 +39,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "ALL MATCH";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -55,7 +57,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = DataCashFailureReasons.CleanFailures[DataCashStatus.NotAuthorised].Type;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -73,7 +76,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = DataCashFailureReasons.SystemFailures[systemFailureCode].Type;
             IsSystemFailure = true;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -90,7 +94,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.General;
             IsSystemFailure = true;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -107,7 +112,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.General;
             IsSystemFailure = true;
             DataCashReference = null;
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "NO DATA MATCHES";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseWithoutDataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 
@@ -133,8 +139,9 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.ThreeDSecureAuthenticationRequiredResponse, DataCashReference, 
-                PAReq, HttpUtility.HtmlEncode(ACSUrl));
+            ExpectedAvsCv2Result = "ALL MATCH";
+            ResponseXml = string.Format(DataCashResponses.ThreeDSecureAuthenticationRequiredResponse, DataCashReference,
+                PAReq, HttpUtility.HtmlEncode(ACSUrl), ExpectedAvsCv2Result);
         };
 
         const string PAReq =
@@ -158,7 +165,8 @@ namespace Moolah.Specs.DataCash
             ExpectedFailureType = CardFailureType.None;
             IsSystemFailure = false;
             DataCashReference = "3000000088888888";
-            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode);
+            ExpectedAvsCv2Result = "ALL MATCH";
+            ResponseXml = string.Format(DataCashResponses.AuthoriseResponseFormat, DataCashReference, StatusCode, ExpectedAvsCv2Result);
         };
     }
 }

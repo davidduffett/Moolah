@@ -35,6 +35,10 @@ namespace Moolah
         /// Gives more detailed information about what caused the failure
         /// </summary>
         CardFailureType FailureType { get; }
+        /// <summary>
+        /// Result of the AVS/CV2 verification check if performed.
+        /// </summary>
+        string AvsCv2Result { get; }
     }
 
     public interface I3DSecureResponse : ICardPaymentResponse
