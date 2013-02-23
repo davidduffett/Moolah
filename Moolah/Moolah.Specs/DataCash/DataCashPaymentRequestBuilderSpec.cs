@@ -125,7 +125,75 @@ namespace Moolah.Specs.DataCash
                 StreetAddress4 = "In Some Town",
                 City = "In Some City",
                 State = "In Some State",
-                Postcode = "With Some Postcode"
+                Postcode = "SW100QJ"
             };
+    }
+
+    [Subject(typeof(DataCashMoToRequestBuilder))]
+    public class When_building_auth_request_xml_and_postcode_contains_non_alphanumeric_characters : WithFakes
+    {
+        It should_strip_those_characters_from_the_postcode = () =>
+            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/postcode").ShouldEqual("postcode");
+
+        Because of = () =>
+        {
+            var builder = new DataCashMoToRequestBuilder(Configuration);
+            Result = builder.Build("123456", 12.99m, CardDetails, BillingAddress);
+        };
+
+        static XDocument Result;
+        static DataCashConfiguration Configuration = new DataCashConfiguration(PaymentEnvironment.Test, "merchant", "password123");
+        static CardDetails CardDetails = new CardDetails
+        {
+            Number = "1234567890123456",
+            ExpiryDate = "10/12",
+            Cv2 = "123",
+            StartDate = "10/10",
+            IssueNumber = "123"
+        };
+        static BillingAddress BillingAddress = new BillingAddress
+        {
+            StreetAddress1 = "Some Company",
+            StreetAddress2 = "On Some Street",
+            StreetAddress3 = "In Some Place",
+            StreetAddress4 = "In Some Town",
+            City = "In Some City",
+            State = "In Some State",
+            Postcode = "p-o! s%t?c:o*dÃe"
+        };
+    }
+
+    [Subject(typeof(DataCashMoToRequestBuilder))]
+    public class When_building_auth_request_xml_and_postcode_is_longer_than_9_characters : WithFakes
+    {
+        It should_limit_the_postcode_to_9_characters = () =>
+            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/postcode").ShouldEqual("postcode9");
+
+        Because of = () =>
+        {
+            var builder = new DataCashMoToRequestBuilder(Configuration);
+            Result = builder.Build("123456", 12.99m, CardDetails, BillingAddress);
+        };
+
+        static XDocument Result;
+        static DataCashConfiguration Configuration = new DataCashConfiguration(PaymentEnvironment.Test, "merchant", "password123");
+        static CardDetails CardDetails = new CardDetails
+        {
+            Number = "1234567890123456",
+            ExpiryDate = "10/12",
+            Cv2 = "123",
+            StartDate = "10/10",
+            IssueNumber = "123"
+        };
+        static BillingAddress BillingAddress = new BillingAddress
+        {
+            StreetAddress1 = "Some Company",
+            StreetAddress2 = "On Some Street",
+            StreetAddress3 = "In Some Place",
+            StreetAddress4 = "In Some Town",
+            City = "In Some City",
+            State = "In Some State",
+            Postcode = "postcode90123456"
+        };
     }
 }

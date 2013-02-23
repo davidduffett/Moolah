@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Moolah.DataCash
@@ -95,10 +96,22 @@ namespace Moolah.DataCash
                 if (!string.IsNullOrWhiteSpace(billingAddress.State))
                     cv2AvsElements.Add(new XElement("state_province", billingAddress.State));
                 if (!string.IsNullOrWhiteSpace(billingAddress.Postcode))
-                    cv2AvsElements.Add(new XElement("postcode", billingAddress.Postcode));
+                    cv2AvsElements.Add(new XElement("postcode", formatPostcode(billingAddress.Postcode)));
             }
             cv2AvsElements.Add(new XElement("cv2", card.Cv2));
             return new XElement("Cv2Avs", cv2AvsElements.ToArray());
+        }
+
+        /// <summary>
+        /// Postcodes sent to DataCash must be "A maximum of 9 alphanumeric characters."
+        /// </summary>
+        static string formatPostcode(string postcode)
+        {
+            var regex = new Regex("[^a-zA-Z0-9]");
+            postcode = regex.Replace(postcode, string.Empty);
+            return postcode.Length > 9
+                ? postcode.Substring(0, 9)
+                : postcode;
         }
     }
 }
