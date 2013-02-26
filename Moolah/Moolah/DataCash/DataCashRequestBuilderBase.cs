@@ -87,8 +87,10 @@ namespace Moolah.DataCash
                 var numericAddress = numericPartsOfAddress(billingAddress);
                 if (!string.IsNullOrWhiteSpace(numericAddress))
                     cv2AvsElements.Add(new XElement("street_address1", numericAddress));
-                if (!string.IsNullOrWhiteSpace(billingAddress.Postcode))
-                    cv2AvsElements.Add(new XElement("postcode", formatPostcode(billingAddress.Postcode)));
+
+                var formattedPostcode = formatPostcode(billingAddress.Postcode);
+                if (!string.IsNullOrWhiteSpace(formattedPostcode))
+                    cv2AvsElements.Add(new XElement("postcode", formattedPostcode));
             }
             cv2AvsElements.Add(new XElement("cv2", card.Cv2));
             return new XElement("Cv2Avs", cv2AvsElements.ToArray());
