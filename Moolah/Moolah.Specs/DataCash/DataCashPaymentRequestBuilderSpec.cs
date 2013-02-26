@@ -49,9 +49,15 @@ namespace Moolah.Specs.DataCash
     }
 
     [Subject(typeof(DataCashMoToRequestBuilder))]
-    public class When_building_auth_request_xml : WithFakes
+    public class When_building_auth_request_xml_without_billing_address : WithFakes
     {
         Behaves_like<DataCashPaymentRequestBehavior> a_datacash_payment_request;
+
+        It should_not_contain_street_address_1 = () =>
+            Result.TryGetXPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address1", out outValue).ShouldBeFalse();
+
+        It should_not_contain_postcode = () =>
+            Result.TryGetXPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/postcode", out outValue).ShouldBeFalse();
 
         Because of = () =>
         {
@@ -71,6 +77,7 @@ namespace Moolah.Specs.DataCash
                                                            StartDate = "10/10",
                                                            IssueNumber = "123"
                                                        };
+        static string outValue;
     }
 
     [Subject(typeof(DataCashMoToRequestBuilder))]
@@ -78,23 +85,8 @@ namespace Moolah.Specs.DataCash
     {
         Behaves_like<DataCashPaymentRequestBehavior> a_datacash_payment_request;
 
-        It should_contain_street_address_1 = () =>
-            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address1").ShouldEqual(BillingAddress.StreetAddress1);
-
-        It should_contain_street_address_2 = () =>
-            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address2").ShouldEqual(BillingAddress.StreetAddress2);
-
-        It should_contain_street_address_3 = () =>
-            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address3").ShouldEqual(BillingAddress.StreetAddress3);
-
-        It should_contain_street_address_4 = () =>
-            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address4").ShouldEqual(BillingAddress.StreetAddress4);
-
-        It should_contain_city = () =>
-            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/city").ShouldEqual(BillingAddress.City);
-
-        It should_contain_state = () =>
-            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/state_province").ShouldEqual(BillingAddress.State);
+        It should_contain_street_address_1_with_numeric_parts_of_address_only = () =>
+            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address1").ShouldEqual("123456");
 
         It should_contain_postcode = () =>
             Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/postcode").ShouldEqual(BillingAddress.Postcode);
@@ -119,12 +111,12 @@ namespace Moolah.Specs.DataCash
         };
         static BillingAddress BillingAddress = new BillingAddress
             {
-                StreetAddress1 = "Some Company",
-                StreetAddress2 = "On Some Street",
-                StreetAddress3 = "In Some Place",
-                StreetAddress4 = "In Some Town",
-                City = "In Some City",
-                State = "In Some State",
+                StreetAddress1 = "Some Company 1",
+                StreetAddress2 = "On Some Street 2",
+                StreetAddress3 = "In Some Place 3",
+                StreetAddress4 = "In Some Town 4",
+                City = "In Some City 5",
+                State = "In Some State 6",
                 Postcode = "SW100QJ"
             };
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -83,23 +84,34 @@ namespace Moolah.DataCash
             var cv2AvsElements = new List<XElement>();
             if (billingAddress != null)
             {
-                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress1))
-                    cv2AvsElements.Add(new XElement("street_address1", billingAddress.StreetAddress1));
-                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress2))
-                    cv2AvsElements.Add(new XElement("street_address2", billingAddress.StreetAddress2));
-                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress3))
-                    cv2AvsElements.Add(new XElement("street_address3", billingAddress.StreetAddress3));
-                if (!string.IsNullOrWhiteSpace(billingAddress.StreetAddress4))
-                    cv2AvsElements.Add(new XElement("street_address4", billingAddress.StreetAddress4));
-                if (!string.IsNullOrWhiteSpace(billingAddress.City))
-                    cv2AvsElements.Add(new XElement("city", billingAddress.City));
-                if (!string.IsNullOrWhiteSpace(billingAddress.State))
-                    cv2AvsElements.Add(new XElement("state_province", billingAddress.State));
+                var numericAddress = numericPartsOfAddress(billingAddress);
+                if (!string.IsNullOrWhiteSpace(numericAddress))
+                    cv2AvsElements.Add(new XElement("street_address1", numericAddress));
                 if (!string.IsNullOrWhiteSpace(billingAddress.Postcode))
                     cv2AvsElements.Add(new XElement("postcode", formatPostcode(billingAddress.Postcode)));
             }
             cv2AvsElements.Add(new XElement("cv2", card.Cv2));
             return new XElement("Cv2Avs", cv2AvsElements.ToArray());
+        }
+
+        /// <summary>
+        /// AVS checks strip out all non-numeric characters from addresses.
+        /// The DataCash specification clearly states that we can do this ourselves
+        /// before sending the address to them.
+        /// </summary>
+        static string numericPartsOfAddress(BillingAddress billingAddress)
+        {
+            var regex = new Regex("[^0-9]");
+            var address = string.Join("", new[]
+                {
+                    billingAddress.StreetAddress1,
+                    billingAddress.StreetAddress2,
+                    billingAddress.StreetAddress3,
+                    billingAddress.StreetAddress4,
+                    billingAddress.City,
+                    billingAddress.State
+                }.Where(x => x != null));
+            return regex.Replace(address, string.Empty);
         }
 
         /// <summary>
