@@ -106,10 +106,14 @@
     <Compile Include="PayPal\PayPalExpressCheckoutToken.cs" />
     <Compile Include="PayPal\PayPalPaymentResponse.cs" />
     <Compile Include="PayPal\PayPalPaymentStatus.cs" />
+    <Compile Include="PayPal\PayPalRecurringProfileResponse.cs" />
     <Compile Include="PayPal\PayPalRefundResponse.cs" />
     <Compile Include="PayPal\PayPalRequestBuilder.cs" />
     <Compile Include="PayPal\PayPalResponseParser.cs" />
     <Compile Include="PayPal\PayPalAck.cs" />
+    <Compile Include="PayPal\RecurringPeriod.cs" />
+    <Compile Include="PayPal\RecurringProfile.cs" />
+    <Compile Include="PayPal\RecurringProfileStatus.cs" />
     <Compile Include="PayPal\RefundType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Culture.cs" />

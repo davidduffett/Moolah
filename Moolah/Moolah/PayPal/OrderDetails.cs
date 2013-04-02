@@ -123,5 +123,7 @@ namespace Moolah.PayPal
         public int? Quantity { get; set; }
 
         public string ItemUrl { get; set; }
+
+        public bool IsRecurrentPayment { get; set; }
     }
 }
