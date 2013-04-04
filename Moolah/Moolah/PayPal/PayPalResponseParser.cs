@@ -12,6 +12,7 @@ namespace Moolah.PayPal
         PayPalExpressCheckoutDetails GetExpressCheckoutDetails(NameValueCollection payPalResponse);
         IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse);
         IPayPalRefundResponse RefundTransaction(NameValueCollection payPalResponse);
+        IPaymentResponse MassPayment(NameValueCollection response);
     }
 
     public class PayPalResponseParser : IPayPalResponseParser
@@ -315,6 +316,25 @@ namespace Moolah.PayPal
         {
             decimal result;
             decimal.TryParse(payPalResponse[fieldName], out result);
+            return result;
+        }
+
+        public IPaymentResponse MassPayment(NameValueCollection response)
+        {
+            var result = new PayPalPaymentResponse(response);
+
+            parsePayPalAck(response,
+                success: () =>
+                    {
+                        result.Status = PaymentStatus.Successful;
+                    },
+                fail: message =>
+                    {
+                        result.FailureMessage = message;
+                        result.Status = PaymentStatus.Failed;
+                        result.IsSystemFailure = true;
+                    });
+
             return result;
         }
     }

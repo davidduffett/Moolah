@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Web;
@@ -14,7 +15,8 @@ namespace Moolah.PayPal
         NameValueCollection DoExpressCheckoutPayment(decimal amount, CurrencyCodeType currencyCodeType, string payPalToken, string payPalPayerId);
         NameValueCollection DoExpressCheckoutPayment(OrderDetails orderDetails, string payPalToken, string payPalPayerId);
         NameValueCollection RefundFullTransaction(string transactionId);
-        NameValueCollection RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description);        
+        NameValueCollection RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description);
+        NameValueCollection MassPayment(IEnumerable<PayReceiver> receivers, CurrencyCodeType currencyCodeType, ReceiverType receiverType, string emailSubject);
     }
 
     /// <summary>
@@ -210,6 +212,38 @@ namespace Moolah.PayPal
             request["CURRENCYCODE"] = currencyCodeType.ToString();
             request["NOTE"] = description;
             return request;
+        }
+
+        public NameValueCollection MassPayment(IEnumerable<PayReceiver> receivers, CurrencyCodeType currencyCodeType, ReceiverType receiverType, string emailSubject)
+        {
+            var request = getQueryWithCredentials();
+            request["METHOD"] = "MassPay";
+            request["CURRENCYCODE"] = currencyCodeType.ToString();
+            request["RECEIVERTYPE"] = receiverType.ToString();
+            addOptionalValueToRequest("EMAILSUBJECT", emailSubject, request);
+            addItems(receiverType, receivers, request);
+            return request;
+        }
+
+        void addItems(ReceiverType receiverType, IEnumerable<PayReceiver> receivers, NameValueCollection request)
+        {
+            int index = 0;
+            foreach (var receiver in receivers)
+            {
+                if (receiverType == ReceiverType.EmailAddress)
+                    request["L_EMAIL" + index] = receiver.ReceiverId;
+                else if (receiverType == ReceiverType.UserID)
+                    request["L_RECEIVERID" + index] = receiver.ReceiverId;
+                else
+                    throw new NotImplementedException(string.Format("ReceiverType {0} is not implemented", receiverType));
+
+                request["L_AMT" + index] = receiver.Amount.ToString("0.00");
+
+                addOptionalValueToRequest("L_UNIQUEID" + index, receiver.UniqueId, request);
+                addOptionalValueToRequest("L_NOTE" + index, receiver.Note, request);
+
+                index++;
+            }
         }
     }
 }

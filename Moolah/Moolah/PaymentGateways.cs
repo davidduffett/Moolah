@@ -127,6 +127,18 @@ namespace Moolah
         IPayPalRefundResponse RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description = null);
     }
 
+    public interface IPayPalMassPay
+    {
+        /// <summary>
+        /// Performs PayPal Mass Payment.
+        /// <param name="items">List of payments do be done.</param>
+        /// <param name="currencyCodeType">The Currency Code for payment. You cannot mix currencies in a single Mass Payment. A single request must include items that are of the same currency.</param>
+        /// <param name="receiverType">Indicates how do you identify the recipients of payments in this request. By default it's email address.</param>
+        /// <param name="emailSubject">The subject line of the email that PayPal sends when the transaction is completed. The subject line is the same for all recipients. Character length and limitations: 255 single-byte alphanumeric characters. Optional.</param>        
+        /// </summary>
+        IPaymentResponse DoMassPayment(IEnumerable<PayReceiver> items, CurrencyCodeType currencyCodeType, ReceiverType receiverType = ReceiverType.EmailAddress, string emailSubject = "");
+    }
+
     public interface IGoogleCheckout
     {
         /// <summary>
