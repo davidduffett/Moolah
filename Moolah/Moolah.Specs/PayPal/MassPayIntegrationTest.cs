@@ -5,6 +5,7 @@ using Moolah.PayPal;
 namespace Moolah.Specs.PayPal
 {
     [Subject(typeof(PayPalMassPay))]
+    [Ignore("Payer account needs to have enough funds first.")]
     public class When_doing_mass_payment_by_email : WithSubject<PayPalMassPay>
     {
         It should_get_a_successful_response = () =>
