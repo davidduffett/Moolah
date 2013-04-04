@@ -25,6 +25,20 @@ namespace Moolah.Specs.PayPal
     }
 
     [Subject(typeof(PayPalExpressCheckout))]
+    public abstract class ExpressCheckoutContext
+    {
+        Because of = () =>
+            Response = Gateway.SetExpressCheckout(OrderDetails, "http://localhost/cancel", "http://localhost/confirm");
+
+        Establish context = () =>
+            Gateway = new PayPalExpressCheckout(new PayPalConfiguration(PaymentEnvironment.Test));
+
+        protected static PayPalExpressCheckoutToken Response;
+        protected static OrderDetails OrderDetails;
+        static PayPalExpressCheckout Gateway;
+    }
+
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_an_express_checkout_for_an_amount
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -39,6 +53,7 @@ namespace Moolah.Specs.PayPal
         static PayPalExpressCheckout Gateway;
     }
 
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_express_checkout_without_line_details : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -51,6 +66,7 @@ namespace Moolah.Specs.PayPal
                 };
     }
 
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_express_checkout_specifying_unit_prices : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -85,6 +101,7 @@ namespace Moolah.Specs.PayPal
                                    };
     }
 
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_express_checkout_specifying_unit_prices_and_tax_total_for_an_order : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -119,6 +136,7 @@ namespace Moolah.Specs.PayPal
             };
     }
 
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_express_checkout_with_shipping_discount : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -139,6 +157,7 @@ namespace Moolah.Specs.PayPal
 
     }
 
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_express_checkout_with_discounts : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -158,20 +177,5 @@ namespace Moolah.Specs.PayPal
                 OrderTotal = 8m
             };
         };
-
-    }
-
-    [Subject(typeof(PayPalExpressCheckout))]
-    public abstract class ExpressCheckoutContext
-    {
-        Because of = () =>
-            Response = Gateway.SetExpressCheckout(OrderDetails, "http://localhost/cancel", "http://localhost/confirm");
-
-        Establish context = () =>
-            Gateway = new PayPalExpressCheckout(new PayPalConfiguration(PaymentEnvironment.Test));
-
-        protected static PayPalExpressCheckoutToken Response;
-        protected static OrderDetails OrderDetails;
-        static PayPalExpressCheckout Gateway;
     }
 }

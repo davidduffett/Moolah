@@ -95,6 +95,8 @@
     <Compile Include="PaymentGateways.cs" />
     <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PayPal\PayReceiver.cs" />
+    <Compile Include="PayPal\PayPalMassPay.cs" />
     <Compile Include="PayPal\CurrencyCodeType.cs" />
     <Compile Include="PayPal\LocaleCodes.cs" />
     <Compile Include="PayPal\OrderDetails.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="PayPal\PayPalRequestBuilder.cs" />
     <Compile Include="PayPal\PayPalResponseParser.cs" />
     <Compile Include="PayPal\PayPalAck.cs" />
+    <Compile Include="PayPal\ReceiverType.cs" />
     <Compile Include="PayPal\RefundType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Culture.cs" />
