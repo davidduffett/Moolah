@@ -91,6 +91,7 @@ namespace Moolah.PayPal
 
             var lineNumber = 0;
             var itemTotal = 0m;
+            var recurringNumber = 0;
             if (orderDetails.Items != null)
             {
                 foreach (var line in orderDetails.Items)
@@ -105,8 +106,9 @@ namespace Moolah.PayPal
 
                     if (line.IsRecurrentPayment)
                     {
-                        addOptionalValueToRequest("L_BILLINGTYPE" + lineNumber, "RecurringPayments", request);
-                        addOptionalValueToRequest("L_BILLINGAGREEMENTDESCRIPTION" + lineNumber, line.Description, request);
+                        addOptionalValueToRequest("L_BILLINGTYPE" + recurringNumber, "RecurringPayments", request);
+                        addOptionalValueToRequest("L_BILLINGAGREEMENTDESCRIPTION" + recurringNumber, line.Description, request);
+                        recurringNumber++;
                     }
 
                     itemTotal += (line.UnitPrice ?? 0) * (line.Quantity ?? 1);
