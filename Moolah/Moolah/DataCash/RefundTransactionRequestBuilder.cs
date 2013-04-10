@@ -19,7 +19,7 @@ namespace Moolah.DataCash
         protected override XElement TxnDetailsElement(string merchantReference, decimal amount)
         {
             return new XElement("TxnDetails",
-                new XElement("amount", amount.ToString("0.00")));
+                new XElement("amount", amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
         }
 
         private XElement HistoricTxnElement(string originalTransactionReference)

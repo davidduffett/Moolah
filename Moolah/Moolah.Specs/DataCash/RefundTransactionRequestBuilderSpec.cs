@@ -21,7 +21,7 @@ namespace Moolah.Specs.DataCash
             Result.XPathValue("Request/Transaction/HistoricTxn/method").ShouldEqual("txn_refund");
 
         It should_contain_the_amount = () =>
-            Result.XPathValue("Request/Transaction/TxnDetails/amount").ShouldEqual(Amount.ToString("0.00"));
+            Result.XPathValue("Request/Transaction/TxnDetails/amount").ShouldEqual(Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
         Establish context = () =>
             Configure(new DataCashConfiguration(PaymentEnvironment.Test, "merchantId", "password"));

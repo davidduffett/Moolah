@@ -48,7 +48,7 @@ namespace Moolah.Specs.PayPal
             Request["METHOD"].ShouldEqual("SetExpressCheckout");
 
         It should_specify_formatted_amount = () =>
-            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
+            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
         It should_specify_currency_code = () =>
             Request["PAYMENTREQUEST_0_CURRENCYCODE"].ShouldEqual("GBP");
@@ -445,7 +445,7 @@ namespace Moolah.Specs.PayPal
         Behaves_like<DoExpressCheckoutPaymentRequestBehavior> do_express_checkout_payment_request;
 
         It should_specify_formatted_amount = () =>
-            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00"));
+            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(Amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
         Because of = () =>
            Request = SUT.DoExpressCheckoutPayment(Amount, CurrencyCodeType.GBP, PayPalToken, PayPalPayerId);
@@ -463,7 +463,7 @@ namespace Moolah.Specs.PayPal
         Behaves_like<OrderDetailsBehavior> add_order_details;
             
         It should_specify_formatted_amount = () =>
-            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(OrderDetails.OrderTotal.ToString("0.00"));
+            Request["PAYMENTREQUEST_0_AMT"].ShouldEqual(OrderDetails.OrderTotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
         Establish context = () =>
         {
