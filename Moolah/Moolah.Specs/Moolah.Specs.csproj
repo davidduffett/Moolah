@@ -103,6 +103,7 @@
     <Compile Include="PayPal\PayPalRequestBuilderRefundSpec.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderSpec.cs" />
     <Compile Include="PayPal\PayPalResponseParserSpec.cs" />
+    <Compile Include="PayPal\PayPalRecurringProfileIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
