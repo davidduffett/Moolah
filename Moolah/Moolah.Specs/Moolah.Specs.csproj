@@ -100,6 +100,7 @@
     <Compile Include="PayPal\LocaleCodesSpec.cs" />
     <Compile Include="PayPal\IntegrationTest.cs" />
     <Compile Include="PayPal\PayPalExpressCheckoutSpec.cs" />
+    <Compile Include="PayPal\PayPalRecurringProfileSpecs.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderRefundSpec.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderSpec.cs" />
     <Compile Include="PayPal\PayPalResponseParserSpec.cs" />
