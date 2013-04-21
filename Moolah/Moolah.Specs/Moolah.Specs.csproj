@@ -104,6 +104,8 @@
     <Compile Include="PayPal\PayPalMassPayRequestBuilderSpec.cs" />
     <Compile Include="PayPal\PayPalMassPayResponseParserSpec.cs" />
     <Compile Include="PayPal\PayPalMassPaySpec.cs" />
+    <Compile Include="PayPal\PayPalRecurringProfileIntegrationTest.cs" />
+    <Compile Include="PayPal\PayPalRecurringProfileSpecs.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderRefundSpec.cs" />
     <Compile Include="PayPal\PayPalRequestBuilderSpec.cs" />
     <Compile Include="PayPal\PayPalResponseParserSpec.cs" />

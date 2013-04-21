@@ -13,6 +13,7 @@ namespace Moolah.PayPal
         IPaymentResponse DoExpressCheckoutPayment(NameValueCollection payPalResponse);
         IPayPalRefundResponse RefundTransaction(NameValueCollection payPalResponse);
         IPaymentResponse MassPayment(NameValueCollection response);
+        IPayPalRecurringResponse CreateRecurringProfile(NameValueCollection payPalResponse);
     }
 
     public class PayPalResponseParser : IPayPalResponseParser
@@ -293,7 +294,7 @@ namespace Moolah.PayPal
         public IPayPalRefundResponse RefundTransaction(NameValueCollection payPalResponse)
         {
             var result = new PayPalRefundResponse();
-            parsePayPalAck(payPalResponse, 
+            parsePayPalAck(payPalResponse,
                 success: () =>
                 {
                     result.Status = PaymentStatus.Successful;
@@ -307,6 +308,25 @@ namespace Moolah.PayPal
                 {
                     result.FailureMessage = message;
                     result.Status = PaymentStatus.Failed;
+                    result.IsSystemFailure = true;
+                });
+            return result;
+        }
+
+        public IPayPalRecurringResponse CreateRecurringProfile(NameValueCollection payPalResponse)
+        {
+            var result = new PayPalRecurringProfileResponse();
+            parsePayPalAck(payPalResponse,
+                success: () =>
+                    {
+                        result.Status = PaymentStatus.Successful;
+                        result.ProfileId = payPalResponse["PROFILEID"];
+                        result.ProfileStatus = payPalResponse["PROFILESTATUS"];
+                    },
+                fail: message =>
+                {
+                    result.Status =PaymentStatus.Failed;
+                    result.FailureMessage = message;
                     result.IsSystemFailure = true;
                 });
             return result;

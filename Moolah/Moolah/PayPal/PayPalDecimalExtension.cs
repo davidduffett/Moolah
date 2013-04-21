@@ -12,7 +12,7 @@
         /// </summary>
         public static string AsPayPalFormatString(this decimal value)
         {
-            return value.ToString("0.00");
+            return value.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public static decimal? AsNegativeValue(this decimal? value)

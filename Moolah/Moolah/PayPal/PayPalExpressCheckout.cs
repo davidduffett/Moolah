@@ -143,5 +143,20 @@ namespace Moolah.PayPal
             var response = sendToPayPal(request);
             return _responseParser.RefundTransaction(response);
         }
+
+        public IPayPalRecurringResponse CreateRecurringPaymentsProfile(RecurringProfile profile, string payPalToken)
+        {
+            if (profile == null) throw new ArgumentNullException("orderDetails");
+            if (string.IsNullOrWhiteSpace(payPalToken)) throw new ArgumentNullException("payPalToken");
+
+            var request = _requestBuilder.CreateRecurringPaymentsProfile(profile, payPalToken);
+            return doCreateRecurringPaymentsProfile(request);
+        }
+
+        IPayPalRecurringResponse doCreateRecurringPaymentsProfile(NameValueCollection request)
+        {
+            var response = sendToPayPal(request);
+            return _responseParser.CreateRecurringProfile(response);
+        }
     }
 }

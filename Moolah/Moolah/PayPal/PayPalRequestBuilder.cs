@@ -17,6 +17,7 @@ namespace Moolah.PayPal
         NameValueCollection RefundFullTransaction(string transactionId);
         NameValueCollection RefundPartialTransaction(string transactionId, decimal amount, CurrencyCodeType currencyCodeType, string description);
         NameValueCollection MassPayment(IEnumerable<PayReceiver> receivers, CurrencyCodeType currencyCodeType, ReceiverType receiverType, string emailSubject);
+        NameValueCollection CreateRecurringPaymentsProfile(RecurringProfile profile, string payPalToken);
     }
 
     /// <summary>
@@ -92,6 +93,7 @@ namespace Moolah.PayPal
 
             var lineNumber = 0;
             var itemTotal = 0m;
+            var recurringNumber = 0;
             if (orderDetails.Items != null)
             {
                 foreach (var line in orderDetails.Items)
@@ -103,6 +105,13 @@ namespace Moolah.PayPal
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_TAXAMT" + lineNumber, line.Tax, request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_ITEMURL" + lineNumber, line.ItemUrl, request);
+
+                    if (line.IsRecurrentPayment)
+                    {
+                        addOptionalValueToRequest("L_BILLINGTYPE" + recurringNumber, "RecurringPayments", request);
+                        addOptionalValueToRequest("L_BILLINGAGREEMENTDESCRIPTION" + recurringNumber, line.Description, request);
+                        recurringNumber++;
+                    }
 
                     itemTotal += (line.UnitPrice ?? 0) * (line.Quantity ?? 1);
                     lineNumber++;
@@ -160,7 +169,7 @@ namespace Moolah.PayPal
             request["METHOD"] = "DoExpressCheckoutPayment";
             request["TOKEN"] = payPalToken;
             request["PAYERID"] = payPalPayerId;
-            request["PAYMENTREQUEST_0_AMT"] = amount.ToString("0.00");
+            request["PAYMENTREQUEST_0_AMT"] = amount.AsPayPalFormatString();
             request["PAYMENTREQUEST_0_CURRENCYCODE"] = currencyCodeType.ToString();
             request["PAYMENTREQUEST_0_PAYMENTACTION"] = "Sale";
             return request;
@@ -208,7 +217,7 @@ namespace Moolah.PayPal
             request["METHOD"] = "RefundTransaction";
             request["TRANSACTIONID"] = transactionId;
             request["REFUNDTYPE"] = "Partial";
-            request["AMT"] = amount.ToString("0.00");
+            request["AMT"] = amount.AsPayPalFormatString();
             request["CURRENCYCODE"] = currencyCodeType.ToString();
             request["NOTE"] = description;
             return request;
@@ -244,6 +253,27 @@ namespace Moolah.PayPal
 
                 index++;
             }
+        }
+
+        public NameValueCollection CreateRecurringPaymentsProfile(RecurringProfile profile, string payPalToken)
+        {
+            var request = getQueryWithCredentials();
+
+            request["METHOD"] = "CreateRecurringPaymentsProfile";
+            request["TOKEN"] = payPalToken;
+            request["PROFILESTARTDATE"] = profile.StartDate.ToString("yyyy-MM-ddTHH:mm:ss");
+            request["DESC"] = profile.Description;
+            request["BILLINGPERIOD"] = profile.BillingPeriod.ToString();
+            request["BILLINGFREQUENCY"] = profile.BillingFrequency.ToString();
+            request["AMT"] = profile.Amount.AsPayPalFormatString();
+            request["CURRENCYCODE"] = profile.CurrencyCodeType.ToString();
+            request["EMAIL"] = profile.Email;
+            request["L_PAYMENTREQUEST_0_ITEMCATEGORY0"] = "Digital";
+            request["L_PAYMENTREQUEST_0_NAME0"] = profile.ItemName;
+            request["L_PAYMENTREQUEST_0_AMT0"] = profile.Amount.AsPayPalFormatString();
+            request["L_PAYMENTREQUEST_0_QTY0"] = "1";
+
+            return request;
         }
     }
 }

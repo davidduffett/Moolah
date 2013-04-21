@@ -5,6 +5,7 @@ An easy to use library for e-commerce payment processing in .NET.
 Support is currently provided for:
 * DataCash MOTO and 3D-Secure card transactions
 * PayPal Express Checkout
+* PayPal Recurring Payments
 
 You can also install using [NuGet](http://nuget.org/Packages/Search?packageType=Packages&searchCategory=All+Categories&searchTerm=machine.specifications):
 <pre>
