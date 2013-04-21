@@ -29,7 +29,8 @@ namespace Moolah.Specs.PayPal
         protected static PayPalExpressCheckoutToken Response;
     }
 
-    public class When_starting_express_checkout_with_single_subsription : ExpressCheckoutContext
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_starting_express_checkout_with_single_subscription : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
         Establish context = () =>
@@ -54,6 +55,7 @@ namespace Moolah.Specs.PayPal
                                    };
     }
 
+    [Subject(typeof(PayPalExpressCheckout))]
     public class When_starting_express_checkout_with_items_and_subscription : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
@@ -98,7 +100,8 @@ namespace Moolah.Specs.PayPal
                 };
     }
 
-    public class When_starting_express_checkout_with_multiple_subsriptions : ExpressCheckoutContext
+    [Subject(typeof(PayPalExpressCheckout))]
+    public class When_starting_express_checkout_with_multiple_subscriptions : ExpressCheckoutContext
     {
         Behaves_like<SuccessfulExpressCheckoutBehavior> a_successful_express_checkout;
         Establish context = () =>
