@@ -124,6 +124,9 @@ namespace Moolah.PayPal
 
         public string ItemUrl { get; set; }
 
-        public bool IsRecurrentPayment { get; set; }
+        /// <summary>
+        /// Specifies that this item will create a billing agreement for recurring payments.
+        /// </summary>
+        public bool IsRecurringPayment { get; set; }
     }
 }

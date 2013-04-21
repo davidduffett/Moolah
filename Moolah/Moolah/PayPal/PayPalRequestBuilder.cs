@@ -106,7 +106,7 @@ namespace Moolah.PayPal
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_QTY" + lineNumber, line.Quantity, request);
                     addOptionalValueToRequest("L_PAYMENTREQUEST_0_ITEMURL" + lineNumber, line.ItemUrl, request);
 
-                    if (line.IsRecurrentPayment)
+                    if (line.IsRecurringPayment)
                     {
                         addOptionalValueToRequest("L_BILLINGTYPE" + recurringNumber, "RecurringPayments", request);
                         addOptionalValueToRequest("L_BILLINGAGREEMENTDESCRIPTION" + recurringNumber, line.Description, request);

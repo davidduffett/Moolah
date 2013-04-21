@@ -47,7 +47,7 @@ namespace Moolah.Specs.PayPal
                                                                Quantity = 1,
                                                                UnitPrice = 0.0m, 
                                                                ItemUrl = "http://localhost/subscription?1",
-                                                               IsRecurrentPayment = true
+                                                               IsRecurringPayment = true
                                                            }
                                                    },
                                        ShippingTotal = 0m,
@@ -92,7 +92,7 @@ namespace Moolah.Specs.PayPal
                                                                Quantity = 1,
                                                                UnitPrice =0.0m, 
                                                                ItemUrl = "http://localhost/subscription?1",
-                                                               IsRecurrentPayment = true
+                                                               IsRecurringPayment = true
                                                            }
                                                    },
                     ShippingTotal = 2m,
@@ -118,7 +118,7 @@ namespace Moolah.Specs.PayPal
                                                                Quantity = 1,
                                                                UnitPrice = 0.0m, 
                                                                ItemUrl = "http://localhost/subscription?1",
-                                                               IsRecurrentPayment = true
+                                                               IsRecurringPayment = true
                                                            },
                                                            new OrderDetailsItem
                                                            {
@@ -128,7 +128,7 @@ namespace Moolah.Specs.PayPal
                                                                Quantity = 1,
                                                                UnitPrice = 10.0m, 
                                                                ItemUrl = "http://localhost/subscription?2",
-                                                               IsRecurrentPayment = true
+                                                               IsRecurringPayment = true
                                                            }
                                                    },
                     ShippingTotal = 0m,
