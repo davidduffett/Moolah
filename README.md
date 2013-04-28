@@ -7,7 +7,7 @@ Support is currently provided for:
 * PayPal Express Checkout
 * PayPal Recurring Payments
 
-You can also install using [NuGet](http://nuget.org/Packages/Search?packageType=Packages&searchCategory=All+Categories&searchTerm=machine.specifications):
+You can also install using [NuGet](https://www.nuget.org/packages/Moolah/):
 <pre>
   PM> Install-Package Moolah
 </pre>
