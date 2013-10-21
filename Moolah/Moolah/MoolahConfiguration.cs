@@ -1,6 +1,5 @@
 ﻿using System.Configuration;
 using Moolah.DataCash;
-using Moolah.GoogleCheckout;
 using Moolah.PayPal;
 
 namespace Moolah
@@ -22,7 +21,6 @@ namespace Moolah
             public const string DataCashMoTo = "DataCashMoTo";
             public const string DataCash3DSecure = "DataCash3DSecure";
             public const string PayPal = "PayPal";
-            public const string GoogleCheckout = "GoogleCheckout";
         }
 
         private const string XmlNamespaceConfigurationPropertyName = "xmlns";
@@ -52,13 +50,6 @@ namespace Moolah
         {
             get { return (PayPalConfiguration)this[Elements.PayPal]; }
             set { this[Elements.PayPal] = value; }
-        }
-
-        [ConfigurationProperty(Elements.GoogleCheckout)]
-        public GoogleCheckoutConfiguration GoogleCheckout
-        {
-            get { return (GoogleCheckoutConfiguration) this[Elements.GoogleCheckout]; }
-            set { this[Elements.GoogleCheckout] = value; }
         }
     }
 }

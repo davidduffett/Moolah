@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Moolah.DataCash;
-using Moolah.GoogleCheckout;
 using Moolah.PayPal;
 
 namespace Moolah
@@ -137,26 +136,5 @@ namespace Moolah
         /// <param name="emailSubject">The subject line of the email that PayPal sends when the transaction is completed. The subject line is the same for all recipients. Character length and limitations: 255 single-byte alphanumeric characters. Optional.</param>        
         /// </summary>
         IPaymentResponse DoMassPayment(IEnumerable<PayReceiver> items, CurrencyCodeType currencyCodeType, ReceiverType receiverType = ReceiverType.EmailAddress, string emailSubject = "");
-    }
-
-    public interface IGoogleCheckout
-    {
-        /// <summary>
-        /// Returns the image for the Google Checkout button.  This URL needs to include
-        /// configuration related information, such as whether we are in the Sandbox or Live, 
-        /// and the merchant Id.
-        /// See http://code.google.com/apis/checkout/developer/Google_Checkout_XML_API.html#google_checkout_buttons
-        /// </summary>
-        string GoogleCheckoutButtonImage(ButtonSize size, ButtonStyle style);
-
-        /// <summary>
-        /// Requests to start a Google Checkout.
-        /// </summary>
-        /// <param name="shoppingCart">Details of items and discounts included in the shopping cart.</param>
-        /// <param name="options">Options for the checkout request, such as the edit cart and continue shopping URLs.</param>
-        /// <returns>
-        /// A Google Checkout URL to redirect the customer to.
-        /// </returns>
-        GoogleCheckoutRedirect RequestCheckout(ShoppingCart shoppingCart, CheckoutOptions options = null, IEnumerable<ShippingMethod> shippingMethods = null);
     }
 }

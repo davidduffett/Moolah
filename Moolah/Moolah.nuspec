@@ -17,6 +17,5 @@
   </metadata>
   <files>
 	<file src="artifacts\publish\Moolah.dll" target="lib\net40" />
-	<file src="artifacts\publish\GCheckout.dll" target="lib\net40" />
   </files>
 </package>

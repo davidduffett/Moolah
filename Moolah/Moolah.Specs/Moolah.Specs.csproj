@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GCheckout, Version=2.5.0.7, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\GCheckout\GCheckout.dll</HintPath>
-    </Reference>
     <Reference Include="Machine.Fakes">
       <HintPath>..\packages\Machine.Fakes.0.3.5\lib\Machine.Fakes.dll</HintPath>
     </Reference>
@@ -89,13 +85,6 @@
     <Compile Include="DataCash\IntegrationContext.cs" />
     <Compile Include="DataCash\IntegrationMoTo.cs" />
     <Compile Include="DataCash\RefundTransactionResponseParserSpec.cs" />
-    <Compile Include="GoogleCheckout\FakeGCheckoutResponse.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GoogleCheckout\GoogleCheckoutGatewaySpec.cs" />
-    <Compile Include="GoogleCheckout\GoogleCheckoutRequestBuilderSpec.cs" />
-    <Compile Include="GoogleCheckout\IntegrationTest.cs" />
-    <Compile Include="GoogleCheckout\ShippingMethodExtensionsSpec.cs" />
     <Compile Include="MoolahConfigurationSpec.cs" />
     <Compile Include="PayPal\LocaleCodesSpec.cs" />
     <Compile Include="PayPal\IntegrationTest.cs" />
