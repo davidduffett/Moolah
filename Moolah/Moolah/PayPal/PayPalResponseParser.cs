@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Web;
 using System.Linq;
 
@@ -89,7 +90,7 @@ namespace Moolah.PayPal
         {
             var orderDetails = new OrderDetails
             {
-                OrderTotal = decimal.Parse(payPalResponse["PAYMENTREQUEST_0_AMT"]),
+                OrderTotal = decimal.Parse(payPalResponse["PAYMENTREQUEST_0_AMT"], CultureInfo.InvariantCulture.NumberFormat),
                 TaxTotal = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_TAXAMT", payPalResponse),
                 ShippingTotal = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_SHIPPINGAMT", payPalResponse),
                 ShippingDiscount = parseOptionalDecimalValueFromResponse("PAYMENTREQUEST_0_SHIPDISCAMT", payPalResponse),
@@ -105,7 +106,7 @@ namespace Moolah.PayPal
             foreach (var key in payPalResponse.AllKeys.Where(x => x.StartsWith("L_PAYMENTREQUEST_0_AMT")).OrderBy(x => x))
             {
                 var itemNumber = int.Parse(key.Substring("L_PAYMENTREQUEST_0_AMT".Length));
-                var amount = decimal.Parse(payPalResponse[key]);
+                var amount = decimal.Parse(payPalResponse[key], CultureInfo.InvariantCulture.NumberFormat);
                 var isDiscount = amount < 0;
 
                 if (isDiscount)
@@ -212,7 +213,7 @@ namespace Moolah.PayPal
         {
             return string.IsNullOrWhiteSpace(payPalResponse[fieldName])
                        ? (decimal?)null
-                       : decimal.Parse(payPalResponse[fieldName]);
+                       : decimal.Parse(payPalResponse[fieldName], CultureInfo.InvariantCulture.NumberFormat);
         }
 
         bool? parseOptionalBooleanValueFromResponse(string fieldName, NameValueCollection payPalResponse)
