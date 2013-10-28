@@ -23,14 +23,18 @@ namespace Moolah.Specs.DataCash
         It should_contain_the_amount = () =>
             Result.XPathValue("Request/Transaction/TxnDetails/amount").ShouldEqual(Amount.ToString("0.00"));
 
+        It should_set_currency = () =>
+            Result.XPathValue("Request/Transaction/TxnDetails/amount/@currency").ShouldEqual(Currency);
+
         Establish context = () =>
             Configure(new DataCashConfiguration(PaymentEnvironment.Test, "merchantId", "password"));
 
         Because of = () =>
-            Result = Subject.Build(OriginalTransactionReference, Amount);
+            Result = Subject.Build(OriginalTransactionReference, Amount, Currency);
 
         static XDocument Result;
         const string OriginalTransactionReference = "originalTxn";
         const decimal Amount = 12.99m;
+        const string Currency = "EUR";
     }
 }

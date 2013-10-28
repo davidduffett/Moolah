@@ -18,7 +18,7 @@ namespace Moolah.Specs.DataCash
 
             var requestDoc = new XDocument();
             const string httpResponse = "<PaymentResponse/>";
-            The<IDataCashPaymentRequestBuilder>().WhenToldTo(x => x.Build(MerchantReference, Amount, Card, null))
+            The<IDataCashPaymentRequestBuilder>().WhenToldTo(x => x.Build(MerchantReference, Amount, null, Card, null))
                 .Return(requestDoc);
             The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCashConfiguration>().Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);
@@ -45,12 +45,12 @@ namespace Moolah.Specs.DataCash
         Establish context = () =>
         {
             Configure(new DataCashConfiguration(PaymentEnvironment.Test, "merchantId", "password"));
-            The<IRefundGateway>().WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount))
+            The<IRefundGateway>().WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount, "GBP"))
                 .Return(The<IRefundTransactionResponse>());
         };
 
         Because of = () =>
-            Response = Subject.RefundTransaction(OriginalTransactionReference, Amount);
+            Response = Subject.RefundTransaction(OriginalTransactionReference, Amount, "GBP");
 
         static IRefundTransactionResponse Response;
         const string OriginalTransactionReference = "originalTxn";

@@ -47,11 +47,11 @@ namespace Moolah.DataCash
             _refundGateway = refundGateway;
         }
 
-        public I3DSecureResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null)
+        public I3DSecureResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null, string currencyCode = null)
         {
             if (string.IsNullOrWhiteSpace(merchantReference)) throw new ArgumentNullException("merchantReference");
 
-            var requestDocument = _paymentPaymentRequestBuilder.Build(merchantReference, amount, card, billingAddress);
+            var requestDocument = _paymentPaymentRequestBuilder.Build(merchantReference, amount, currencyCode, card, billingAddress);
             var httpResponse = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
             var response = _responseParser.Parse(httpResponse);
             if (response.CanAuthorize())
@@ -76,9 +76,9 @@ namespace Moolah.DataCash
             get { return _configuration.MerchantId; }
         }
 
-        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount)
+        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount, string currencyCode = null)
         {
-            return _refundGateway.Refund(originalTransactionReference, amount);
+            return _refundGateway.Refund(originalTransactionReference, amount, currencyCode);
         }
     }
 }

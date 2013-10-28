@@ -8,7 +8,7 @@ namespace Moolah.DataCash
 {
     public interface IDataCashPaymentRequestBuilder
     {
-        XDocument Build(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress);
+        XDocument Build(string merchantReference, decimal amount, string currencyCode, CardDetails card, BillingAddress billingAddress);
     }
 
     public interface IDataCashAuthorizeRequestBuilder
@@ -18,7 +18,7 @@ namespace Moolah.DataCash
 
     public interface IDataCashRefundTransactionRequestBuilder
     {
-        XDocument Build(string originalTransactionReference, decimal amount);
+        XDocument Build(string originalTransactionReference, decimal amount, string currencyCode);
     }
 
     public abstract class DataCashRequestBuilderBase
@@ -55,11 +55,15 @@ namespace Moolah.DataCash
             return new XElement("Transaction", elements);
         }
 
-        protected virtual XElement TxnDetailsElement(string merchantReference, decimal amount)
+        protected virtual XElement TxnDetailsElement(string merchantReference, decimal amount, string currencyCode)
         {
+            var amountElement = new XElement("amount", amount.ToString("0.00"));
+            if (!string.IsNullOrWhiteSpace(currencyCode))
+                amountElement.Add(new XAttribute("currency", currencyCode));
+
             return new XElement("TxnDetails",
                 new XElement("merchantreference", merchantReference),
-                new XElement("amount", new XAttribute("currency", "GBP"), amount.ToString("0.00")));
+                amountElement);
         }
 
         protected virtual XElement CardTxnElement(CardDetails card, BillingAddress billingAddress)

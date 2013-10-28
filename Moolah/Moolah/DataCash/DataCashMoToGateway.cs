@@ -43,16 +43,16 @@ namespace Moolah.DataCash
             _refundGateway = refundGateway;
         }
 
-        public ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null)
+        public ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null, string currencyCode = null)
         {
-            var requestDocument = _paymentRequestBuilder.Build(merchantReference, amount, card, billingAddress);
+            var requestDocument = _paymentRequestBuilder.Build(merchantReference, amount, currencyCode, card, billingAddress);
             var response = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
             return _responseParser.Parse(response);
         }
 
-        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount)
+        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount, string currencyCode = null)
         {
-            return _refundGateway.Refund(originalTransactionReference, amount);            
+            return _refundGateway.Refund(originalTransactionReference, amount, currencyCode);            
         }
     }
 }

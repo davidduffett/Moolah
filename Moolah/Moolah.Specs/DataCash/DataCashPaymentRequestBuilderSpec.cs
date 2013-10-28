@@ -18,7 +18,7 @@ namespace Moolah.Specs.DataCash
             Result.XPathValue("Request/Transaction/TxnDetails/merchantreference").ShouldEqual(MerchantReference);
 
         It should_contain_correct_transaction_currency = () =>
-            Result.XPathValue("Request/Transaction/TxnDetails/amount/@currency").ShouldEqual("GBP");
+            Result.XPathValue("Request/Transaction/TxnDetails/amount/@currency").ShouldEqual(Currency);
 
         It should_contain_correct_transaction_amount = () =>
             Result.XPathValue("Request/Transaction/TxnDetails/amount").ShouldEqual(string.Format("{0:0.00}", Amount));
@@ -46,6 +46,7 @@ namespace Moolah.Specs.DataCash
         protected static string MerchantReference;
         protected static decimal Amount;
         protected static CardDetails CardDetails;
+        protected static string Currency;
     }
 
     [Subject(typeof(DataCashMoToRequestBuilder))]
@@ -62,7 +63,7 @@ namespace Moolah.Specs.DataCash
         Because of = () =>
         {
             var builder = new DataCashMoToRequestBuilder(Configuration);
-            Result = builder.Build(MerchantReference, Amount, CardDetails, null);
+            Result = builder.Build(MerchantReference, Amount, Currency, CardDetails, null);
         };
 
         protected static XDocument Result;
@@ -77,6 +78,7 @@ namespace Moolah.Specs.DataCash
                                                            StartDate = "10/10",
                                                            IssueNumber = "123"
                                                        };
+        protected static string Currency = "EUR";
         static string outValue;
     }
 
@@ -94,7 +96,7 @@ namespace Moolah.Specs.DataCash
         Because of = () =>
         {
             var builder = new DataCashMoToRequestBuilder(Configuration);
-            Result = builder.Build(MerchantReference, Amount, CardDetails, BillingAddress);
+            Result = builder.Build(MerchantReference, Amount, Currency, CardDetails, BillingAddress);
         };
 
         protected static XDocument Result;
@@ -109,6 +111,7 @@ namespace Moolah.Specs.DataCash
             StartDate = "10/10",
             IssueNumber = "123"
         };
+        protected static string Currency = "EUR";
         static BillingAddress BillingAddress = new BillingAddress
             {
                 StreetAddress1 = "Some Company 1",
@@ -130,7 +133,7 @@ namespace Moolah.Specs.DataCash
         Because of = () =>
         {
             var builder = new DataCashMoToRequestBuilder(Configuration);
-            Result = builder.Build("123456", 12.99m, CardDetails, BillingAddress);
+            Result = builder.Build("123456", 12.99m, "GBP", CardDetails, BillingAddress);
         };
 
         static XDocument Result;
@@ -164,7 +167,7 @@ namespace Moolah.Specs.DataCash
         Because of = () =>
         {
             var builder = new DataCashMoToRequestBuilder(Configuration);
-            Result = builder.Build("123456", 12.99m, CardDetails, BillingAddress);
+            Result = builder.Build("123456", 12.99m, "GBP", CardDetails, BillingAddress);
         };
 
         static XDocument Result;

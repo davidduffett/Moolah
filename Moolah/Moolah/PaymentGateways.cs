@@ -13,7 +13,7 @@ namespace Moolah
         /// <param name="amount">The amount to transact.</param>
         /// <param name="card">Credit or debit card details.</param>
         /// <param name="billingAddress">The billing address for the card.  If provided, then address verifications checks are run.</param>
-        ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null);
+        ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null, string currencyCode = null);
     }
 
     public interface I3DSecurePaymentGateway : ICanRefundTransactions
@@ -27,7 +27,7 @@ namespace Moolah
         /// <param name="amount">The amount to transact.</param>
         /// <param name="card">Card details.</param>
         /// <param name="billingAddress">The billing address for the card.  If provided, then address verifications checks are run.</param>
-        I3DSecureResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null);
+        I3DSecureResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null, string currencyCode = null);
 
         /// <summary>
         /// Attempts to authorise a 3D-Secure transaction previously submitted to the <see cref="Payment"/> method.
@@ -49,7 +49,7 @@ namespace Moolah
         /// </summary>
         /// <param name="originalTransactionReference">The DataCash reference provided for the original transaction you are refunding.</param>
         /// <param name="amount">The amount you wish to refund, which must be less than or equal to the original transaction amount, less any previous refunds made for that transaction.</param>
-        IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount);   
+        IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount, string currencyCode = null);   
     }
 
     public interface IPayPalExpressCheckout

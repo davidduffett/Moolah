@@ -27,7 +27,8 @@ namespace Moolah.Specs.DataCash
         protected static IDataCash3DSecureResponseParser ResponseParser;
         protected static IRefundGateway RefundGateway;
         protected static I3DSecureResponse ExpectedResponse;
-        protected static I3DSecureResponse Response;        
+        protected static I3DSecureResponse Response;
+        protected static string Currency = "GBP";
     }
 
     [Subject(typeof(DataCash3DSecureGateway))]
@@ -47,7 +48,7 @@ namespace Moolah.Specs.DataCash
             ExpectedResponse.WhenToldTo(x => x.Status).Return(PaymentStatus.Pending);
             ExpectedResponse.WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(true);
 
-            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Card, null))
+            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Currency, Card, null))
                 .Return(requestDoc);
             HttpClient.WhenToldTo(x => x.Post(Configuration.Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);
@@ -58,7 +59,7 @@ namespace Moolah.Specs.DataCash
         Because of = () =>
         {
             SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
-            Response = SUT.Payment(MerchantReference, Amount, Card);
+            Response = SUT.Payment(MerchantReference, Amount, Card, null, Currency);
         };
 
         const string MerchantReference = "987654321";
@@ -114,7 +115,7 @@ namespace Moolah.Specs.DataCash
             paymentResponse.WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(false);
             paymentResponse.WhenToldTo(x => x.TransactionReference).Return(transactionReference);
 
-            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Card, null)).Return(paymentRequest);
+            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Currency, Card, null)).Return(paymentRequest);
             HttpClient.WhenToldTo(x => x.Post(Configuration.Host, paymentRequest.ToString(SaveOptions.DisableFormatting))).Return(paymentHttpResponse);
             ResponseParser.WhenToldTo(x => x.Parse(paymentHttpResponse)).Return(paymentResponse);
 
@@ -130,7 +131,7 @@ namespace Moolah.Specs.DataCash
         Because of = () =>
         {
             SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
-            Response = SUT.Payment(MerchantReference, Amount, Card);
+            Response = SUT.Payment(MerchantReference, Amount, Card, null, Currency);
         };
 
         const string MerchantReference = "987654321";
@@ -147,14 +148,14 @@ namespace Moolah.Specs.DataCash
         Establish context = () =>
         {
             ExpectedRefundResponse = An<IRefundTransactionResponse>();
-            RefundGateway.WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount))
+            RefundGateway.WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount, "GBP"))
                 .Return(ExpectedRefundResponse);
         };
 
         Because of = () =>
         {
             SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
-            RefundResponse = SUT.RefundTransaction(OriginalTransactionReference, Amount);
+            RefundResponse = SUT.RefundTransaction(OriginalTransactionReference, Amount, "GBP");
         };
         
         static IRefundTransactionResponse RefundResponse;

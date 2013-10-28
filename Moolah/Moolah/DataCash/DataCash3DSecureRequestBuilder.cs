@@ -29,16 +29,16 @@ namespace Moolah.DataCash
             SystemTime = new TimeProvider();
         }
 
-        public XDocument Build(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress)
+        public XDocument Build(string merchantReference, decimal amount, string currencyCode, CardDetails card, BillingAddress billingAddress)
         {
             return GetDocument(
-                TxnDetailsElement(merchantReference, amount),
+                TxnDetailsElement(merchantReference, amount, currencyCode),
                 CardTxnElement(card, billingAddress));
         }
 
-        protected override XElement TxnDetailsElement(string merchantReference, decimal amount)
+        protected override XElement TxnDetailsElement(string merchantReference, decimal amount, string currencyCode)
         {
-            var element = base.TxnDetailsElement(merchantReference, amount);
+            var element = base.TxnDetailsElement(merchantReference, amount, currencyCode);
             element.Add(threeDSecureElement());
             return element;
         }

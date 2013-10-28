@@ -39,7 +39,7 @@ namespace Moolah.Specs.DataCash
                 new NameValueCollection { { "Accept", AcceptHeaders } });
 
             var builder = new DataCash3DSecureRequestBuilder(Configuration, HttpRequest) { SystemTime = FakeSystemTime };
-            Result = builder.Build(MerchantReference, Amount, CardDetails, null);
+            Result = builder.Build(MerchantReference, Amount, Currency, CardDetails, null);
         };
 
         Establish context = () =>
@@ -63,6 +63,7 @@ namespace Moolah.Specs.DataCash
             StartDate = "10/10",
             IssueNumber = "123"
         };
+        protected static string Currency = "GBP";
 
         static HttpRequestBase HttpRequest;
         const string AcceptHeaders = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
