@@ -50,9 +50,9 @@ namespace Moolah.DataCash
             return _responseParser.Parse(response);
         }
 
-        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount, string currencyCode = null)
+        public IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount)
         {
-            return _refundGateway.Refund(originalTransactionReference, amount, currencyCode);            
+            return _refundGateway.Refund(originalTransactionReference, amount);            
         }
     }
 }

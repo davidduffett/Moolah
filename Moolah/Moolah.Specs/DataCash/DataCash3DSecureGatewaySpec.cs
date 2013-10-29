@@ -148,14 +148,14 @@ namespace Moolah.Specs.DataCash
         Establish context = () =>
         {
             ExpectedRefundResponse = An<IRefundTransactionResponse>();
-            RefundGateway.WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount, "GBP"))
+            RefundGateway.WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount))
                 .Return(ExpectedRefundResponse);
         };
 
         Because of = () =>
         {
             SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
-            RefundResponse = SUT.RefundTransaction(OriginalTransactionReference, Amount, "GBP");
+            RefundResponse = SUT.RefundTransaction(OriginalTransactionReference, Amount);
         };
         
         static IRefundTransactionResponse RefundResponse;

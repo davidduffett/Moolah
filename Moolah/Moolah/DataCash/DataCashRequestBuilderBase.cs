@@ -18,7 +18,7 @@ namespace Moolah.DataCash
 
     public interface IDataCashRefundTransactionRequestBuilder
     {
-        XDocument Build(string originalTransactionReference, decimal amount, string currencyCode);
+        XDocument Build(string originalTransactionReference, decimal amount);
     }
 
     public abstract class DataCashRequestBuilderBase

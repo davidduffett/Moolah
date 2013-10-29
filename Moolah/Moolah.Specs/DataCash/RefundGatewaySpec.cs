@@ -18,7 +18,7 @@ namespace Moolah.Specs.DataCash
 
             var requestDoc = new XDocument();
             const string httpResponse = "<RefundResponse/>";
-            The<IDataCashRefundTransactionRequestBuilder>().WhenToldTo(x => x.Build(OriginalTransactionReference, Amount, Currency))
+            The<IDataCashRefundTransactionRequestBuilder>().WhenToldTo(x => x.Build(OriginalTransactionReference, Amount))
                 .Return(requestDoc);
             The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCashConfiguration>().Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);
@@ -27,12 +27,11 @@ namespace Moolah.Specs.DataCash
         };
 
         Because of = () =>
-            Response = Subject.Refund(OriginalTransactionReference, Amount, Currency);
+            Response = Subject.Refund(OriginalTransactionReference, Amount);
 
         static IRefundTransactionResponse ExpectedResponse;
         static IRefundTransactionResponse Response;
         const string OriginalTransactionReference = "originalTxn";
         const decimal Amount = 12.99m;
-        const string Currency = "EUR";
     }
 }

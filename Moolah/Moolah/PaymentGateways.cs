@@ -49,7 +49,7 @@ namespace Moolah
         /// </summary>
         /// <param name="originalTransactionReference">The DataCash reference provided for the original transaction you are refunding.</param>
         /// <param name="amount">The amount you wish to refund, which must be less than or equal to the original transaction amount, less any previous refunds made for that transaction.</param>
-        IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount, string currencyCode = null);   
+        IRefundTransactionResponse RefundTransaction(string originalTransactionReference, decimal amount);   
     }
 
     public interface IPayPalExpressCheckout

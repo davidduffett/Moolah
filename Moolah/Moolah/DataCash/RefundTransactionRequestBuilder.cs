@@ -9,19 +9,16 @@ namespace Moolah.DataCash
         {
         }
 
-        public XDocument Build(string originalTransactionReference, decimal amount, string currencyCode)
+        public XDocument Build(string originalTransactionReference, decimal amount)
         {
             return GetDocument(
-                TxnDetailsElement(null, amount, currencyCode),
+                TxnDetailsElement(null, amount, null),
                 HistoricTxnElement(originalTransactionReference));
         }
 
         protected override XElement TxnDetailsElement(string merchantReference, decimal amount, string currencyCode)
         {
-            var amountElement = new XElement("amount", amount.ToString("0.00"));
-            if (!string.IsNullOrWhiteSpace(currencyCode))
-                amountElement.Add(new XAttribute("currency", currencyCode));
-            return new XElement("TxnDetails", amountElement);
+            return new XElement("TxnDetails", new XElement("amount", amount.ToString("0.00")));
         }
 
         private XElement HistoricTxnElement(string originalTransactionReference)

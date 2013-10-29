@@ -5,7 +5,7 @@ namespace Moolah.DataCash
 {
     public interface IRefundGateway
     {
-        IRefundTransactionResponse Refund(string originalTransactionReference, decimal amount, string currencyCode = null);
+        IRefundTransactionResponse Refund(string originalTransactionReference, decimal amount);
     }
 
     public class RefundGateway : IRefundGateway
@@ -32,9 +32,9 @@ namespace Moolah.DataCash
             _refundResponseParser = refundResponseParser;
         }
 
-        public IRefundTransactionResponse Refund(string originalTransactionReference, decimal amount, string currencyCode = null)
+        public IRefundTransactionResponse Refund(string originalTransactionReference, decimal amount)
         {
-            var requestDocument = _refundRequestBuilder.Build(originalTransactionReference, amount, currencyCode);
+            var requestDocument = _refundRequestBuilder.Build(originalTransactionReference, amount);
             var response = _httpClient.Post(_configuration.Host, requestDocument.ToString(SaveOptions.DisableFormatting));
             return _refundResponseParser.Parse(response);
         }

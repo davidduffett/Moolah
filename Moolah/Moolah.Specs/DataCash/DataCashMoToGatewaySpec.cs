@@ -45,12 +45,12 @@ namespace Moolah.Specs.DataCash
         Establish context = () =>
         {
             Configure(new DataCashConfiguration(PaymentEnvironment.Test, "merchantId", "password"));
-            The<IRefundGateway>().WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount, "GBP"))
+            The<IRefundGateway>().WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount))
                 .Return(The<IRefundTransactionResponse>());
         };
 
         Because of = () =>
-            Response = Subject.RefundTransaction(OriginalTransactionReference, Amount, "GBP");
+            Response = Subject.RefundTransaction(OriginalTransactionReference, Amount);
 
         static IRefundTransactionResponse Response;
         const string OriginalTransactionReference = "originalTxn";
