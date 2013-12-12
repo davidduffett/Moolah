@@ -125,6 +125,8 @@ namespace Moolah.DataCash
         /// </summary>
         static string formatPostcode(string postcode)
         {
+            if (string.IsNullOrWhiteSpace(postcode)) return null;
+
             var regex = new Regex("[^a-zA-Z0-9]");
             postcode = regex.Replace(postcode, string.Empty);
             return postcode.Length > 9

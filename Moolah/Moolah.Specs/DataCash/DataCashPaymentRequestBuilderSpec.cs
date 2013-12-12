@@ -125,6 +125,49 @@ namespace Moolah.Specs.DataCash
     }
 
     [Subject(typeof(DataCashMoToRequestBuilder))]
+    public class When_building_auth_request_xml_with_billing_address_but_no_postcode : WithFakes
+    {
+        Behaves_like<DataCashPaymentRequestBehavior> a_datacash_payment_request;
+
+        It should_contain_street_address_1_with_numeric_parts_of_address_only = () =>
+            Result.XPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/street_address1").ShouldEqual("123456");
+
+        It should_not_contain_postcode = () =>
+            Result.TryGetXPathValue("Request/Transaction/CardTxn/Card/Cv2Avs/postcode", out outValue).ShouldBeFalse();
+
+        Because of = () =>
+        {
+            var builder = new DataCashMoToRequestBuilder(Configuration);
+            Result = builder.Build(MerchantReference, Amount, Currency, CardDetails, BillingAddress);
+        };
+
+        protected static XDocument Result;
+        protected static DataCashConfiguration Configuration = new DataCashConfiguration(PaymentEnvironment.Test, "merchant", "password123");
+        protected static string MerchantReference = "123456";
+        protected static decimal Amount = 12.99m;
+        protected static CardDetails CardDetails = new CardDetails
+        {
+            Number = "1234567890123456",
+            ExpiryDate = "10/12",
+            Cv2 = "123",
+            StartDate = "10/10",
+            IssueNumber = "123"
+        };
+        protected static string Currency = "EUR";
+        static BillingAddress BillingAddress = new BillingAddress
+        {
+            StreetAddress1 = "Some Company 1",
+            StreetAddress2 = "On Some Street 2",
+            StreetAddress3 = "In Some Place 3",
+            StreetAddress4 = "In Some Town 4",
+            City = "In Some City 5",
+            State = "In Some State 6",
+            Postcode = null
+        };
+        static string outValue;
+    }
+
+    [Subject(typeof(DataCashMoToRequestBuilder))]
     public class When_building_auth_request_xml_and_postcode_contains_non_alphanumeric_characters : WithFakes
     {
         It should_strip_those_characters_from_the_postcode = () =>
