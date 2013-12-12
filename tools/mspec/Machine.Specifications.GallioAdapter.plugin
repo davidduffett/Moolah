@@ -4,7 +4,7 @@
         xmlns="http://www.gallio.org/">
   <traits>
     <name>Machine Specifications Adapter Plugin</name>
-    <version>0.5.2.0</version>
+    <version>0.5.15.0</version>
     <description>Provides support for running MSpec within Gallio. Requires the assemblies from MSpec.</description>
   </traits>
 
@@ -15,27 +15,27 @@
   <files>
     <file path="Machine.Specifications.dll" />
     <file path="Machine.Specifications.GallioAdapter.plugin" />
-    <file path="Machine.Specifications.GallioAdapter.3.1.dll" />
+    <file path="Machine.Specifications.GallioAdapter.dll" />
     <!--<file path="Readme.txt" />-->
   </files>
 
   <assemblies>
-    <assembly fullName="Machine.Specifications.GallioAdapter.3.1, Version=0.5.2.0, Culture=neutral, PublicKeyToken=null"
-              codeBase="Machine.Specifications.GallioAdapter.3.1.dll"
+    <assembly fullName="Machine.Specifications.GallioAdapter, Version=0.5.15.0, Culture=neutral, PublicKeyToken=null"
+              codeBase="Machine.Specifications.GallioAdapter.dll"
               qualifyPartialName="true" />
 
-    <assembly fullName="Machine.Specifications, Version=0.5.2.0, Culture=neutral, PublicKeyToken=5c474de7a495cff1"
+    <assembly fullName="Machine.Specifications, Version=0.5.15.0, Culture=neutral, PublicKeyToken=5c474de7a495cff1"
               codeBase="Machine.Specifications.dll" />      
   </assemblies>
   
   <components>
     <component componentId="Machine.Specifications"
                serviceId="Gallio.TestFramework"
-               componentType="Machine.Specifications.GallioAdapter.MachineSpecificationsFramework, Machine.Specifications.GallioAdapter.3.1">
+               componentType="Machine.Specifications.GallioAdapter.MachineSpecificationsFramework, Machine.Specifications.GallioAdapter">
       <traits>
         <name>Machine Specifications</name>        
-        <frameworkAssemblies>Machine.Specifications, Version=0.5.2.0</frameworkAssemblies>
-        <version>0.5.2.0</version>
+        <frameworkAssemblies>Machine.Specifications</frameworkAssemblies>
+        <version>0.5.15.0</version>
         <fileTypes>Assembly</fileTypes>
       </traits>
     </component>
