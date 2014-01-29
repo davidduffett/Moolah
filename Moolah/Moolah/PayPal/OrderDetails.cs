@@ -11,6 +11,7 @@ namespace Moolah.PayPal
             CurrencyCodeType = CurrencyCodeType.GBP;
             Items = new OrderDetailsItem[0];
             Discounts = new DiscountDetails[0];
+            DisplayShippingAddress = PayPalNoShipping.Display;
         }
 
         /// <summary>
@@ -33,6 +34,11 @@ namespace Moolah.PayPal
         /// Sum of tax for all items in this order.
         /// </summary>
         public decimal? TaxTotal { get; set; }
+        /// <summary>
+        /// Determines whether shipping address fields are displayed or required on PayPal payment pages.
+        /// If you are selling digital goods, set this to <c>PayPalNoShipping.DoNotDisplay</c>
+        /// </summary>
+        public PayPalNoShipping DisplayShippingAddress { get; set; }
         /// <summary>
         /// Total shipping cost for this order. PayPal calculates the sum of the shipping cost and the handling cost.
         /// Although you may change the value later, try to pass in a shipping amount that is reasonably accurate. 

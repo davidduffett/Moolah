@@ -85,6 +85,7 @@ namespace Moolah.PayPal
 
         void addOrderDetailsValues(OrderDetails orderDetails, NameValueCollection request)
         {
+            addOptionalValueToRequest("NOSHIPPING", (int)orderDetails.DisplayShippingAddress, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_TAXAMT", orderDetails.TaxTotal, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_SHIPPINGAMT", orderDetails.ShippingTotal, request);
             addOptionalValueToRequest("PAYMENTREQUEST_0_SHIPDISCAMT", orderDetails.ShippingDiscount, request);

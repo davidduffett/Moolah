@@ -186,6 +186,9 @@ namespace Moolah.Specs.PayPal
     [Behaviors]
     public class OrderDetailsBehavior
     {
+        It should_specify_noshipping_field = () =>
+            Request["NOSHIPPING"].ShouldEqual(((int)OrderDetails.DisplayShippingAddress).ToString());
+
         It should_specify_the_tax_value_for_the_order = () =>
             Request["PAYMENTREQUEST_0_TAXAMT"].ShouldEqual(OrderDetails.TaxTotal.AsPayPalFormatString());
 
@@ -242,6 +245,7 @@ namespace Moolah.Specs.PayPal
         {
             OrderDescription = "Some order",
             OrderTotal = 100m,
+            DisplayShippingAddress = PayPalNoShipping.Required,
             ShippingDiscount = -7.9m,
             ShippingTotal = 0.54m,
             TaxTotal = 5m,

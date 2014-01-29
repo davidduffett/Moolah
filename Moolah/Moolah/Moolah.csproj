@@ -80,6 +80,7 @@
     <Compile Include="PaymentGateways.cs" />
     <Compile Include="PaymentResponses.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PayPal\PayPalNoShipping.cs" />
     <Compile Include="PayPal\PayPalRecurringProfileResponse.cs" />
     <Compile Include="PayPal\PayReceiver.cs" />
     <Compile Include="PayPal\PayPalMassPay.cs" />
