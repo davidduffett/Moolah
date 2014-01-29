@@ -1,5 +1,5 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
+using NLog;
 
 namespace Moolah.DataCash
 {
@@ -10,6 +10,8 @@ namespace Moolah.DataCash
 
     public class DataCash3DSecureResponseParser : IDataCash3DSecureResponseParser
     {
+        static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         public I3DSecureResponse Parse(string dataCashResponse)
         {
             var document = XDocument.Parse(dataCashResponse);
@@ -38,9 +40,11 @@ namespace Moolah.DataCash
                     break;
                 default:
                     if (DataCashStatus.CanImmediatelyAuthorise(dataCashStatus))
+                    {
+                        Log.Warn("Response status of '{0}' was returned for DataCash txn reference '{1}'. This txn can be immediately authorised.", dataCashStatus, transactionReference);
                         response.Status = PaymentStatus.Pending;
+                    }
                     else
-
                     {
                         response.Status = PaymentStatus.Failed;
                         response.IsSystemFailure = DataCashStatus.IsSystemFailure(dataCashStatus);
