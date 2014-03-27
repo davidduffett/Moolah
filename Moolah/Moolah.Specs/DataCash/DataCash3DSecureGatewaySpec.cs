@@ -16,6 +16,7 @@ namespace Moolah.Specs.DataCash
             AuthorizeRequestBuilder = An<IDataCashAuthorizeRequestBuilder>();
             ResponseParser = An<IDataCash3DSecureResponseParser>();
             RefundGateway = An<IRefundGateway>();
+            CancelGateway = An<ICancelGateway>();
             ExpectedResponse = An<I3DSecureResponse>();            
         };
 
@@ -26,6 +27,7 @@ namespace Moolah.Specs.DataCash
         protected static IHttpClient HttpClient;
         protected static IDataCash3DSecureResponseParser ResponseParser;
         protected static IRefundGateway RefundGateway;
+        protected static ICancelGateway CancelGateway;
         protected static I3DSecureResponse ExpectedResponse;
         protected static I3DSecureResponse Response;
         protected static string Currency = "GBP";
@@ -58,7 +60,7 @@ namespace Moolah.Specs.DataCash
 
         Because of = () =>
         {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
+            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
             Response = SUT.Payment(MerchantReference, Amount, Card, null, Currency);
         };
 
@@ -87,7 +89,7 @@ namespace Moolah.Specs.DataCash
 
         Because of = () =>
         {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
+            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
             Response = SUT.Authorise(TransactionReference, PARes);
         };
 
@@ -130,7 +132,7 @@ namespace Moolah.Specs.DataCash
 
         Because of = () =>
         {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
+            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
             Response = SUT.Payment(MerchantReference, Amount, Card, null, Currency);
         };
 
@@ -154,7 +156,7 @@ namespace Moolah.Specs.DataCash
 
         Because of = () =>
         {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway);
+            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
             RefundResponse = SUT.RefundTransaction(OriginalTransactionReference, Amount);
         };
         

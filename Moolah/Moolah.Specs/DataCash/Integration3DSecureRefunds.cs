@@ -25,7 +25,8 @@ namespace Moolah.Specs.DataCash
                 new DataCash3DSecureRequestBuilder(Configuration, HttpRequest),
                 new DataCash3DSecureAuthorizeRequestBuilder(Configuration),
                 new DataCash3DSecureResponseParser(),
-                new RefundGateway(Configuration));
+                new RefundGateway(Configuration),
+                new CancelGateway(Configuration));
             Response = Gateway.Payment(MerchantReference(), 12.99m, new CardDetails { Number = CardNumber, Cv2 = "123", ExpiryDate = ExpiryDate });
         };
 
@@ -40,8 +41,6 @@ namespace Moolah.Specs.DataCash
         protected static I3DSecureResponse Response;
         // Still need to mock HttpRequest
         static HttpRequestBase HttpRequest;
-        const string AcceptHeaders = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-        const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:10.0.2) Gecko/20100101 Firefox/10.0.2";
     }
 
     [Subject(typeof(DataCash3DSecureGateway), "Integration")]

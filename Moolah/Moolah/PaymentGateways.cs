@@ -4,7 +4,7 @@ using Moolah.PayPal;
 
 namespace Moolah
 {
-    public interface IPaymentGateway : ICanRefundTransactions
+    public interface IPaymentGateway : ICanRefundTransactions, ICanCancelTransactions
     {
         /// <summary>
         /// Attempts to transact the specified amount using the card details provided.
@@ -16,7 +16,7 @@ namespace Moolah
         ICardPaymentResponse Payment(string merchantReference, decimal amount, CardDetails card, BillingAddress billingAddress = null, string currencyCode = null);
     }
 
-    public interface I3DSecurePaymentGateway : ICanRefundTransactions
+    public interface I3DSecurePaymentGateway : ICanRefundTransactions, ICanCancelTransactions
     {
         /// <summary>
         /// Attempts to make a card payment.  If the card is enrolled in 3D-Secure, then the Access Control Server URL (ACSUrl)
@@ -40,6 +40,15 @@ namespace Moolah
         /// Merchant vTID number
         /// </summary>
         string MerchantId { get; }
+    }
+
+    public interface ICanCancelTransactions
+    {
+        /// <summary>
+        /// Attempts to cancel a historic DataCash transaction.  Note that transactions can only be cancelled before they are settled.
+        /// </summary>
+        /// <param name="originalTransactionReference">The DataCash reference provided for the original transaction you are cancelling.</param>
+        ICancelTransactionResponse CancelTransaction(string originalTransactionReference);
     }
 
     public interface ICanRefundTransactions

@@ -49,6 +49,10 @@
     <Compile Include="CardType.cs" />
     <Compile Include="CardUtility.cs" />
     <Compile Include="DataCash\BillingAddress.cs" />
+    <Compile Include="DataCash\CancelGateway.cs" />
+    <Compile Include="DataCash\CancelTransactionRequestBuilder.cs" />
+    <Compile Include="DataCash\CancelTransactionResponse.cs" />
+    <Compile Include="DataCash\CancelTransactionResponseParser.cs" />
     <Compile Include="DataCash\DataCash3DSecureAuthorizeRequestBuilder.cs" />
     <Compile Include="DataCash\DataCash3DSecureGateway.cs">
       <SubType>Code</SubType>

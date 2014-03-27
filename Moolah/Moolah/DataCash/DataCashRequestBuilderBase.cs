@@ -21,6 +21,11 @@ namespace Moolah.DataCash
         XDocument Build(string originalTransactionReference, decimal amount);
     }
 
+    public interface IDataCashCancelTransactionRequestBuilder
+    {
+        XDocument Build(string originalTransactionReference);
+    }
+
     public abstract class DataCashRequestBuilderBase
     {
         private readonly DataCashConfiguration _configuration;
