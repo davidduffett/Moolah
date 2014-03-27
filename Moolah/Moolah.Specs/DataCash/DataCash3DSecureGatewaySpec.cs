@@ -5,106 +5,77 @@ using Moolah.DataCash;
 
 namespace Moolah.Specs.DataCash
 {
-    public abstract class DataCash3DSecureGatewayContext : WithFakes
-    {
-        Establish context = () =>
-        {
-            Configuration = new DataCash3DSecureConfiguration(PaymentEnvironment.Test, "merchantId", "password",
-                "https://www.example.com", "Products");
-            PaymentRequestBuilder = An<IDataCashPaymentRequestBuilder>();
-            HttpClient = An<IHttpClient>();
-            AuthorizeRequestBuilder = An<IDataCashAuthorizeRequestBuilder>();
-            ResponseParser = An<IDataCash3DSecureResponseParser>();
-            RefundGateway = An<IRefundGateway>();
-            CancelGateway = An<ICancelGateway>();
-            ExpectedResponse = An<I3DSecureResponse>();            
-        };
-
-        protected static DataCash3DSecureGateway SUT;
-        protected static DataCash3DSecureConfiguration Configuration;
-        protected static IDataCashPaymentRequestBuilder PaymentRequestBuilder;
-        protected static IDataCashAuthorizeRequestBuilder AuthorizeRequestBuilder;
-        protected static IHttpClient HttpClient;
-        protected static IDataCash3DSecureResponseParser ResponseParser;
-        protected static IRefundGateway RefundGateway;
-        protected static ICancelGateway CancelGateway;
-        protected static I3DSecureResponse ExpectedResponse;
-        protected static I3DSecureResponse Response;
-        protected static string Currency = "GBP";
-    }
-
     [Subject(typeof(DataCash3DSecureGateway))]
-    public class When_submitting_datacash_3ds_pares_required_payment : DataCash3DSecureGatewayContext
+    public class When_submitting_datacash_3ds_pares_required_payment : WithSubject<DataCash3DSecureGateway>
     {
         It should_build_request_parse_and_return_payment_response = () =>
-            Response.ShouldEqual(ExpectedResponse);
+            Response.ShouldEqual(The<I3DSecureResponse>());
 
         It should_offer_access_to_the_merchant_id = () => 
-           SUT.MerchantId.ShouldEqual("merchantId");
+            Subject.MerchantId.ShouldEqual("merchantId");
 
         Establish context = () =>
         {
-            Card = new CardDetails();
+            Configure(new DataCash3DSecureConfiguration(PaymentEnvironment.Test, "merchantId", "password", "https://www.example.com", "Products"));
+            The<I3DSecureResponse>().WhenToldTo(x => x.Status).Return(PaymentStatus.Pending);
+            The<I3DSecureResponse>().WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(true);
+
             var requestDoc = new XDocument();
             const string httpResponse = "<PaymentResponse/>";
-            ExpectedResponse.WhenToldTo(x => x.Status).Return(PaymentStatus.Pending);
-            ExpectedResponse.WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(true);
-
-            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Currency, Card, null))
+            The<IDataCashPaymentRequestBuilder>().WhenToldTo(x => x.Build(MerchantReference, Amount, Currency, Card, null))
                 .Return(requestDoc);
-            HttpClient.WhenToldTo(x => x.Post(Configuration.Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
+            The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCash3DSecureConfiguration>().Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);
-            ResponseParser.WhenToldTo(x => x.Parse(httpResponse))
-                .Return(ExpectedResponse);
+            The<IDataCash3DSecureResponseParser>().WhenToldTo(x => x.Parse(httpResponse))
+                .Return(The<I3DSecureResponse>());
         };
 
         Because of = () =>
-        {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
-            Response = SUT.Payment(MerchantReference, Amount, Card, null, Currency);
-        };
+            Response = Subject.Payment(MerchantReference, Amount, Card, null, Currency);
 
+        static I3DSecureResponse Response;
+        static CardDetails Card = new CardDetails();
         const string MerchantReference = "987654321";
         const decimal Amount = 12.99m;
-        static CardDetails Card;
+        const string Currency = "GBP";
     }
 
     [Subject(typeof(DataCash3DSecureGateway))]
-    public class When_authorizing_a_pending_3ds_transaction : DataCash3DSecureGatewayContext
+    public class When_authorizing_a_pending_3ds_transaction : WithSubject<DataCash3DSecureGateway>
     {
         It should_build_request_parse_and_return_authorize_response = () =>
-            Response.ShouldEqual(ExpectedResponse);
+            Response.ShouldEqual(The<I3DSecureResponse>());
 
         Establish context = () =>
         {
+            Configure(new DataCash3DSecureConfiguration(PaymentEnvironment.Test, "merchantId", "password", "https://www.example.com", "Products"));
             var requestDoc = new XDocument();
             const string httpResponse = "<AuthorizeResponse/>";
-            AuthorizeRequestBuilder.WhenToldTo(x => x.Build(TransactionReference, PARes))
+            The<IDataCashAuthorizeRequestBuilder>().WhenToldTo(x => x.Build(TransactionReference, PARes))
                 .Return(requestDoc);
-            HttpClient.WhenToldTo(x => x.Post(Configuration.Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
+            The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCash3DSecureConfiguration>().Host, requestDoc.ToString(SaveOptions.DisableFormatting)))
                 .Return(httpResponse);
-            ResponseParser.WhenToldTo(x => x.Parse(httpResponse))
-                .Return(ExpectedResponse);
+            The<IDataCash3DSecureResponseParser>().WhenToldTo(x => x.Parse(httpResponse))
+                .Return(The<I3DSecureResponse>());
         };
 
         Because of = () =>
-        {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
-            Response = SUT.Authorise(TransactionReference, PARes);
-        };
+            Response = Subject.Authorise(TransactionReference, PARes);
 
+        static I3DSecureResponse Response; 
         const string TransactionReference = "987645";
         const string PARes = "blahdeblah";
     }
 
     [Subject(typeof(DataCash3DSecureGateway))]
-    public class When_submitting_datacash_3ds_payment_and_immediate_authorization_is_possible : DataCash3DSecureGatewayContext
+    public class When_submitting_datacash_3ds_payment_and_immediate_authorization_is_possible : WithSubject<DataCash3DSecureGateway>
     {
         It should_authorize_the_payment = () =>
-            Response.ShouldEqual(ExpectedResponse);
+            Response.ShouldEqual(The<I3DSecureResponse>());
 
         Establish context = () =>
         {
+            Configure(new DataCash3DSecureConfiguration(PaymentEnvironment.Test, "merchantId", "password", "https://www.example.com", "Products"));
             Card = new CardDetails();
 
             // Payment
@@ -117,48 +88,45 @@ namespace Moolah.Specs.DataCash
             paymentResponse.WhenToldTo(x => x.Requires3DSecurePayerVerification).Return(false);
             paymentResponse.WhenToldTo(x => x.TransactionReference).Return(transactionReference);
 
-            PaymentRequestBuilder.WhenToldTo(x => x.Build(MerchantReference, Amount, Currency, Card, null)).Return(paymentRequest);
-            HttpClient.WhenToldTo(x => x.Post(Configuration.Host, paymentRequest.ToString(SaveOptions.DisableFormatting))).Return(paymentHttpResponse);
-            ResponseParser.WhenToldTo(x => x.Parse(paymentHttpResponse)).Return(paymentResponse);
+            The<IDataCashPaymentRequestBuilder>().WhenToldTo(x => x.Build(MerchantReference, Amount, Currency, Card, null)).Return(paymentRequest);
+            The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCash3DSecureConfiguration>().Host, paymentRequest.ToString(SaveOptions.DisableFormatting))).Return(paymentHttpResponse);
+            The<IDataCash3DSecureResponseParser>().WhenToldTo(x => x.Parse(paymentHttpResponse)).Return(paymentResponse);
 
             // Authorize
             var authorizeRequest = new XDocument(new XDeclaration("1.0", "utf-8", null), new XElement("Authorize"));
             const string authorizeHttpResponse = "<Authorized/>";
 
-            AuthorizeRequestBuilder.WhenToldTo(x => x.Build(transactionReference, null)).Return(authorizeRequest);
-            HttpClient.WhenToldTo(x => x.Post(Configuration.Host, authorizeRequest.ToString(SaveOptions.DisableFormatting))).Return(authorizeHttpResponse);
-            ResponseParser.WhenToldTo(x => x.Parse(authorizeHttpResponse)).Return(ExpectedResponse);
+            The<IDataCashAuthorizeRequestBuilder>().WhenToldTo(x => x.Build(transactionReference, null)).Return(authorizeRequest);
+            The<IHttpClient>().WhenToldTo(x => x.Post(The<DataCash3DSecureConfiguration>().Host, authorizeRequest.ToString(SaveOptions.DisableFormatting))).Return(authorizeHttpResponse);
+            The<IDataCash3DSecureResponseParser>().WhenToldTo(x => x.Parse(authorizeHttpResponse)).Return(The<I3DSecureResponse>());
         };
 
         Because of = () =>
-        {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
-            Response = SUT.Payment(MerchantReference, Amount, Card, null, Currency);
-        };
+            Response = Subject.Payment(MerchantReference, Amount, Card, null, Currency);
 
+        static I3DSecureResponse Response; 
         const string MerchantReference = "987654321";
         const decimal Amount = 12.99m;
         static CardDetails Card;
+        const string Currency = "GBP";
     }
 
     [Subject(typeof(DataCash3DSecureGateway))]
-    public class When_submitting_3d_secure_gateway_transaction_refund : DataCash3DSecureGatewayContext
+    public class When_submitting_3d_secure_gateway_transaction_refund : WithSubject<DataCash3DSecureGateway>
     {
         It should_return_response_from_refund_gateway = () =>
             RefundResponse.ShouldEqual(ExpectedRefundResponse);
 
         Establish context = () =>
         {
+            Configure(new DataCash3DSecureConfiguration(PaymentEnvironment.Test, "merchantId", "password", "https://www.example.com", "Products"));
             ExpectedRefundResponse = An<IRefundTransactionResponse>();
-            RefundGateway.WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount))
+            The<IRefundGateway>().WhenToldTo(x => x.Refund(OriginalTransactionReference, Amount))
                 .Return(ExpectedRefundResponse);
         };
 
         Because of = () =>
-        {
-            SUT = new DataCash3DSecureGateway(Configuration, HttpClient, PaymentRequestBuilder, AuthorizeRequestBuilder, ResponseParser, RefundGateway, CancelGateway);
-            RefundResponse = SUT.RefundTransaction(OriginalTransactionReference, Amount);
-        };
+            RefundResponse = Subject.RefundTransaction(OriginalTransactionReference, Amount);
         
         static IRefundTransactionResponse RefundResponse;
         static IRefundTransactionResponse ExpectedRefundResponse;
